@@ -15,7 +15,7 @@
 * **Alinhamento de Processos:** Ficou definido que, antes de avançar para a programação pura, o grupo priorizará o entendimento completo do escopo e a criação dos arquivos base necessários para o gerenciamento do projeto.
 * **Frequência de Reuniões:** Será realizados alinhamentos duas vezes por semana via Discord.
 
-##  3. Plano de Ação (Cronograma de Atividades)
+##  3. Plano de Ação 
 Atividades distribuídas para a Sprint 1 (Até dia 30/05):
 
 | Responsável | Tarefa | Prazo | Status |
