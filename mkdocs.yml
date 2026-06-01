@@ -1,0 +1,34 @@
+site_name: Desafio 4
+
+theme:
+  name: material
+  language: pt-BR
+
+nav:
+  - Início: index.md
+
+  - Visão do Produto e Projeto:
+      - Visão Geral: visao/index.md
+      - Cenário Atual: visao/cenario_atual.md
+      - Objetivos: visao/objetivos.md
+      - Perfil e Personas: visao/perfil_personas.md
+      - Solução Proposta: visao/solucao_proposta.md
+
+  - Requisitos e Backlog:
+      - Visão Geral: backlog/index.md
+      - Histórias de Usuário: backlog/historias_usuario.md
+      - Requisitos: backlog/requisitos.md
+      - Priorização: backlog/priorizacao.md
+
+  - Casos de Uso: casos_de_uso.md
+
+  - Planejamento:
+      - Visão Geral: planejamento/index.md
+      - Cronograma: planejamento/cronograma.md
+      - Metodologia: planejamento/metodologia.md
+      - Atas: planejamento/atas.md
+
+  - Boas Práticas:
+      - Visão Geral: boas_praticas/index.md
+      - Padrão de Branches: boas_praticas/padrao_branch.md
+      - Padrão de Commits: boas_praticas/padrao_commit.md
