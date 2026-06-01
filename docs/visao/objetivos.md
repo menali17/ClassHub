@@ -25,3 +25,8 @@ Com a solução, espera-se que o controle de frequência deixe de depender de pr
 
 Para os professores, o sistema deve tornar o registro de presença menos trabalhoso. Para a coordenação e a equipe administrativa, deve facilitar o acompanhamento das turmas e a geração de relatórios. Para os alunos, deve trazer mais clareza sobre seus registros de frequência.
 
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 01/06/2026 | Definição do objetivo geral, dos objetivos específicos e dos resultados esperados do produto. | Enzo Menali |

@@ -32,16 +32,38 @@ Para a coordenação e a equipe administrativa, a centralização dos dados faci
 
 Outro ponto importante é a possibilidade de acompanhar alunos com baixa frequência com mais rapidez. Isso permite que a instituição identifique situações de atenção antes que o problema cresça.
 
-## Tecnologias previstas
+## Tecnologias e ferramentas utilizadas
 
-A solução deve seguir as tecnologias definidas para o desafio:
+Para construir a solução, a equipe definiu um conjunto de tecnologias e ferramentas que apoiam o desenvolvimento, a documentação, a comunicação e a publicação do projeto.
 
-- **Front-end:** Next.js, JavaScript/TypeScript, HTML e Tailwind CSS.
-- **Back-end:** NestJS com API REST.
-- **Banco de dados:** PostgreSQL, MongoDB ou SQLite, conforme a definição da equipe.
+| Área | Tecnologia/Ferramenta | Uso no projeto |
+|---|---|---|
+| Front-end | Next.js | Desenvolvimento da interface web da aplicação. |
+| Front-end | HTML | Estruturação semântica das páginas e componentes. |
+| Front-end | Tailwind CSS | Estilização da interface e construção de telas responsivas. |
+| Front-end | JavaScript/TypeScript | Implementação da lógica da interface e integração com o back-end. |
+| Back-end | NestJS | Desenvolvimento da API e organização das regras do servidor. |
+| Back-end | API REST | Comunicação entre front-end e back-end por meio de endpoints. |
+| Banco de dados | PostgreSQL, MongoDB ou SQLite | Persistência de dados relacionados a usuários, turmas, aulas e frequência. |
+| Versionamento | Git | Controle de versão das alterações realizadas no projeto. |
+| Repositório | GitHub | Armazenamento do código, colaboração da equipe e organização das entregas. |
+| Documentação | MkDocs | Construção e organização da documentação do projeto. |
+| Publicação da documentação | GitHub Pages | Disponibilização da documentação online. |
+| Prototipação | Figma | Criação de protótipos e alinhamento visual das telas. |
+| Comunicação | WhatsApp | Alinhamentos rápidos, avisos e dúvidas do dia a dia. |
+| Reuniões | Google Meet | Reuniões da equipe, discussões e decisões sobre o projeto. |
+
+Essa combinação de ferramentas foi escolhida para apoiar tanto a parte técnica quanto a organização do trabalho em equipe. Assim, o projeto consegue manter uma base de código versionada, uma documentação acessível e uma comunicação mais clara entre os integrantes.
 
 ## Resultado esperado
 
 Espera-se que a solução torne o controle de presença mais prático, confiável e fácil de acompanhar. A instituição deve conseguir reduzir o uso de papel, diminuir retrabalho, evitar parte dos erros manuais e ter mais clareza sobre a frequência dos alunos nas aulas práticas e laboratoriais.
 
 No fim, a plataforma deve servir como uma ferramenta de apoio para professores, coordenação e equipe administrativa, melhorando a rotina de controle acadêmico sem tornar o processo mais complicado para quem vai usar o sistema.
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 31/05/2026 | Descrição da solução proposta, principais funcionalidades, tecnologias previstas e resultado esperado. | Enzo Menali |
+| 1.1 | 01/06/2026 | Detalhamento das tecnologias e ferramentas utilizadas no desenvolvimento, documentação, comunicação e publicação do projeto. | Enzo Menali |

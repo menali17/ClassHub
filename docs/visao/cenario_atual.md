@@ -50,3 +50,9 @@ O Diagrama de Ishikawa será usado para organizar as principais causas do proble
 **Efeito analisado:** controle de presença manual pouco confiável.
 
 Esse diagrama mostra que a baixa confiabilidade do controle de presença não vem de um único ponto. Ela é resultado da combinação entre pessoas, processo manual, falta de centralização tecnológica, uso de papel, características do ambiente das aulas e dificuldade de gestão das informações.
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 31/05/2026 | Criação e refinamento do cenário atual, incluindo problemas identificados e Diagrama de Ishikawa. | Enzo Menali|

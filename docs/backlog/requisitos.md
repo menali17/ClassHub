@@ -103,3 +103,11 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 | Código | Requisito |
 |---|---|
 | RNF12 | O projeto deve estar publicado em uma plataforma como GitHub Pages, Vercel ou Netlify. |
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 0.1 | 25/05/2026 | Definição inicial dos requisitos do sistema em reunião da equipe. | Enzo Menali, Camila Silva, André e Beatriz Fernandes |
+| 0.2 | 31/05/2026 | Refinamento dos requisitos iniciais, incluindo ajustes de escopo e organização. | Enzo Menali e Camila Silva |
+| 1.0 | 01/06/2026 | Organização dos requisitos funcionais e não funcionais em tabelas e inclusão dos diferenciais definidos para o projeto. | Enzo Menali e Camila Silva |
