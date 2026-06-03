@@ -19,6 +19,7 @@ nav:
       - Histórias de Usuário: backlog/historias_usuario.md
       - Requisitos: backlog/requisitos.md
       - Priorização: backlog/priorizacao.md
+      - Backlog do Produto: backlog/backlog_produto.md
 
   - Casos de Uso: casos_de_uso.md
 

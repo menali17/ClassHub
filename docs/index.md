@@ -19,3 +19,9 @@ A documentação está dividida nas seguintes seções:
 - [Requisitos e Backlog](backlog/index.md)
 - [Casos de Uso](casos_de_uso.md)
 - [Planejamento](planejamento/index.md)
+
+## Integrantes da Equipe
+
+| <span style="color:black;">[Camila Cavalcante](https://github.com/CamilaSilvaC)</span> | <span style="color:black;">[Enzo Menali](https://github.com/menali17)</span> | <span style="color:black;">[André Toussaint](https://github.com/andreeetmt)</span> | <span style="color:black;">[Beatriz Fernandes](https://github.com/beatrizfernandes-del)</span> |
+| ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| <div align="center"><img src="https://github.com/CamilaSilvaC.png" alt="camila" width="90"></div> | <div align="center"><img src="https://github.com/menali17.png" alt="enzo" width="90"></div> | <div align="center"><img src="https://github.com/andreeetmt.png" alt="andre" width="90"></div> | <div align="center"><img src="https://github.com/beatrizfernandes-del.png" alt="beatriz" width="90"></div> |
