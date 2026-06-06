@@ -10,6 +10,7 @@ nav:
   - Visão do Produto e Projeto:
       - Visão Geral: visao/index.md
       - Cenário Atual: visao/cenario_atual.md
+      - Matriz CSD: visao/matriz_csd.md
       - Objetivos: visao/objetivos.md
       - Perfil e Personas: visao/perfil_personas.md
       - Solução Proposta: visao/solucao_proposta.md
