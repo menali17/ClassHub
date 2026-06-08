@@ -1,53 +1,113 @@
-# Requisitos 
+# Requisitos
+
+A partir do problema apresentado pelo cliente, foram definidos os requisitos que orientam o desenvolvimento da solução. Eles ajudam a transformar as necessidades identificadas em funcionalidades, regras e características que o sistema precisa atender.
 
 ## Requisitos Funcionais
 
-1. RF01 - Autenticação
- - RF01.1 - O sistema deve permitir o login do usuário
- - RF01.2 - O sistema deve permitir logout do usuário
+### Autenticação
 
-2. RF02 - DashBoard Principal
- - RF02.1 - O sistema deve mostrar a quantidade total de alunos por turma
- - RF02.2 - O sistema deve mostrar a quantidade total de aulas registradas por turma
- - RF02.3 - O sistema deve mostrar a taxa média de presença por turma
- - RF02.4 - O sistema deve emitir alertas de baixa frequência por aluno
- 
-3. RF03 - Gerenciamento de Turmas
- - RF03.1 - O sistema deve permitir criar turmas com nome, código, horário e quantidade de alunos
- - RF03.2 - O sistema deve permitir editar turmas
- - RF03.3 - O sistema deve permitir excluir turmas
- - RF03.4 - O sistema deve permitir visualizar a lista de estudantes por turma
+| Código | Requisito |
+|---|---|
+| RF01 | O sistema deve permitir que usuários autorizados realizem login. |
+| RF02 | O sistema deve permitir que usuários autenticados realizem logout. |
+| RF03 | O sistema deve restringir o acesso a dados sensíveis apenas a usuários autenticados. |
+| RF04 | O sistema deve permitir que usuários autenticados editem seus próprios dados cadastrais, como nome, e-mail, senha e foto. |
+| RF05 | O sistema deve diferenciar os perfis de acesso da plataforma, como aluno, professor e administrador. |
 
-4. RF04 - Controle de Frequência 
+### Dashboard Principal
 
-- RF04.1 - O sistema deve permitir registrar a presença dos alunos
-- RF04.2 - O sistema deve permitir marcar falta de um aluno
-- RF04.3 - O sistema deve permitir registrar data e horário da aula
-- RF04,4 - O sistema deve permitir visualizar histório de frequência do aluno
+| Código | Requisito |
+|---|---|
+| RF06 | O sistema deve exibir a quantidade total de alunos cadastrados. |
+| RF07 | O sistema deve exibir a quantidade total de aulas cadastradas. |
+| RF08 | O sistema deve exibir a taxa média geral de presença. |
+| RF09 | O sistema deve exibir alertas de alunos com baixa frequência. |
 
-**5. RF05 - Geração de Relatórios**
+### Gerenciamento de Turmas
 
-- RF05.1 -  O sistema deve gerar um relatório de frequência individual por aluno
-- RF06.2 - O sistema deve gerar um relatório de percentual de presença
-- RF06.3 - O sistema deve gerar um relatório da lista de alunos faltosos
-- RF06.4 - O sistema deve gerer um relatório de histório por turma
+| Código | Requisito |
+|---|---|
+| RF10 | O sistema deve permitir criar turmas com nome, código e horário. |
+| RF11 | O sistema deve permitir editar informações de turmas. |
+| RF12 | O sistema deve permitir remover turmas. |
+| RF13 | O sistema deve permitir visualizar a lista de estudantes vinculados a cada turma. |
+| RF14 | O sistema deve exibir a quantidade de alunos vinculados a cada turma. |
+
+### Controle de Frequência
+
+| Código | Requisito |
+|---|---|
+| RF15 | O sistema deve permitir que o professor registre a presença dos alunos em uma aula. |
+| RF16 | O sistema deve permitir que o professor marque falta para alunos ausentes. |
+| RF17 | O sistema deve registrar a data e o horário da aula. |
+| RF18 | O sistema deve permitir que o professor visualize o histórico de frequência de cada aluno. |
+| RF19 | O sistema deve permitir que o aluno visualize a própria frequência. |
+
+### Relatórios
+
+| Código | Requisito |
+|---|---|
+| RF20 | O sistema deve gerar relatório de frequência individual por aluno. |
+| RF21 | O sistema deve gerar relatório com percentual de presença. |
+| RF22 | O sistema deve gerar relatório com lista de alunos faltosos. |
+| RF23 | O sistema deve gerar relatório com histórico de frequência por turma. |
+| RF24 | O sistema deve exibir gráficos de frequência para facilitar a análise visual dos dados. |
+
+### Busca e Filtros
+
+| Código | Requisito |
+|---|---|
+| RF25 | O sistema deve permitir filtrar e buscar alunos por nome, turma ou situação de frequência. |
+
+### Preferências de Interface
+
+| Código | Requisito |
+|---|---|
+| RF26 | O sistema deve permitir que o usuário alterne entre modo claro e modo escuro. |
 
 ## Requisitos Não Funcionais
 
-- RNF-01: O sistema deve se adaptar a telas de 390px, 768px e 1366px de largura, sem sobreposição de elementos, corte de informações essenciais ou rolagem horizontal indevida (Responsividade)
+### Usabilidade e Interface
 
-- RNF-02: O usuário deve ser capaz de realizar as principais funções do sistema em até 10 minutos, sem necessidade de treinamento prévio(Usabilidade)
+| Código | Requisito |
+|---|---|
+| RNF01 | O sistema deve se adaptar a telas de 390px, 768px e 1366px de largura, sem sobreposição de elementos, corte de informações essenciais ou rolagem horizontal indevida. |
+| RNF02 | O usuário deve ser capaz de realizar as principais funções do sistema em até 10 minutos, sem necessidade de treinamento prévio. |
+| RNF03 | O sistema deve possuir consistência visual, em que tabelas, formulários, botões e menus sigam a mesma paleta de cores, com espaçamentos, estilos e formatação em todas as telas. |
+| RNF04 | Ações de confirmação, envio de formulários e exclusão devem apresentar indicação visual em até 2 segundos. |
 
-- RNF-03: O sistema deve possuir uma consistência visual, em que tabelas, formulários, botões e menus sigam a mesma paleta de cores, com espaçamentos, estilos e formatação em todas as telas
+### Manutenibilidade
 
-- RNF-04: Ações de confirmação, envio de formulários, exclusão devem apresentar indicação visual em até 2 segundos (Manutelibilidade)
+| Código | Requisito |
+|---|---|
+| RNF05 | O sistema deve utilizar componentes reutilizáveis na interface, como botões, tabelas, cards e formulários. |
+| RNF06 | O código deve ser organizado, componentizado e com separação de responsabilidades. |
+| RNF07 | A interface deve seguir boas práticas de semântica HTML. |
 
-- RNF-05: Componentes como botões, tabelas, cards e formulários devem ser reutilizados
+### Restrições Tecnológicas e Arquitetura
 
-- RNF-06: O sistema deve ser implementado utilizando as tecnologias Next.js, JavaScript/TypeScript e TailWind CSS na parte front-end
+| Código | Requisito |
+|---|---|
+| RNF08 | O front-end deve ser desenvolvido com Next.js, Tailwind CSS e JavaScript ou TypeScript. |
+| RNF09 | O back-end deve ser desenvolvido com NestJS e API REST. |
+| RNF10 | O sistema deve possuir persistência de dados com PostgreSQL, MongoDB ou SQLite. |
 
-- RNF-07: O sistema deve utilizar as tecnologias NestJS, API REST na parte back-end
+### Desempenho
 
-- RNF-08: O sistema deve utilizar PostGreeSQL, MongoDB ou SQLite para manutenção e persistência de dados
+| Código | Requisito |
+|---|---|
+| RNF11 | O sistema deve gerar relatórios em até 5 segundos, com turmas de até 100 alunos e 30 aulas ministradas. |
 
-- RNF-09: O sistema deve permitir gerar relatórios em até 5 segundos, com turmas de até 100 alunos e 30 aulas ministradas
+### Deploy
+
+| Código | Requisito |
+|---|---|
+| RNF12 | O projeto deve estar publicado em uma plataforma como GitHub Pages, Vercel ou Netlify. |
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 0.1 | 25/05/2026 | Definição inicial dos requisitos do sistema em reunião da equipe. | Enzo Menali, Camila Silva, André e Beatriz Fernandes |
+| 0.2 | 31/05/2026 | Refinamento dos requisitos iniciais, incluindo ajustes de escopo e organização. | Enzo Menali e Camila Silva |
+| 1.0 | 01/06/2026 | Organização dos requisitos funcionais e não funcionais em tabelas e inclusão dos diferenciais definidos para o projeto. | Enzo Menali e Camila Silva |

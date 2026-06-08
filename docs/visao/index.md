@@ -8,6 +8,7 @@ Esta seção apresenta a visão inicial do projeto **Desafio 4**, reunindo o con
 | Página | Conteúdo |
 |---|---|
 | [Cenário Atual](cenario_atual.md) | Apresenta o contexto inicial, o problema observado e as necessidades que motivaram o projeto. |
+| [Matriz CSD](matriz_csd.md) | Organiza certezas, suposições e dúvidas levantadas pela equipe sobre o problema e a solução. |
 | [Objetivos](objetivos.md) | Define os objetivos que orientam o desenvolvimento da solução. |
 | [Perfil e Personas](perfil_personas.md) | Descreve os principais usuários, seus perfis, necessidades e expectativas em relação ao sistema. |
 | [Solução Proposta](solucao_proposta.md) | Apresenta a proposta de solução, incluindo funcionalidades principais, limites do escopo e tecnologias/ferramentas utilizadas. |
