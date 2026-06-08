@@ -1,8 +1,45 @@
 site_name: Desafio 4
+site_description: Documentação do Sistema de Gestão de Presença Acadêmica da equipe Moranguetes.
+repo_url: https://github.com/menali17/Desafio_4_Trainee_EngNet
+repo_name: menali17/Desafio_4_Trainee_EngNet
 
 theme:
   name: material
   language: pt-BR
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.suggest
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Alternar para modo escuro
+    - scheme: slate
+      primary: deep purple
+      accent: deep orange
+      toggle:
+        icon: material/weather-sunny
+        name: Alternar para modo claro
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+exclude_docs: |
+  casos_de_uso.md
+  planejamento/cronograma.md
+  planejamento/atas.md
 
 nav:
   - Início: index.md
@@ -22,13 +59,9 @@ nav:
       - Priorização: backlog/priorizacao.md
       - Backlog do Produto: backlog/backlog_produto.md
 
-  - Casos de Uso: casos_de_uso.md
-
   - Planejamento:
       - Visão Geral: planejamento/index.md
-      - Cronograma: planejamento/cronograma.md
       - Metodologia: planejamento/metodologia.md
-      - Atas: planejamento/atas.md
 
   - Boas Práticas:
       - Visão Geral: boas_praticas/index.md

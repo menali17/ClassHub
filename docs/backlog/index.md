@@ -9,6 +9,7 @@ Esta seção reúne os principais artefatos relacionados aos requisitos do proje
 | [Requisitos](requisitos.md) | Lista os requisitos identificados para o sistema. |
 | [Histórias de Usuário](historias_usuario.md) | Apresenta as histórias de usuário utilizadas para representar necessidades dos usuários. |
 | [Priorização](priorizacao.md) | Mostra a priorização dos requisitos considerando critérios definidos pela equipe. |
+| [Backlog do Produto](backlog_produto.md) | Organiza os itens de desenvolvimento priorizados a partir das histórias de usuário e requisitos. |
 
 
 
