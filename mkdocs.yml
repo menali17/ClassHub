@@ -1,5 +1,5 @@
 site_name: Desafio 4
-site_description: Documentação do Sistema de Gestão de Presença Acadêmica da equipe Moranguetes.
+site_description: Documentacao do Sistema de Gestao de Presenca Academica da equipe Moranguetes.
 repo_url: https://github.com/menali17/Desafio_4_Trainee_EngNet
 repo_name: menali17/Desafio_4_Trainee_EngNet
 
@@ -43,6 +43,7 @@ exclude_docs: |
 
 nav:
   - Início: index.md
+  - Setup Tecnico: setup_tecnico.md
 
   - Visão do Produto e Projeto:
       - Visão Geral: visao/index.md
