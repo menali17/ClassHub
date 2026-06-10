@@ -28,7 +28,7 @@ Os modulos da API podem ser criados conforme a equipe implementar as funcionalid
 
 ## Banco de dados
 
-O banco de dados ainda nao foi configurado nesta branch. A equipe pode escolher entre PostgreSQL, MongoDB ou SQLite durante a implementacao.
+--
 
 ## Comandos
 
