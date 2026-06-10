@@ -79,7 +79,7 @@ Atividades distribuídas para a Sprint 1 (Até dia 30/05):
 * **Status da Equipe:** Cada membro continuará executando suas tarefas individuais da Sprint atual, conforme o que foi reportado no alinhamento.
 
  ---
-# Ata de Reunião #04 - Planejamento
+# Ata de Reunião #04 - Alinhamento
 
 **Data:** 05 de Junho de 2026
 **Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali
@@ -87,10 +87,32 @@ Atividades distribuídas para a Sprint 1 (Até dia 30/05):
 
 ## 1. Tópicos Discutidos
 
-
+*Alinhamento do projeto. 
 
 ## 2. Decisões Tomadas
 
-
+*Terminar a documentação.
 
 ## 3. Plano de Ação
+* **Status da Equipe:** A partir da proxima reunião, começar a desenvolver os código.
+
+
+# Ata de Reunião #05 - Planejamento 
+
+**Data:** 09 de Junho de 2026
+**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali
+**Orientador:** Bernardo
+
+## 1. Tópicos Discutidos
+
+*Planejamento das sprints até o dia da entrega.
+*Foi distribuído qoue cada participante deve trabalhar durante a semana.
+
+## 2. Decisões Tomadas
+
+*As tarefas só podem ser marcadas como concluídas quando obedecer aos requisitos pré estabelecidos.
+
+## 3. Plano de Ação
+* **Status da Equipe:** Em densenvolvimento de acordo com o cronograma.
+  
+  
