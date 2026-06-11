@@ -4,6 +4,8 @@ Esta pasta contem a API do sistema, feita com NestJS.
 
 ## Como rodar
 
+Use Node.js 22.5 ou superior, pois o projeto utiliza o suporte nativo ao SQLite.
+
 Abra um terminal nesta pasta:
 
 ```bash
@@ -19,6 +21,24 @@ Depois acesse o teste da API:
 http://localhost:3333/api
 ```
 
+Na primeira execução, o sistema cria automaticamente o banco em
+`data/engnet.sqlite` e adiciona dados iniciais para desenvolvimento.
+
+## Dados iniciais
+
+Os usuários abaixo são criados com a senha `123456`:
+
+| Perfil | E-mail |
+|---|---|
+| Administrador | `admin@engnet.com` |
+| Professor | `professor@engnet.com` |
+| Alunos | `aluno01@engnet.com` até `aluno10@engnet.com` |
+
+Também são criadas duas turmas, com cinco alunos vinculados a cada uma.
+
+O limite de baixa frequência é configurado por
+`LOW_ATTENDANCE_THRESHOLD` e possui o valor padrão de `75`.
+
 ## Onde mexer
 
 ```text
@@ -26,11 +46,12 @@ src/main.js           # inicia a API
 src/app.module.js     # registra controllers e services
 src/app.controller.js # recebe a requisicao HTTP inicial
 src/app.service.js    # guarda a regra inicial
+src/database          # cria e acessa o banco SQLite
 ```
 
 ## Proximo passo
 
-Quando a equipe comecar as funcionalidades, criem modulos seguindo o padrao do Nest:
+Quando começarmos as funcionalidades, criem modulos seguindo o padrao do Nest:
 
 ```text
 src/modules/turmas
@@ -41,3 +62,9 @@ src/modules/relatorios
 ```
 
 Cada modulo pode ter `controller`, `service`, `module` e `dto`.
+
+## Integração com o front-end
+
+Os formatos combinados para as rotas atuais e planejadas estão descritos em
+[CONTRATO_API.md](CONTRATO_API.md). O front-end pode usar esses exemplos como
+dados simulados até cada rota ser implementada.
