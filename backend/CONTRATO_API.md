@@ -7,7 +7,8 @@ Este documento define os formatos combinados entre o front-end e o back-end para
 - URL local: `http://localhost:3333/api`
 - Front-end local permitido: `http://localhost:3000`
 - Formato das requisições e respostas: JSON
-- Autenticação planejada: token enviado no cabeçalho `Authorization: Bearer <token>`
+- Autenticação: token enviado no cabeçalho `Authorization: Bearer <token>`
+- Duração padrão da sessão: 8 horas
 - Baixa frequência: percentual menor que `75%`
 
 ## Resposta de erro
@@ -53,7 +54,7 @@ Confirma que o back-end e o banco estão funcionando.
 
 ### `POST /api/auth/login`
 
-**Situação:** planejada para 11/06.
+**Situação:** implementada.
 
 Requisição:
 
@@ -69,6 +70,7 @@ Resposta de sucesso:
 ```json
 {
   "token": "token-de-acesso",
+  "expiraEm": "2026-06-12T07:00:00.000Z",
   "usuario": {
     "id": 2,
     "nome": "Professor EngNet",
@@ -82,9 +84,37 @@ Resposta de sucesso:
 
 ### `GET /api/auth/me`
 
-**Situação:** planejada para 11/06.
+**Situação:** implementada.
 
 Retorna os dados do usuário autenticado no mesmo formato do campo `usuario` apresentado no login.
+
+Cabeçalho obrigatório:
+
+```text
+Authorization: Bearer <token>
+```
+
+### `POST /api/auth/logout`
+
+**Situação:** implementada.
+
+Invalida o token utilizado na requisição.
+
+Cabeçalho obrigatório:
+
+```text
+Authorization: Bearer <token>
+```
+
+Resposta:
+
+```json
+{
+  "message": "Logout realizado com sucesso."
+}
+```
+
+Depois do logout, o token não pode mais acessar rotas protegidas.
 
 ## Turmas e alunos
 

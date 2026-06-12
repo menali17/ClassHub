@@ -77,11 +77,23 @@ class DatabaseService {
         FOREIGN KEY (aluno_id) REFERENCES usuarios(id) ON DELETE CASCADE
       );
 
+      CREATE TABLE IF NOT EXISTS sessoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
+        token_hash TEXT NOT NULL UNIQUE,
+        expira_em TEXT NOT NULL,
+        revogada_em TEXT,
+        criada_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+      );
+
       CREATE INDEX IF NOT EXISTS idx_usuarios_perfil ON usuarios(perfil);
       CREATE INDEX IF NOT EXISTS idx_usuarios_matricula ON usuarios(matricula);
       CREATE INDEX IF NOT EXISTS idx_turmas_professor ON turmas(professor_id);
       CREATE INDEX IF NOT EXISTS idx_aulas_turma ON aulas(turma_id);
       CREATE INDEX IF NOT EXISTS idx_frequencias_aluno ON frequencias(aluno_id);
+      CREATE INDEX IF NOT EXISTS idx_sessoes_usuario ON sessoes(usuario_id);
+      CREATE INDEX IF NOT EXISTS idx_sessoes_token ON sessoes(token_hash);
     `);
   }
 
@@ -205,6 +217,60 @@ class DatabaseService {
       frequencias: count("frequencias"),
       limiteBaixaFrequencia: this.lowAttendanceThreshold,
     };
+  }
+
+  findUserByEmail(email) {
+    return this.database
+      .prepare(`
+        SELECT id, nome, email, matricula, senha_hash, perfil, foto_url
+        FROM usuarios
+        WHERE email = ?
+      `)
+      .get(email);
+  }
+
+  createSession(usuarioId, tokenHash, expiresAt) {
+    return this.database
+      .prepare(`
+        INSERT INTO sessoes (usuario_id, token_hash, expira_em)
+        VALUES (?, ?, ?)
+      `)
+      .run(usuarioId, tokenHash, expiresAt);
+  }
+
+  findUserByValidSession(tokenHash, now) {
+    return this.database
+      .prepare(`
+        SELECT
+          u.id,
+          u.nome,
+          u.email,
+          u.matricula,
+          u.perfil,
+          u.foto_url
+        FROM sessoes s
+        INNER JOIN usuarios u ON u.id = s.usuario_id
+        WHERE s.token_hash = ?
+          AND s.revogada_em IS NULL
+          AND s.expira_em > ?
+      `)
+      .get(tokenHash, now);
+  }
+
+  revokeSession(tokenHash, revokedAt) {
+    return this.database
+      .prepare(`
+        UPDATE sessoes
+        SET revogada_em = ?
+        WHERE token_hash = ? AND revogada_em IS NULL
+      `)
+      .run(revokedAt, tokenHash);
+  }
+
+  deleteExpiredSessions(now) {
+    return this.database
+      .prepare("DELETE FROM sessoes WHERE expira_em <= ? OR revogada_em IS NOT NULL")
+      .run(now);
   }
 
   onModuleDestroy() {

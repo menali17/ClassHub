@@ -39,6 +39,24 @@ Também são criadas duas turmas, com cinco alunos vinculados a cada uma.
 O limite de baixa frequência é configurado por
 `LOW_ATTENDANCE_THRESHOLD` e possui o valor padrão de `75`.
 
+## Autenticação
+
+As seguintes rotas estão disponíveis:
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/api/auth/login` | Recebe e-mail e senha e retorna o token da sessão. |
+| `GET` | `/api/auth/me` | Retorna o usuário autenticado. |
+| `POST` | `/api/auth/logout` | Encerra a sessão e invalida o token. |
+
+As rotas protegidas recebem o token no cabeçalho:
+
+```text
+Authorization: Bearer <token>
+```
+
+A duração da sessão pode ser alterada por `AUTH_TOKEN_EXPIRATION_HOURS`.
+
 ## Onde mexer
 
 ```text
