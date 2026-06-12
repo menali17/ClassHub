@@ -120,7 +120,9 @@ Depois do logout, o token não pode mais acessar rotas protegidas.
 
 ### `GET /api/turmas`
 
-**Situação:** planejada para 12/06.
+**Situação:** implementada.
+
+Professores visualizam apenas suas turmas. Administradores visualizam todas.
 
 ```json
 [
@@ -129,6 +131,10 @@ Depois do logout, o token não pode mais acessar rotas protegidas.
     "nome": "Laboratório de Software",
     "codigo": "LAB-SW-01",
     "horario": "Segunda, 19:00",
+    "professor": {
+      "id": 2,
+      "nome": "Professor EngNet"
+    },
     "quantidadeAlunos": 5
   }
 ]
@@ -136,7 +142,9 @@ Depois do logout, o token não pode mais acessar rotas protegidas.
 
 ### `POST /api/turmas`
 
-**Situação:** planejada para 12/06.
+**Situação:** implementada.
+
+Quando o usuário autenticado é professor, a turma é atribuída automaticamente a ele.
 
 ```json
 {
@@ -146,11 +154,37 @@ Depois do logout, o token não pode mais acessar rotas protegidas.
 }
 ```
 
+Quando o usuário é administrador, também deve informar o professor responsável:
+
+```json
+{
+  "nome": "Laboratório de Software",
+  "codigo": "LAB-SW-01",
+  "horario": "Segunda, 19:00",
+  "professorId": 2
+}
+```
+
+### `GET /api/turmas/:id`
+
+**Situação:** implementada.
+
+Retorna uma turma específica. O professor só pode consultar turmas atribuídas a ele.
+
 ### `PATCH /api/turmas/:id`
 
-**Situação:** planejada para 12/06.
+**Situação:** implementada.
 
 Recebe apenas os campos da turma que serão alterados.
+
+```json
+{
+  "nome": "Laboratório de Sistemas",
+  "horario": "Segunda, 20:00"
+}
+```
+
+Apenas administradores podem alterar `professorId`.
 
 ### `DELETE /api/turmas/:id`
 
@@ -158,7 +192,7 @@ Recebe apenas os campos da turma que serão alterados.
 
 ### `GET /api/turmas/:id/alunos`
 
-**Situação:** planejada para 12/06.
+**Situação:** implementada.
 
 ```json
 {
@@ -166,7 +200,11 @@ Recebe apenas os campos da turma que serão alterados.
     "id": 1,
     "nome": "Laboratório de Software",
     "codigo": "LAB-SW-01",
-    "horario": "Segunda, 19:00"
+    "horario": "Segunda, 19:00",
+    "professor": {
+      "id": 2,
+      "nome": "Professor EngNet"
+    }
   },
   "quantidadeAlunos": 5,
   "alunos": [
@@ -179,6 +217,55 @@ Recebe apenas os campos da turma que serão alterados.
     }
   ]
 }
+```
+
+### `POST /api/turmas/:id/alunos`
+
+**Situação:** implementada.
+
+Vincula um aluno existente à turma. O mesmo aluno pode participar de mais de uma turma.
+
+```json
+{
+  "alunoId": 3
+}
+```
+
+O sistema retorna `409` quando o aluno já está vinculado à turma.
+
+### `GET /api/alunos`
+
+**Situação:** implementada.
+
+Lista os alunos disponíveis para professores e administradores.
+
+```json
+[
+  {
+    "id": 3,
+    "nome": "Ana Souza",
+    "email": "aluno01@engnet.com",
+    "matricula": "20260001",
+    "fotoUrl": null
+  }
+]
+```
+
+### `GET /api/professores`
+
+**Situação:** implementada.
+
+Lista os professores disponíveis para o administrador atribuir a uma turma. Professores e alunos não podem acessar esta rota.
+
+```json
+[
+  {
+    "id": 2,
+    "nome": "Professor EngNet",
+    "email": "professor@engnet.com",
+    "fotoUrl": null
+  }
+]
 ```
 
 ## Aulas e frequência
@@ -305,6 +392,8 @@ Resposta das duas consultas:
 - O aluno apenas consulta a própria frequência.
 - Professores e administradores podem consultar históricos e relatórios.
 - Apenas o administrador remove turmas.
+- Professores gerenciam apenas as turmas atribuídas a eles.
+- Administradores podem gerenciar todas as turmas.
 - Código de turma, e-mail e matrícula não podem se repetir.
 - Um aluno pode estar vinculado a mais de uma turma.
 - Frequência abaixo de `75%` é considerada baixa.
