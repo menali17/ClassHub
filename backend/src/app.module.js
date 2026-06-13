@@ -3,11 +3,12 @@ const { AppController } = require("./app.controller");
 const { AppService } = require("./app.service");
 const { DatabaseModule } = require("./database/database.module");
 const { AuthModule } = require("./modules/auth/auth.module");
+const { TurmasModule } = require("./modules/turmas/turmas.module");
 
 class AppModule {}
 
 Module({
-  imports: [DatabaseModule, AuthModule],
+  imports: [DatabaseModule, AuthModule, TurmasModule],
   controllers: [AppController],
   providers: [AppService],
 })(AppModule);

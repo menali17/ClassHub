@@ -57,6 +57,23 @@ Authorization: Bearer <token>
 
 A duração da sessão pode ser alterada por `AUTH_TOKEN_EXPIRATION_HOURS`.
 
+## Turmas e alunos
+
+As rotas abaixo exigem autenticação:
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| `GET` | `/api/turmas` | Professor e administrador | Lista as turmas disponíveis para o usuário. |
+| `POST` | `/api/turmas` | Professor e administrador | Cria uma turma. |
+| `GET` | `/api/turmas/:id` | Professor responsável e administrador | Consulta uma turma. |
+| `PATCH` | `/api/turmas/:id` | Professor responsável e administrador | Edita uma turma. |
+| `GET` | `/api/turmas/:id/alunos` | Professor responsável e administrador | Lista os alunos da turma. |
+| `POST` | `/api/turmas/:id/alunos` | Professor responsável e administrador | Vincula um aluno à turma. |
+| `GET` | `/api/alunos` | Professor e administrador | Lista os alunos cadastrados. |
+| `GET` | `/api/professores` | Administrador | Lista professores para atribuição de turma. |
+
+O professor visualiza e altera somente suas próprias turmas. O administrador possui acesso a todas as turmas.
+
 ## Onde mexer
 
 ```text

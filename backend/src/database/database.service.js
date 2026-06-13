@@ -273,6 +273,151 @@ class DatabaseService {
       .run(now);
   }
 
+  listClasses(profile, userId) {
+    const where = profile === "professor" ? "WHERE t.professor_id = ?" : "";
+    const parameters = profile === "professor" ? [userId] : [];
+
+    return this.database
+      .prepare(`
+        SELECT
+          t.id,
+          t.nome,
+          t.codigo,
+          t.horario,
+          t.professor_id,
+          u.nome AS professor_nome,
+          COUNT(ta.aluno_id) AS quantidade_alunos
+        FROM turmas t
+        INNER JOIN usuarios u ON u.id = t.professor_id
+        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+        ${where}
+        GROUP BY t.id
+        ORDER BY t.nome
+      `)
+      .all(...parameters);
+  }
+
+  findClassById(classId) {
+    return this.database
+      .prepare(`
+        SELECT
+          t.id,
+          t.nome,
+          t.codigo,
+          t.horario,
+          t.professor_id,
+          u.nome AS professor_nome,
+          COUNT(ta.aluno_id) AS quantidade_alunos
+        FROM turmas t
+        INNER JOIN usuarios u ON u.id = t.professor_id
+        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+        WHERE t.id = ?
+        GROUP BY t.id
+      `)
+      .get(classId);
+  }
+
+  findClassByCode(code, ignoredClassId = null) {
+    if (ignoredClassId) {
+      return this.database
+        .prepare("SELECT id FROM turmas WHERE codigo = ? AND id != ?")
+        .get(code, ignoredClassId);
+    }
+
+    return this.database.prepare("SELECT id FROM turmas WHERE codigo = ?").get(code);
+  }
+
+  findProfessorById(professorId) {
+    return this.database
+      .prepare(`
+        SELECT id, nome, email
+        FROM usuarios
+        WHERE id = ? AND perfil = 'professor'
+      `)
+      .get(professorId);
+  }
+
+  listProfessors() {
+    return this.database
+      .prepare(`
+        SELECT id, nome, email, foto_url
+        FROM usuarios
+        WHERE perfil = 'professor'
+        ORDER BY nome
+      `)
+      .all();
+  }
+
+  createClass({ name, code, schedule, professorId }) {
+    const result = this.database
+      .prepare(`
+        INSERT INTO turmas (nome, codigo, horario, professor_id)
+        VALUES (?, ?, ?, ?)
+      `)
+      .run(name, code, schedule, professorId);
+
+    return this.findClassById(Number(result.lastInsertRowid));
+  }
+
+  updateClass(classId, fields) {
+    const entries = Object.entries(fields);
+    const assignments = entries.map(([field]) => `${field} = ?`);
+    const values = entries.map(([, value]) => value);
+
+    assignments.push("atualizado_em = CURRENT_TIMESTAMP");
+
+    this.database
+      .prepare(`UPDATE turmas SET ${assignments.join(", ")} WHERE id = ?`)
+      .run(...values, classId);
+
+    return this.findClassById(classId);
+  }
+
+  listStudents() {
+    return this.database
+      .prepare(`
+        SELECT id, nome, email, matricula, foto_url
+        FROM usuarios
+        WHERE perfil = 'aluno'
+        ORDER BY nome
+      `)
+      .all();
+  }
+
+  findStudentById(studentId) {
+    return this.database
+      .prepare(`
+        SELECT id, nome, email, matricula, foto_url
+        FROM usuarios
+        WHERE id = ? AND perfil = 'aluno'
+      `)
+      .get(studentId);
+  }
+
+  listClassStudents(classId) {
+    return this.database
+      .prepare(`
+        SELECT u.id, u.nome, u.email, u.matricula, u.foto_url
+        FROM turma_alunos ta
+        INNER JOIN usuarios u ON u.id = ta.aluno_id
+        WHERE ta.turma_id = ?
+        ORDER BY u.nome
+      `)
+      .all(classId);
+  }
+
+  findClassStudent(classId, studentId) {
+    return this.database
+      .prepare("SELECT turma_id FROM turma_alunos WHERE turma_id = ? AND aluno_id = ?")
+      .get(classId, studentId);
+  }
+
+  linkStudentToClass(classId, studentId) {
+    this.database
+      .prepare("INSERT INTO turma_alunos (turma_id, aluno_id) VALUES (?, ?)")
+      .run(classId, studentId);
+  }
+
   onModuleDestroy() {
     this.database.close();
   }
