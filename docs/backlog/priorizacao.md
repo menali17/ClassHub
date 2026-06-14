@@ -94,6 +94,20 @@ A classificação MoSCoW foi baseada nos seguintes critérios, avaliados de form
 | RF24 | O sistema deve exibir gráficos de frequência para facilitar a análise visual dos dados. | **Could Have** | Classificado pelo cliente como diferencial (extra). Agrega valor considerável à experiência do usuário, mas os relatórios textuais (RF20–RF23) já cumprem o objetivo funcional.|
 | RF25 | O sistema deve permitir filtrar e buscar alunos por nome, turma ou situação de frequência. | **Could Have** | Classificado pelo cliente como diferencial (extra). Melhora a usabilidade em turmas grandes, mas a listagem básica (RF13) já permite o acesso aos dados. |
 | RF26 | O sistema deve permitir que o usuário alterne entre modo claro e modo escuro. | **Could Have** | Classificado pelo cliente como diferencial (extra). Recurso de personalização da interface que agrega conforto visual, mas não impacta o funcionamento do sistema. |
+| RF27 | O sistema deve permitir que o administrador cadastre alunos. | **Must Have** | O cadastro é necessário para incluir novos alunos e manter o sistema utilizável depois da carga inicial de demonstração. |
+| RF28 | O sistema deve permitir que o administrador edite os dados de alunos. | **Should Have** | Mantém os dados acadêmicos atualizados, mas não bloqueia o registro de frequência de alunos já cadastrados. |
+| RF29 | O sistema deve permitir que o administrador desative alunos. | **Should Have** | Evita acessos e vínculos indevidos de alunos que deixaram a instituição, embora o fluxo principal funcione sem essa ação no MVP mínimo. |
+| RF30 | O sistema deve permitir que o administrador cadastre professores. | **Must Have** | Novas turmas precisam ser atribuídas a professores cadastrados. Sem esse cadastro, a administração fica limitada aos dados iniciais. |
+| RF31 | O sistema deve permitir que o administrador edite os dados de professores. | **Should Have** | Permite corrigir e atualizar informações profissionais sem impedir o funcionamento básico das turmas existentes. |
+| RF32 | O sistema deve permitir que o administrador desative professores sem turmas atribuídas. | **Should Have** | Impede acessos de professores inativos e preserva a integridade das turmas, mas não é bloqueante para o registro de frequência. |
+| RF33 | O sistema deve permitir que o administrador redefina a senha de um aluno. | **Should Have** | Oferece recuperação administrativa de acesso, porém o fluxo acadêmico continua disponível para usuários com credenciais válidas. |
+| RF34 | O sistema deve permitir que o administrador redefina a senha de um professor. | **Should Have** | Reduz bloqueios de acesso por perda de senha, mas não inviabiliza o funcionamento básico do sistema. |
+| RF35 | O sistema deve permitir vincular alunos a uma turma. | **Must Have** | É uma dependência direta do registro de presença. Sem alunos vinculados, o professor não consegue realizar a chamada da turma. |
+| RF36 | O sistema deve permitir desvincular alunos de uma turma. | **Should Have** | Mantém a composição das turmas correta quando ocorrem transferências ou cancelamentos, sem bloquear o fluxo principal. |
+| RF37 | O sistema deve permitir que o administrador atribua uma turma a um professor. | **Must Have** | Define quem pode registrar a chamada e consultar os dados da turma, sendo necessário para aplicar as permissões do professor. |
+| RF38 | O sistema deve permitir que o administrador transfira uma turma para outro professor. | **Should Have** | Garante continuidade quando o professor responsável muda, mas não é necessário enquanto a atribuição original permanecer válida. |
+| RF39 | O sistema deve permitir exportar relatórios em formato PDF. | **Should Have** | Facilita o compartilhamento e a impressão dos relatórios, enquanto a consulta dos mesmos dados em tela já atende ao objetivo principal. |
+| RF40 | O sistema deve permitir exportar relatórios em formato XLSX. | **Should Have** | Permite análise posterior em planilhas, mas não é indispensável para consultar os indicadores e históricos no sistema. |
 
 ---
 
@@ -122,11 +136,11 @@ A classificação MoSCoW foi baseada nos seguintes critérios, avaliados de form
 
 | Categoria | Quantidade | Requisitos |
 |---|:---:|---|
-| **Must Have** | 21 | RF01, RF02, RF03, RF05, RF06, RF07, RF08, RF09, RF10, RF11, RF13, RF14, RF15, RF16, RF17, RF18, RF19, RF20, RF21, RF22, RF23 |
-| **Should Have** | 2 | RF04, RF12 |
+| **Must Have** | 25 | RF01, RF02, RF03, RF05, RF06, RF07, RF08, RF09, RF10, RF11, RF13, RF14, RF15, RF16, RF17, RF18, RF19, RF20, RF21, RF22, RF23, RF27, RF30, RF35, RF37 |
+| **Should Have** | 12 | RF04, RF12, RF28, RF29, RF31, RF32, RF33, RF34, RF36, RF38, RF39, RF40 |
 | **Could Have** | 3 | RF24, RF25, RF26 |
 | **Won't Have** | 0 | — |
-| **Total** | **26** | |
+| **Total** | **40** | |
 
 ### 4.2 Requisitos Não Funcionais
 
@@ -142,11 +156,11 @@ A classificação MoSCoW foi baseada nos seguintes critérios, avaliados de form
 
 | Categoria | RF | RNF | Total |
 |---|:---:|:---:|:---:|
-| **Must Have** | 21 | 10 | **31** |
-| **Should Have** | 2 | 2 | **4** |
+| **Must Have** | 25 | 10 | **35** |
+| **Should Have** | 12 | 2 | **14** |
 | **Could Have** | 3 | 0 | **3** |
 | **Won't Have** | 0 | 0 | **0** |
-| **Total** | **26** | **12** | **38** |
+| **Total** | **40** | **12** | **52** |
 
 ---
 
@@ -160,6 +174,9 @@ A classificação MoSCoW foi baseada nos seguintes critérios, avaliados de form
 | RF01 (login) é bloqueante de toda a plataforma. | RF02, RF03, RF04, RF05 | Priorizar a implementação da autenticação como primeira sprint. |
 | RF05 (perfis) é bloqueante dos módulos de professor e aluno. | RF15, RF16, RF18, RF19 | Definir os perfis antes de implementar as funcionalidades de cada ator. |
 | RF10 (criação de turmas) é bloqueante do controle de frequência. | RF11, RF12, RF13, RF14, RF15, RF16, RF17 | Implementar o CRUD de turmas antes do módulo de presença. |
+| RF27 e RF30 (cadastro de usuários) sustentam a evolução da base inicial. | RF28, RF29, RF31, RF32, RF33, RF34, RF35, RF37 | Implementar o gerenciamento de usuários antes de depender de novos alunos e professores. |
+| RF35 (vínculo de alunos) é bloqueante para o registro da chamada. | RF15, RF16, RF18, RF20, RF21, RF22, RF23 | Garantir que a composição da turma esteja correta antes de criar e finalizar aulas. |
+| RF37 (atribuição de professor) define as permissões sobre a turma. | RF15, RF16, RF18, RF23, RF38 | Validar o professor responsável em todas as operações acadêmicas da turma. |
 | RF17 (data/horário) é bloqueante dos relatórios históricos. | RF18, RF20, RF23 | Garantir o registro de data/horário desde o primeiro endpoint de presença. |
 | RNF10 (banco de dados) é bloqueante de todo o back-end. | Todos os RFs | Configurar o banco antes de implementar qualquer funcionalidade. |
 | Stack obrigatória (RNF08, RNF09) impõe curva de aprendizado. | Todo o projeto | Verificar nivelamento da equipe em Next.js e NestJS antes do início. |
@@ -172,3 +189,4 @@ A classificação MoSCoW foi baseada nos seguintes critérios, avaliados de form
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 01/06/2026 | Elaboração inicial do Documento de Priorização MoSCoW com base nos requisitos funcionais e não funcionais elicitados. |[Camila Silva](https://github.com/CamilaSilvaC) |
+| 1.1 | 14/06/2026 | Priorização dos requisitos administrativos e das exportações de relatórios incluídos no escopo. | Enzo Menali |

@@ -6,9 +6,9 @@ diferenças entre o que a interface envia e o que o back-end espera receber.
 
 ## Situação atual
 
-O back-end já disponibiliza rotas para autenticação, turmas, alunos, aulas e
-frequências. O front-end está configurado com Next.js, mas ainda não possui um
-cliente HTTP nem telas conectadas a essas rotas.
+O back-end já disponibiliza rotas para autenticação, perfil, administração de
+usuários, turmas, aulas, frequências, dashboard e relatórios. O front-end está
+configurado com Next.js, mas ainda precisa conectar suas telas a essas rotas.
 
 O arquivo `backend/CONTRATO_API.md` é a referência principal dos corpos das
 requisições e respostas. Quando uma rota for alterada, o contrato também deve
@@ -104,10 +104,24 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/turmas`, {
 | `POST` | `/turmas` | Criar uma turma. |
 | `GET` | `/turmas/:id` | Consultar uma turma. |
 | `PATCH` | `/turmas/:id` | Editar uma turma. |
+| `DELETE` | `/turmas/:id` | Remover uma turma como administrador. |
 | `GET` | `/turmas/:id/alunos` | Listar os alunos da turma. |
 | `POST` | `/turmas/:id/alunos` | Vincular um aluno à turma. |
+| `DELETE` | `/turmas/:id/alunos/:alunoId` | Desvincular um aluno da turma. |
 | `GET` | `/alunos` | Listar alunos cadastrados. |
 | `GET` | `/professores` | Listar professores. |
+
+### Perfil e administração
+
+| Método | Rota | Finalidade |
+|---|---|---|
+| `GET` | `/perfil` | Consultar o próprio perfil. |
+| `PATCH` | `/perfil` | Atualizar o próprio perfil. |
+| `PATCH` | `/perfil/senha` | Alterar a própria senha. |
+| `POST` | `/alunos` | Cadastrar aluno como administrador. |
+| `GET/PATCH/DELETE` | `/alunos/:id` | Consultar, editar ou desativar aluno. |
+| `POST` | `/professores` | Cadastrar professor como administrador. |
+| `GET/PATCH/DELETE` | `/professores/:id` | Consultar, editar ou desativar professor. |
 
 ### Aulas e frequências
 
@@ -118,6 +132,16 @@ const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/turmas`, {
 | `PUT` | `/aulas/:aulaId/frequencias` | Registrar ou corrigir a chamada completa. |
 | `GET` | `/alunos/:alunoId/frequencia` | Consultar a frequência de um aluno autorizado. |
 | `GET` | `/alunos/me/frequencia` | Consultar a frequência do aluno autenticado. |
+
+### Dashboard e relatórios
+
+| Método | Rota | Finalidade |
+|---|---|---|
+| `GET` | `/dashboard` | Consultar totais e alertas de baixa frequência. |
+| `GET` | `/relatorios/alunos/:alunoId` | Consultar relatório individual. |
+| `GET` | `/relatorios/alunos-baixa-frequencia` | Consultar alunos abaixo de 75%. |
+| `GET` | `/relatorios/turmas/:turmaId` | Consultar relatório de uma turma. |
+| `GET` | `/relatorios/.../exportar?formato=pdf` | Baixar relatório em PDF ou XLSX. |
 
 Os exemplos completos dos corpos e respostas estão no contrato da API.
 
@@ -133,8 +157,10 @@ frontend/src/
 ├── services/
 │   ├── api.js
 │   ├── auth.js
+│   ├── usuarios.js
 │   ├── turmas.js
-│   └── frequencias.js
+│   ├── frequencias.js
+│   └── relatorios.js
 └── contexts/
     └── auth-context.jsx
 ```
@@ -182,9 +208,11 @@ carregamento e mensagens de erro retornadas pela API.
 2. Criar o cliente HTTP compartilhado.
 3. Integrar login, consulta da sessão e logout.
 4. Integrar listagem de turmas e alunos.
-5. Integrar criação de aulas e registro da chamada.
-6. Integrar a consulta de frequência do aluno.
-7. Validar os três perfis e os estados de erro.
+5. Integrar as telas administrativas de alunos e professores.
+6. Integrar criação de aulas e registro da chamada.
+7. Integrar dashboard, relatórios e downloads.
+8. Integrar a consulta de frequência do aluno.
+9. Validar os três perfis e os estados de erro.
 
 ## Documentos relacionados
 
@@ -197,3 +225,4 @@ carregamento e mensagens de erro retornadas pela API.
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 14/06/2026 | Definição do padrão de integração entre Next.js e a API NestJS. | Enzo Menali |
+| 1.1 | 14/06/2026 | Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios. | Enzo Menali |

@@ -23,11 +23,12 @@ primeira execução da API.
 
 ## Inicialização
 
-Quando o back-end é iniciado, o `DatabaseService` executa três tarefas:
+Quando o back-end é iniciado, o `DatabaseService` executa quatro tarefas:
 
 1. Cria o diretório e o arquivo do banco, caso ainda não existam.
 2. Cria as tabelas, índices e restrições necessárias.
-3. Insere dados iniciais quando a tabela de usuários está vazia.
+3. Adiciona colunas novas em bancos já existentes, sem apagar os dados locais.
+4. Insere dados iniciais quando a tabela de usuários está vazia.
 
 As chaves estrangeiras são habilitadas com `PRAGMA foreign_keys = ON` e o banco
 utiliza o modo `WAL` para melhorar a segurança das operações de leitura e
@@ -70,6 +71,9 @@ O banco é composto por seis tabelas principais.
 | `senha_hash` | TEXT | Senha armazenada como hash, nunca em texto puro. |
 | `perfil` | TEXT | Aceita `aluno`, `professor` ou `administrador`. |
 | `foto_url` | TEXT | Opcional. |
+| `telefone` | TEXT | Opcional. |
+| `departamento` | TEXT | Opcional e utilizado no cadastro de professores. |
+| `ativo` | INTEGER | Indica se o usuário pode acessar o sistema (`1`) ou está desativado (`0`). |
 | `criado_em` | TEXT | Data de criação preenchida automaticamente. |
 | `atualizado_em` | TEXT | Data da última atualização. |
 
@@ -94,10 +98,13 @@ o usuário pode realizar na API.
 |---|---|---|
 | `turma_id` | INTEGER | Referência à turma. |
 | `aluno_id` | INTEGER | Referência ao aluno. |
+| `ativo` | INTEGER | Indica se o vínculo atual está ativo. |
 | `vinculado_em` | TEXT | Data do vínculo preenchida automaticamente. |
+| `desvinculado_em` | TEXT | Data do último desvínculo, quando houver. |
 
-A chave primária é formada por `turma_id` e `aluno_id`. Assim, o mesmo aluno
-não pode ser vinculado duas vezes à mesma turma.
+A chave primária é formada por `turma_id` e `aluno_id`. Ao remover um aluno da
+turma, o vínculo é desativado em vez de ser apagado. Um novo vínculo reativa o
+mesmo registro e atualiza sua data.
 
 ### Aulas
 
@@ -145,6 +152,9 @@ acessado indevidamente.
 
 - E-mail, matrícula e código de turma não podem se repetir.
 - Um aluno não pode ser vinculado duas vezes à mesma turma.
+- Usuários desativados não podem realizar login e suas sessões são revogadas.
+- A desativação de um aluno também encerra seus vínculos ativos com turmas.
+- Professores com turmas atribuídas devem ter essas turmas transferidas antes da desativação.
 - Uma turma não pode possuir aulas repetidas na mesma data e horário.
 - Um aluno possui apenas uma situação de frequência por aula.
 - A exclusão de uma turma remove seus vínculos e suas aulas relacionadas.
@@ -199,3 +209,4 @@ apaga todos os registros locais e executa novamente a carga inicial.
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 14/06/2026 | Criação da documentação do banco SQLite e do modelo de dados atual. | Enzo Menali |
+| 1.1 | 14/06/2026 | Inclusão dos dados de perfil, desativação de usuários e vínculos inativos de alunos. | Enzo Menali |
