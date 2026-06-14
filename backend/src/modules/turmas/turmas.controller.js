@@ -1,6 +1,7 @@
 const {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -33,12 +34,20 @@ class TurmasController {
     return this.turmasService.updateClass(id, body, request.user);
   }
 
+  deleteClass(id, request) {
+    return this.turmasService.deleteClass(id, request.user);
+  }
+
   listClassStudents(id, request) {
     return this.turmasService.listClassStudents(id, request.user);
   }
 
   linkStudent(id, body, request) {
     return this.turmasService.linkStudent(id, body, request.user);
+  }
+
+  unlinkStudent(id, studentId, request) {
+    return this.turmasService.unlinkStudent(id, studentId, request.user);
   }
 }
 
@@ -81,6 +90,15 @@ UseGuards(AuthGuard)(
 );
 Patch(":id")(TurmasController.prototype, "updateClass", Object.getOwnPropertyDescriptor(TurmasController.prototype, "updateClass"));
 
+Param("id")(TurmasController.prototype, "deleteClass", 0);
+Req()(TurmasController.prototype, "deleteClass", 1);
+UseGuards(AuthGuard)(
+  TurmasController.prototype,
+  "deleteClass",
+  Object.getOwnPropertyDescriptor(TurmasController.prototype, "deleteClass"),
+);
+Delete(":id")(TurmasController.prototype, "deleteClass", Object.getOwnPropertyDescriptor(TurmasController.prototype, "deleteClass"));
+
 Param("id")(TurmasController.prototype, "listClassStudents", 0);
 Req()(TurmasController.prototype, "listClassStudents", 1);
 UseGuards(AuthGuard)(
@@ -111,6 +129,20 @@ Post(":id/alunos")(
   TurmasController.prototype,
   "linkStudent",
   Object.getOwnPropertyDescriptor(TurmasController.prototype, "linkStudent"),
+);
+
+Param("id")(TurmasController.prototype, "unlinkStudent", 0);
+Param("alunoId")(TurmasController.prototype, "unlinkStudent", 1);
+Req()(TurmasController.prototype, "unlinkStudent", 2);
+UseGuards(AuthGuard)(
+  TurmasController.prototype,
+  "unlinkStudent",
+  Object.getOwnPropertyDescriptor(TurmasController.prototype, "unlinkStudent"),
+);
+Delete(":id/alunos/:alunoId")(
+  TurmasController.prototype,
+  "unlinkStudent",
+  Object.getOwnPropertyDescriptor(TurmasController.prototype, "unlinkStudent"),
 );
 
 module.exports = { TurmasController };

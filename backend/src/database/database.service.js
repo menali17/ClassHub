@@ -19,6 +19,7 @@ class DatabaseService {
     this.database.exec("PRAGMA journal_mode = WAL;");
 
     this.createSchema();
+    this.migrateSchema();
     this.seedDatabase();
   }
 
@@ -32,6 +33,9 @@ class DatabaseService {
         senha_hash TEXT NOT NULL,
         perfil TEXT NOT NULL CHECK (perfil IN ('aluno', 'professor', 'administrador')),
         foto_url TEXT,
+        telefone TEXT,
+        departamento TEXT,
+        ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1)),
         criado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         atualizado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
@@ -50,7 +54,9 @@ class DatabaseService {
       CREATE TABLE IF NOT EXISTS turma_alunos (
         turma_id INTEGER NOT NULL,
         aluno_id INTEGER NOT NULL,
+        ativo INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1)),
         vinculado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        desvinculado_em TEXT,
         PRIMARY KEY (turma_id, aluno_id),
         FOREIGN KEY (turma_id) REFERENCES turmas(id) ON DELETE CASCADE,
         FOREIGN KEY (aluno_id) REFERENCES usuarios(id) ON DELETE CASCADE
@@ -97,6 +103,30 @@ class DatabaseService {
       CREATE INDEX IF NOT EXISTS idx_sessoes_usuario ON sessoes(usuario_id);
       CREATE INDEX IF NOT EXISTS idx_sessoes_token ON sessoes(token_hash);
     `);
+  }
+
+  migrateSchema() {
+    this.ensureColumn("usuarios", "telefone", "TEXT");
+    this.ensureColumn("usuarios", "departamento", "TEXT");
+    this.ensureColumn(
+      "usuarios",
+      "ativo",
+      "INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))",
+    );
+    this.ensureColumn(
+      "turma_alunos",
+      "ativo",
+      "INTEGER NOT NULL DEFAULT 1 CHECK (ativo IN (0, 1))",
+    );
+    this.ensureColumn("turma_alunos", "desvinculado_em", "TEXT");
+  }
+
+  ensureColumn(table, column, definition) {
+    const columns = this.database.prepare(`PRAGMA table_info(${table})`).all();
+
+    if (!columns.some((existingColumn) => existingColumn.name === column)) {
+      this.database.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    }
   }
 
   seedDatabase() {
@@ -224,9 +254,11 @@ class DatabaseService {
   findUserByEmail(email) {
     return this.database
       .prepare(`
-        SELECT id, nome, email, matricula, senha_hash, perfil, foto_url
+        SELECT
+          id, nome, email, matricula, senha_hash, perfil, foto_url,
+          telefone, departamento, ativo
         FROM usuarios
-        WHERE email = ?
+        WHERE email = ? AND ativo = 1
       `)
       .get(email);
   }
@@ -249,12 +281,16 @@ class DatabaseService {
           u.email,
           u.matricula,
           u.perfil,
-          u.foto_url
+          u.foto_url,
+          u.telefone,
+          u.departamento,
+          u.ativo
         FROM sessoes s
         INNER JOIN usuarios u ON u.id = s.usuario_id
         WHERE s.token_hash = ?
           AND s.revogada_em IS NULL
           AND s.expira_em > ?
+          AND u.ativo = 1
       `)
       .get(tokenHash, now);
   }
@@ -288,10 +324,11 @@ class DatabaseService {
           t.horario,
           t.professor_id,
           u.nome AS professor_nome,
-          COUNT(ta.aluno_id) AS quantidade_alunos
+          COUNT(aluno.id) AS quantidade_alunos
         FROM turmas t
         INNER JOIN usuarios u ON u.id = t.professor_id
-        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id AND ta.ativo = 1
+        LEFT JOIN usuarios aluno ON aluno.id = ta.aluno_id AND aluno.ativo = 1
         ${where}
         GROUP BY t.id
         ORDER BY t.nome
@@ -309,10 +346,11 @@ class DatabaseService {
           t.horario,
           t.professor_id,
           u.nome AS professor_nome,
-          COUNT(ta.aluno_id) AS quantidade_alunos
+          COUNT(aluno.id) AS quantidade_alunos
         FROM turmas t
         INNER JOIN usuarios u ON u.id = t.professor_id
-        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+        LEFT JOIN turma_alunos ta ON ta.turma_id = t.id AND ta.ativo = 1
+        LEFT JOIN usuarios aluno ON aluno.id = ta.aluno_id AND aluno.ativo = 1
         WHERE t.id = ?
         GROUP BY t.id
       `)
@@ -332,9 +370,9 @@ class DatabaseService {
   findProfessorById(professorId) {
     return this.database
       .prepare(`
-        SELECT id, nome, email
+        SELECT id, nome, email, foto_url, telefone, departamento, ativo
         FROM usuarios
-        WHERE id = ? AND perfil = 'professor'
+        WHERE id = ? AND perfil = 'professor' AND ativo = 1
       `)
       .get(professorId);
   }
@@ -342,9 +380,9 @@ class DatabaseService {
   listProfessors() {
     return this.database
       .prepare(`
-        SELECT id, nome, email, foto_url
+        SELECT id, nome, email, foto_url, telefone, departamento, ativo
         FROM usuarios
-        WHERE perfil = 'professor'
+        WHERE perfil = 'professor' AND ativo = 1
         ORDER BY nome
       `)
       .all();
@@ -378,9 +416,9 @@ class DatabaseService {
   listStudents() {
     return this.database
       .prepare(`
-        SELECT id, nome, email, matricula, foto_url
+        SELECT id, nome, email, matricula, foto_url, telefone, departamento, ativo
         FROM usuarios
-        WHERE perfil = 'aluno'
+        WHERE perfil = 'aluno' AND ativo = 1
         ORDER BY nome
       `)
       .all();
@@ -389,7 +427,7 @@ class DatabaseService {
   findStudentById(studentId) {
     return this.database
       .prepare(`
-        SELECT id, nome, email, matricula, foto_url
+        SELECT id, nome, email, matricula, foto_url, telefone, departamento, ativo
         FROM usuarios
         WHERE id = ? AND perfil = 'aluno'
       `)
@@ -402,7 +440,7 @@ class DatabaseService {
         SELECT u.id, u.nome, u.email, u.matricula, u.foto_url
         FROM turma_alunos ta
         INNER JOIN usuarios u ON u.id = ta.aluno_id
-        WHERE ta.turma_id = ?
+        WHERE ta.turma_id = ? AND ta.ativo = 1 AND u.ativo = 1
         ORDER BY u.nome
       `)
       .all(classId);
@@ -410,14 +448,147 @@ class DatabaseService {
 
   findClassStudent(classId, studentId) {
     return this.database
-      .prepare("SELECT turma_id FROM turma_alunos WHERE turma_id = ? AND aluno_id = ?")
+      .prepare(`
+        SELECT turma_id
+        FROM turma_alunos
+        WHERE turma_id = ? AND aluno_id = ? AND ativo = 1
+      `)
       .get(classId, studentId);
   }
 
   linkStudentToClass(classId, studentId) {
     this.database
-      .prepare("INSERT INTO turma_alunos (turma_id, aluno_id) VALUES (?, ?)")
+      .prepare(`
+        INSERT INTO turma_alunos (turma_id, aluno_id, ativo, desvinculado_em)
+        VALUES (?, ?, 1, NULL)
+        ON CONFLICT(turma_id, aluno_id) DO UPDATE SET
+          ativo = 1,
+          vinculado_em = CURRENT_TIMESTAMP,
+          desvinculado_em = NULL
+      `)
       .run(classId, studentId);
+  }
+
+  unlinkStudentFromClass(classId, studentId) {
+    return this.database
+      .prepare(`
+        UPDATE turma_alunos
+        SET ativo = 0, desvinculado_em = CURRENT_TIMESTAMP
+        WHERE turma_id = ? AND aluno_id = ? AND ativo = 1
+      `)
+      .run(classId, studentId);
+  }
+
+  deleteClass(classId) {
+    return this.database.prepare("DELETE FROM turmas WHERE id = ?").run(classId);
+  }
+
+  findUserById(userId) {
+    return this.database
+      .prepare(`
+        SELECT
+          id, nome, email, matricula, senha_hash, perfil, foto_url,
+          telefone, departamento, ativo
+        FROM usuarios
+        WHERE id = ?
+      `)
+      .get(userId);
+  }
+
+  findUserByEmailIncludingInactive(email, ignoredUserId = null) {
+    if (ignoredUserId !== null) {
+      return this.database
+        .prepare("SELECT id FROM usuarios WHERE email = ? AND id != ?")
+        .get(email, ignoredUserId);
+    }
+
+    return this.database.prepare("SELECT id FROM usuarios WHERE email = ?").get(email);
+  }
+
+  findUserByRegistration(registration, ignoredUserId = null) {
+    if (ignoredUserId !== null) {
+      return this.database
+        .prepare("SELECT id FROM usuarios WHERE matricula = ? AND id != ?")
+        .get(registration, ignoredUserId);
+    }
+
+    return this.database.prepare("SELECT id FROM usuarios WHERE matricula = ?").get(registration);
+  }
+
+  createUser({ name, email, registration, passwordHash, profile, photoUrl, phone, department }) {
+    const result = this.database
+      .prepare(`
+        INSERT INTO usuarios (
+          nome, email, matricula, senha_hash, perfil, foto_url, telefone, departamento
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `)
+      .run(
+        name,
+        email,
+        registration,
+        passwordHash,
+        profile,
+        photoUrl,
+        phone,
+        department,
+      );
+
+    return this.findUserById(Number(result.lastInsertRowid));
+  }
+
+  updateUser(userId, fields) {
+    const entries = Object.entries(fields);
+    const assignments = entries.map(([field]) => `${field} = ?`);
+    const values = entries.map(([, value]) => value);
+
+    assignments.push("atualizado_em = CURRENT_TIMESTAMP");
+    this.database
+      .prepare(`UPDATE usuarios SET ${assignments.join(", ")} WHERE id = ?`)
+      .run(...values, userId);
+
+    return this.findUserById(userId);
+  }
+
+  deactivateUser(userId) {
+    this.database.exec("BEGIN IMMEDIATE TRANSACTION;");
+
+    try {
+      this.database
+        .prepare(`
+          UPDATE usuarios
+          SET ativo = 0, atualizado_em = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `)
+        .run(userId);
+      this.database
+        .prepare(`
+          UPDATE sessoes
+          SET revogada_em = CURRENT_TIMESTAMP
+          WHERE usuario_id = ? AND revogada_em IS NULL
+        `)
+        .run(userId);
+      this.database
+        .prepare(`
+          UPDATE turma_alunos
+          SET ativo = 0, desvinculado_em = CURRENT_TIMESTAMP
+          WHERE aluno_id = ? AND ativo = 1
+        `)
+        .run(userId);
+      this.database.exec("COMMIT;");
+    } catch (error) {
+      this.database.exec("ROLLBACK;");
+      throw error;
+    }
+
+    return this.findUserById(userId);
+  }
+
+  countProfessorClasses(professorId) {
+    return Number(
+      this.database
+        .prepare("SELECT COUNT(*) AS total FROM turmas WHERE professor_id = ?")
+        .get(professorId).total,
+    );
   }
 
   findLessonByClassDateTime(classId, date, schedule) {
@@ -566,10 +737,13 @@ class DatabaseService {
       return this.database
         .prepare(`
           SELECT
-            COUNT(DISTINCT ta.aluno_id) AS total_alunos,
-            COUNT(DISTINCT a.id) AS total_aulas
+            COUNT(DISTINCT aluno.id) AS total_alunos,
+            COUNT(DISTINCT a.id) AS total_aulas,
+            1 AS total_professores,
+            COUNT(DISTINCT t.id) AS total_turmas
           FROM turmas t
-          LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+          LEFT JOIN turma_alunos ta ON ta.turma_id = t.id AND ta.ativo = 1
+          LEFT JOIN usuarios aluno ON aluno.id = ta.aluno_id AND aluno.ativo = 1
           LEFT JOIN aulas a ON a.turma_id = t.id
           WHERE t.professor_id = ?
         `)
@@ -579,8 +753,10 @@ class DatabaseService {
     return this.database
       .prepare(`
         SELECT
-          (SELECT COUNT(*) FROM usuarios WHERE perfil = 'aluno') AS total_alunos,
-          (SELECT COUNT(*) FROM aulas) AS total_aulas
+          (SELECT COUNT(*) FROM usuarios WHERE perfil = 'aluno' AND ativo = 1) AS total_alunos,
+          (SELECT COUNT(*) FROM aulas) AS total_aulas,
+          (SELECT COUNT(*) FROM usuarios WHERE perfil = 'professor' AND ativo = 1) AS total_professores,
+          (SELECT COUNT(*) FROM turmas) AS total_turmas
       `)
       .get();
   }
@@ -599,7 +775,8 @@ class DatabaseService {
       parameters.push(classId);
     }
 
-    const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+    conditions.push("ta.ativo = 1", "u.ativo = 1");
+    const where = `WHERE ${conditions.join(" AND ")}`;
 
     return this.database
       .prepare(`
