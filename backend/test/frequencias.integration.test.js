@@ -33,7 +33,7 @@ async function request(baseUrl, route, { method = "GET", token, body } = {}) {
 }
 
 async function waitForApi(baseUrl) {
-  for (let attempt = 0; attempt < 30; attempt += 1) {
+  for (let attempt = 0; attempt < 60; attempt += 1) {
     try {
       const response = await fetch(`${baseUrl}/api`);
 
