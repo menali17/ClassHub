@@ -348,7 +348,7 @@ A integração pode ser realizada na seguinte ordem:
 
 * [Arquitetura do Sistema](arquitetura_sistema.md)
 * [Banco de Dados](banco_de_dados.md)
-* [Contrato da API no GitHub](https://github.com/menali17/Desafio_4_Trainee_EngNet/blob/developer/backend/CONTRATO_API.md)
+* [Contrato da API no GitHub](CONTRATO_API.md)
 
 ---
 
