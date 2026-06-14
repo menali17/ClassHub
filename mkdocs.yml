@@ -64,6 +64,9 @@ nav:
       - Visão Geral: planejamento/index.md
       - Metodologia: planejamento/metodologia.md
 
+  - Arquitetura e Desenvolvimento:
+      - Banco de Dados: arquitetura/banco_de_dados.md
+
   - Boas Práticas:
       - Visão Geral: boas_praticas/index.md
       - Padrão de Branches: boas_praticas/padrao_branch.md
