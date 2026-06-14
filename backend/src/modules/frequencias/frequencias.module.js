@@ -12,6 +12,7 @@ Module({
   imports: [DatabaseModule, AuthModule],
   controllers: [AulasController, FrequenciasController, AlunoFrequenciaController],
   providers: [FrequenciasService],
+  exports: [FrequenciasService],
 })(FrequenciasModule);
 
 module.exports = { FrequenciasModule };
