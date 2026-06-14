@@ -32,6 +32,19 @@ async function request(baseUrl, route, { method = "GET", token, body } = {}) {
   };
 }
 
+async function download(baseUrl, route, token) {
+  const response = await fetch(`${baseUrl}${route}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return {
+    status: response.status,
+    contentType: response.headers.get("content-type"),
+    disposition: response.headers.get("content-disposition"),
+    buffer: Buffer.from(await response.arrayBuffer()),
+  };
+}
+
 async function waitForApi(baseUrl) {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     try {
@@ -178,6 +191,39 @@ test("dashboard e relatorios calculam frequencia e respeitam perfis", async () =
     assert.equal(classReport.body.resumo.percentualPresenca, 85);
     assert.equal(classReport.body.aulas.length, 4);
     assert.equal(classReport.body.aulas[0].frequencias.length, 5);
+
+    const classPdf = await download(
+      baseUrl,
+      "/api/relatorios/turmas/1/exportar?formato=pdf",
+      adminToken,
+    );
+    assert.equal(classPdf.status, 200);
+    assert.match(classPdf.contentType, /^application\/pdf/);
+    assert.match(classPdf.disposition, /turma-lab-sw-01\.pdf/);
+    assert.equal(classPdf.buffer.subarray(0, 4).toString(), "%PDF");
+
+    const lowAttendanceSpreadsheet = await download(
+      baseUrl,
+      "/api/relatorios/alunos-baixa-frequencia/exportar?turmaId=1&formato=xlsx",
+      teacherToken,
+    );
+    assert.equal(lowAttendanceSpreadsheet.status, 200);
+    assert.match(
+      lowAttendanceSpreadsheet.contentType,
+      /^application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.sheet/,
+    );
+    assert.match(
+      lowAttendanceSpreadsheet.disposition,
+      /baixa-frequencia-lab-sw-01\.xlsx/,
+    );
+    assert.equal(lowAttendanceSpreadsheet.buffer.subarray(0, 2).toString(), "PK");
+
+    const invalidExport = await request(
+      baseUrl,
+      `/api/relatorios/alunos/${students[0].id}/exportar?formato=csv`,
+      { token: teacherToken },
+    );
+    assert.equal(invalidExport.status, 400);
 
     const studentReport = await request(baseUrl, "/api/relatorios/turmas/1", {
       token: studentToken,

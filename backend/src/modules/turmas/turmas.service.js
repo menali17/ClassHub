@@ -78,6 +78,22 @@ class TurmasService {
     return this.toClassResponse(this.databaseService.updateClass(classData.id, fields));
   }
 
+  deleteClass(classIdValue, user) {
+    if (user?.perfil !== "administrador") {
+      throw new ForbiddenException("Apenas administradores podem excluir turmas.");
+    }
+
+    const classId = this.positiveInteger(classIdValue, "Turma");
+    const classData = this.databaseService.findClassById(classId);
+
+    if (!classData) {
+      throw new NotFoundException("Turma nao encontrada.");
+    }
+
+    this.databaseService.deleteClass(classId);
+    return { message: "Turma excluida com sucesso." };
+  }
+
   listStudents(user) {
     this.ensureStaff(user);
     return this.databaseService.listStudents().map((student) => this.toStudentResponse(student));
@@ -114,7 +130,7 @@ class TurmasService {
     const studentId = this.positiveInteger(payload?.alunoId, "Aluno");
     const student = this.databaseService.findStudentById(studentId);
 
-    if (!student) {
+    if (!student || !Number(student.ativo)) {
       throw new NotFoundException("Aluno não encontrado.");
     }
 
@@ -129,6 +145,18 @@ class TurmasService {
       aluno: this.toStudentResponse(student),
       turma: this.toClassResponse(this.databaseService.findClassById(classData.id)),
     };
+  }
+
+  unlinkStudent(classIdValue, studentIdValue, user) {
+    const classData = this.getAccessibleClass(classIdValue, user);
+    const studentId = this.positiveInteger(studentIdValue, "Aluno");
+
+    if (!this.databaseService.findClassStudent(classData.id, studentId)) {
+      throw new NotFoundException("O aluno nao esta vinculado a esta turma.");
+    }
+
+    this.databaseService.unlinkStudentFromClass(classData.id, studentId);
+    return { message: "Aluno removido da turma com sucesso." };
   }
 
   getAccessibleClass(classIdValue, user) {

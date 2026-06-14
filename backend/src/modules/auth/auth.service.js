@@ -105,6 +105,8 @@ class AuthService {
       matricula: user.matricula ?? null,
       perfil: user.perfil,
       fotoUrl: user.foto_url ?? null,
+      telefone: user.telefone ?? null,
+      departamento: user.departamento ?? null,
     };
   }
 

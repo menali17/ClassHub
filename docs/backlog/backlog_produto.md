@@ -39,6 +39,12 @@ O Product Backlog é uma lista priorizada de todos os itens de desenvolvimento d
 | PB17 | Relatório de Frequência por Turma com Gráficos | HU16 | Relatório com histórico por turma e gráficos visuais de frequência. | Média | Histórico completo de aulas da turma; gráficos de frequência exibidos; gerado em até 5 segundos. | PB12 | RF23, RF24 |
 | PB18 | Busca e Filtro de Alunos | HU17 | Campos de busca/filtro por nome, turma ou situação de frequência. | Média | Filtros: nome, turma e situação; resultados atualizados conforme filtros; resposta visual imediata. | PB11 | RF25 |
 | PB19 | Modo Claro/Escuro | HU18 | Opção para alternar entre tema claro e escuro na interface. | Baixa | Alternância visível e acessível; preferência salva para sessões futuras; todos os elementos adaptados ao tema. | Nenhuma | RF26 |
+| PB20 | Gerenciamento de Alunos | HU19 | Cadastro, edição, desativação e redefinição de senha de alunos pelo administrador. | Alta | E-mail e matrícula únicos; edição persistida; usuário desativado sem acesso; nova senha aceita no login. | PB05 | RF27, RF28, RF29, RF33 |
+| PB21 | Gerenciamento de Professores | HU20 | Cadastro, edição, desativação e redefinição de senha de professores pelo administrador. | Alta | E-mail único; edição persistida; bloqueio de desativação com turma atribuída; nova senha aceita no login. | PB05 | RF30, RF31, RF32, RF34 |
+| PB22 | Gerenciamento de Vínculos da Turma | HU21 | Inclusão e remoção de alunos na composição atual de uma turma. | Alta | Apenas alunos ativos vinculados; vínculo duplicado bloqueado; desvínculo sem apagar histórico anterior. | PB08, PB20 | RF35, RF36 |
+| PB23 | Atribuição e Transferência de Professor | HU22 | Definição e alteração do professor responsável por uma turma. | Alta | Professor selecionado deve estar ativo; turma atualizada; permissões transferidas ao novo responsável. | PB08, PB21 | RF37, RF38 |
+| PB24 | Exportação de Relatórios em PDF | HU23 | Download dos relatórios acadêmicos em arquivo PDF. | Média | Disponível nos três tipos de relatório; arquivo PDF válido; permissões de acesso respeitadas. | PB15, PB16, PB17 | RF39 |
+| PB25 | Exportação de Relatórios em XLSX | HU24 | Download dos relatórios acadêmicos em planilha Excel. | Média | Disponível nos três tipos de relatório; arquivo XLSX válido e com cabeçalhos; permissões de acesso respeitadas. | PB15, PB16, PB17 | RF40 |
 
 ---
 
@@ -94,8 +100,22 @@ Relaciona cada requisito funcional com sua História de Usuário e item do Produ
 | RF24 | HU16 – Gerar Relatório de Frequência por Turma | PB17 | Relatório de Frequência por Turma com Gráficos |
 | RF25 | HU17 – Filtrar e Buscar Alunos | PB18 | Busca e Filtro de Alunos |
 | RF26 | HU18 – Alternar Entre Modo Claro e Escuro | PB19 | Modo Claro/Escuro |
+| RF27 | HU19 – Gerenciar Alunos | PB20 | Gerenciamento de Alunos |
+| RF28 | HU19 – Gerenciar Alunos | PB20 | Gerenciamento de Alunos |
+| RF29 | HU19 – Gerenciar Alunos | PB20 | Gerenciamento de Alunos |
+| RF30 | HU20 – Gerenciar Professores | PB21 | Gerenciamento de Professores |
+| RF31 | HU20 – Gerenciar Professores | PB21 | Gerenciamento de Professores |
+| RF32 | HU20 – Gerenciar Professores | PB21 | Gerenciamento de Professores |
+| RF33 | HU19 – Gerenciar Alunos | PB20 | Gerenciamento de Alunos |
+| RF34 | HU20 – Gerenciar Professores | PB21 | Gerenciamento de Professores |
+| RF35 | HU21 – Gerenciar Vínculos de Alunos | PB22 | Gerenciamento de Vínculos da Turma |
+| RF36 | HU21 – Gerenciar Vínculos de Alunos | PB22 | Gerenciamento de Vínculos da Turma |
+| RF37 | HU22 – Atribuir Professor à Turma | PB23 | Atribuição e Transferência de Professor |
+| RF38 | HU22 – Atribuir Professor à Turma | PB23 | Atribuição e Transferência de Professor |
+| RF39 | HU23 – Exportar Relatório em PDF | PB24 | Exportação de Relatórios em PDF |
+| RF40 | HU24 – Exportar Relatório em XLSX | PB25 | Exportação de Relatórios em XLSX |
 
-**Cobertura:** todos os 26 requisitos funcionais (RF01–RF26) estão cobertos por ao menos uma história de usuário e um item do backlog.
+**Cobertura:** todos os 40 requisitos funcionais (RF01–RF40) estão cobertos por ao menos uma história de usuário e um item do backlog.
 
 ---
 
@@ -104,3 +124,4 @@ Relaciona cada requisito funcional com sua História de Usuário e item do Produ
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 01/06/2026 | Criação inicial do Product Backlog e tabela de rastreabilidade a partir dos requisitos funcionais elicitados. | [Camila Silva](https://github.com/CamilaSilvaC) |
+| 1.1 | 14/06/2026 | Inclusão dos itens administrativos, vínculos, atribuição de professor e exportações, com rastreabilidade até RF40. | Enzo Menali |

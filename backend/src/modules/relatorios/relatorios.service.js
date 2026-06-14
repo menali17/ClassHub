@@ -6,11 +6,13 @@ const {
 } = require("@nestjs/common");
 const { DatabaseService } = require("../../database/database.service");
 const { FrequenciasService } = require("../frequencias/frequencias.service");
+const { ExportacoesService } = require("./exportacoes.service");
 
 class RelatoriosService {
-  constructor(databaseService, frequenciasService) {
+  constructor(databaseService, frequenciasService, exportacoesService) {
     this.databaseService = databaseService;
     this.frequenciasService = frequenciasService;
+    this.exportacoesService = exportacoesService;
   }
 
   getDashboard(user) {
@@ -23,6 +25,8 @@ class RelatoriosService {
 
     return {
       totalAlunos: Number(counts.total_alunos),
+      totalProfessores: Number(counts.total_professores),
+      totalTurmas: Number(counts.total_turmas),
       totalAulas: Number(counts.total_aulas),
       taxaMediaPresenca: this.calculatePercentage(totals.presencas, totals.totalAulas),
       limiteBaixaFrequencia: this.databaseService.lowAttendanceThreshold,
@@ -168,6 +172,27 @@ class RelatoriosService {
     };
   }
 
+  async exportIndividualReport(studentIdValue, format, user) {
+    return this.exportacoesService.individual(
+      this.getIndividualReport(studentIdValue, user),
+      format,
+    );
+  }
+
+  async exportLowAttendanceReport(classIdValue, format, user) {
+    return this.exportacoesService.lowAttendance(
+      this.getLowAttendanceReport(classIdValue, user),
+      format,
+    );
+  }
+
+  async exportClassReport(classIdValue, format, user) {
+    return this.exportacoesService.classReport(
+      this.getClassReport(classIdValue, user),
+      format,
+    );
+  }
+
   toAttendanceSummaries(records) {
     return records.map((record) => {
       const totalLessons = Number(record.total_aulas);
@@ -246,7 +271,7 @@ class RelatoriosService {
 
 Reflect.defineMetadata(
   "design:paramtypes",
-  [DatabaseService, FrequenciasService],
+  [DatabaseService, FrequenciasService, ExportacoesService],
   RelatoriosService,
 );
 Injectable()(RelatoriosService);

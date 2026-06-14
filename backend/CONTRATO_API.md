@@ -1,6 +1,6 @@
-# Contrato Inicial da API
+# Contrato da API
 
-Este documento define os formatos combinados entre o front-end e o back-end para o MVP do sistema. As rotas marcadas como **planejadas** ainda serão implementadas, mas seus formatos já podem ser usados pelo front-end com dados simulados.
+Este documento define os formatos combinados entre o front-end e o back-end para o MVP do sistema. As rotas descritas abaixo estão implementadas e podem ser integradas pelo front-end.
 
 ## Configuração
 
@@ -77,7 +77,10 @@ Resposta de sucesso:
     "email": "professor@engnet.com",
     "matricula": null,
     "perfil": "professor",
-    "fotoUrl": null
+    "fotoUrl": null,
+    "telefone": null,
+    "departamento": null,
+    "ativo": true
   }
 }
 ```
@@ -115,6 +118,78 @@ Resposta:
 ```
 
 Depois do logout, o token não pode mais acessar rotas protegidas.
+
+## Perfil do usuário
+
+| Método | Rota | Acesso | Finalidade |
+|---|---|---|---|
+| `GET` | `/api/perfil` | Usuário autenticado | Consulta os próprios dados. |
+| `PATCH` | `/api/perfil` | Usuário autenticado | Altera nome, e-mail, foto e telefone. |
+| `PATCH` | `/api/perfil/senha` | Usuário autenticado | Altera a senha após validar a senha atual. |
+
+Exemplo de atualização:
+
+```json
+{
+  "nome": "Professor Atualizado",
+  "telefone": "(61) 99999-0000",
+  "fotoUrl": "https://exemplo.com/foto.jpg"
+}
+```
+
+Exemplo de alteração de senha:
+
+```json
+{
+  "senhaAtual": "123456",
+  "novaSenha": "654321"
+}
+```
+
+## Administração de usuários
+
+As operações de cadastro, edição, redefinição de senha e desativação são exclusivas do administrador. As listagens retornam apenas usuários ativos.
+
+| Método | Rota | Finalidade |
+|---|---|---|
+| `GET` | `/api/alunos` | Lista os alunos ativos. |
+| `POST` | `/api/alunos` | Cadastra um aluno. |
+| `GET` | `/api/alunos/:id` | Consulta um aluno e suas turmas. |
+| `PATCH` | `/api/alunos/:id` | Edita os dados de um aluno. |
+| `POST` | `/api/alunos/:id/redefinir-senha` | Define uma nova senha para o aluno. |
+| `DELETE` | `/api/alunos/:id` | Desativa o aluno, seus vínculos ativos e suas sessões. |
+| `GET` | `/api/professores` | Lista os professores ativos. |
+| `POST` | `/api/professores` | Cadastra um professor. |
+| `GET` | `/api/professores/:id` | Consulta um professor e suas turmas. |
+| `PATCH` | `/api/professores/:id` | Edita os dados de um professor. |
+| `POST` | `/api/professores/:id/redefinir-senha` | Define uma nova senha para o professor. |
+| `DELETE` | `/api/professores/:id` | Desativa o professor e revoga suas sessões. |
+
+Cadastro de aluno:
+
+```json
+{
+  "nome": "Ana Souza",
+  "email": "ana@engnet.com",
+  "matricula": "20260001",
+  "senha": "123456",
+  "telefone": "(61) 99999-0000"
+}
+```
+
+Cadastro de professor:
+
+```json
+{
+  "nome": "Marina Lima",
+  "email": "marina@engnet.com",
+  "senha": "123456",
+  "departamento": "Engenharia de Software",
+  "telefone": "(61) 99999-0000"
+}
+```
+
+Para redefinir uma senha, envie `{ "novaSenha": "654321" }`. Um professor só pode ser desativado depois que suas turmas forem transferidas para outro professor.
 
 ## Turmas e alunos
 
@@ -188,7 +263,9 @@ Apenas administradores podem alterar `professorId`.
 
 ### `DELETE /api/turmas/:id`
 
-**Situação:** planejada após o fluxo principal, por ser um requisito de prioridade média.
+**Situação:** implementada.
+
+Apenas o administrador pode remover a turma. A remoção também exclui aulas, frequências e vínculos relacionados.
 
 ### `GET /api/turmas/:id/alunos`
 
@@ -232,6 +309,12 @@ Vincula um aluno existente à turma. O mesmo aluno pode participar de mais de um
 ```
 
 O sistema retorna `409` quando o aluno já está vinculado à turma.
+
+### `DELETE /api/turmas/:id/alunos/:alunoId`
+
+**Situação:** implementada.
+
+Desvincula o aluno da turma sem apagar o cadastro do usuário. O vínculo é mantido como inativo para preservar seu histórico.
 
 ### `GET /api/alunos`
 
@@ -441,6 +524,8 @@ gerais do sistema.
 ```json
 {
   "totalAlunos": 10,
+  "totalProfessores": 1,
+  "totalTurmas": 2,
   "totalAulas": 4,
   "taxaMediaPresenca": 82.5,
   "limiteBaixaFrequencia": 75,
@@ -569,15 +654,37 @@ e registros de cada aula finalizada.
 }
 ```
 
+### Exportação de relatórios
+
+Os três relatórios podem ser baixados em PDF ou planilha Excel pelo parâmetro `formato`:
+
+| Relatório | Rota de download |
+|---|---|
+| Individual | `GET /api/relatorios/alunos/:alunoId/exportar?formato=pdf` |
+| Baixa frequência | `GET /api/relatorios/alunos-baixa-frequencia/exportar?formato=xlsx&turmaId=:id` |
+| Turma | `GET /api/relatorios/turmas/:turmaId/exportar?formato=pdf` |
+
+Os formatos aceitos são `pdf` e `xlsx`. A resposta possui `Content-Disposition: attachment` para iniciar o download no navegador.
+
 ## Regras confirmadas
 
 - O professor registra presença ou falta de cada aluno.
 - O aluno apenas consulta a própria frequência.
 - Professores e administradores podem consultar históricos e relatórios.
 - Apenas o administrador remove turmas.
+- Apenas o administrador cadastra, edita e desativa professores e alunos.
+- A desativação de um usuário revoga suas sessões e impede novos logins.
+- Um professor com turmas atribuídas não pode ser desativado antes da transferência.
 - Professores gerenciam apenas as turmas atribuídas a eles.
 - Administradores podem gerenciar todas as turmas.
 - Código de turma, e-mail e matrícula não podem se repetir.
 - Um aluno pode estar vinculado a mais de uma turma.
 - Frequência abaixo de `75%` é considerada baixa.
 - QR Code não faz parte do escopo do projeto.
+
+## Histórico de versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 14/06/2026 | Documentação das rotas iniciais de autenticação, turmas, frequência e relatórios. | Enzo Menali |
+| 1.1 | 14/06/2026 | Inclusão do fluxo administrativo, perfil, remoções e exportações em PDF e XLSX. | Enzo Menali |

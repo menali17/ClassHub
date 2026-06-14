@@ -65,6 +65,30 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 |---|---|
 | RF26 | O sistema deve permitir que o usuário alterne entre modo claro e modo escuro. |
 
+### Administração de Usuários
+
+| Código | Requisito |
+|---|---|
+| RF27 | O sistema deve permitir que o administrador cadastre alunos. |
+| RF28 | O sistema deve permitir que o administrador edite os dados de alunos. |
+| RF29 | O sistema deve permitir que o administrador desative alunos. |
+| RF30 | O sistema deve permitir que o administrador cadastre professores. |
+| RF31 | O sistema deve permitir que o administrador edite os dados de professores. |
+| RF32 | O sistema deve permitir que o administrador desative professores sem turmas atribuídas. |
+| RF33 | O sistema deve permitir que o administrador redefina a senha de um aluno. |
+| RF34 | O sistema deve permitir que o administrador redefina a senha de um professor. |
+| RF35 | O sistema deve permitir vincular alunos a uma turma. |
+| RF36 | O sistema deve permitir desvincular alunos de uma turma. |
+| RF37 | O sistema deve permitir que o administrador atribua uma turma a um professor. |
+| RF38 | O sistema deve permitir que o administrador transfira uma turma para outro professor. |
+
+### Exportação de Relatórios
+
+| Código | Requisito |
+|---|---|
+| RF39 | O sistema deve permitir exportar relatórios em formato PDF. |
+| RF40 | O sistema deve permitir exportar relatórios em formato XLSX. |
+
 ## Requisitos Não Funcionais
 
 ### Usabilidade e Interface
@@ -111,3 +135,4 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 | 0.1 | 25/05/2026 | Definição inicial dos requisitos do sistema em reunião da equipe. | Enzo Menali, Camila Silva, André e Beatriz Fernandes |
 | 0.2 | 31/05/2026 | Refinamento dos requisitos iniciais, incluindo ajustes de escopo e organização. | Enzo Menali e Camila Silva |
 | 1.0 | 01/06/2026 | Organização dos requisitos funcionais e não funcionais em tabelas e inclusão dos diferenciais definidos para o projeto. | Enzo Menali e Camila Silva |
+| 1.1 | 14/06/2026 | Inclusão dos requisitos do fluxo administrativo e da exportação de relatórios definidos no protótipo. | Enzo Menali |

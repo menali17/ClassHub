@@ -16,7 +16,7 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 |---|---|
 | **Aluno** | Estudante matriculado em uma ou mais turmas. Pode visualizar sua própria frequência. |
 | **Professor** | Responsável pelo registro de presença nas aulas, visualização de históricos e geração de relatórios. |
-| **Administrador** | Gerencia o sistema, cria/edita/remove turmas, acessa todos os relatórios e monitora indicadores do dashboard. |
+| **Administrador** | Gerencia alunos, professores e turmas, acessa todos os relatórios e monitora indicadores do dashboard. |
 
 ---
 
@@ -232,8 +232,79 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 ---
 
+## Épico 8 – Administração de Usuários e Turmas
+
+### HU19 – Gerenciar Alunos
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como administrador, eu quero cadastrar, editar, desativar e redefinir a senha de alunos, para manter os usuários acadêmicos atualizados e com acesso controlado. |
+| **Critérios de Aceitação** | - O administrador deve cadastrar aluno com nome, e-mail, matrícula e senha. <br> - E-mail e matrícula não podem se repetir. <br> - O administrador deve editar os dados do aluno. <br> - A desativação deve impedir novos logins e encerrar vínculos ativos. <br> - O administrador deve conseguir definir uma nova senha. |
+| **Prioridade** | Alta |
+| **Rastreabilidade** | RF27, RF28, RF29, RF33 |
+
+---
+
+### HU20 – Gerenciar Professores
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como administrador, eu quero cadastrar, editar, desativar e redefinir a senha de professores, para controlar quem pode administrar as aulas e frequências. |
+| **Critérios de Aceitação** | - O administrador deve cadastrar professor com nome, e-mail e senha. <br> - O e-mail não pode se repetir. <br> - O administrador deve editar os dados do professor. <br> - Um professor com turmas atribuídas não pode ser desativado. <br> - A desativação deve impedir novos logins. <br> - O administrador deve conseguir definir uma nova senha. |
+| **Prioridade** | Alta |
+| **Rastreabilidade** | RF30, RF31, RF32, RF34 |
+
+---
+
+### HU21 – Gerenciar Vínculos de Alunos
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como professor ou administrador, eu quero vincular e desvincular alunos de uma turma, para manter sua composição de acordo com as matrículas atuais. |
+| **Critérios de Aceitação** | - Apenas alunos ativos podem ser vinculados. <br> - O mesmo aluno não pode possuir dois vínculos ativos com a mesma turma. <br> - O desvínculo deve remover o aluno da lista atual sem apagar o histórico já registrado. |
+| **Prioridade** | Alta |
+| **Rastreabilidade** | RF35, RF36 |
+
+---
+
+### HU22 – Atribuir Professor à Turma
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como administrador, eu quero atribuir e transferir uma turma entre professores, para definir corretamente o responsável por suas aulas. |
+| **Critérios de Aceitação** | - Toda turma deve possuir um professor ativo. <br> - O administrador deve selecionar o professor no cadastro da turma. <br> - O administrador deve conseguir transferir a turma para outro professor ativo. <br> - Após a transferência, somente o novo responsável deve registrar chamadas da turma. |
+| **Prioridade** | Alta |
+| **Rastreabilidade** | RF37, RF38 |
+
+---
+
+## Épico 9 – Exportação de Relatórios
+
+### HU23 – Exportar Relatório em PDF
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como professor ou administrador, eu quero baixar relatórios em PDF, para compartilhar ou imprimir os dados de frequência. |
+| **Critérios de Aceitação** | - A exportação deve estar disponível para relatórios individuais, de turma e de baixa frequência. <br> - O arquivo deve ser baixado com extensão `.pdf`. <br> - O conteúdo deve respeitar as permissões do usuário autenticado. |
+| **Prioridade** | Média |
+| **Rastreabilidade** | RF39 |
+
+---
+
+### HU24 – Exportar Relatório em XLSX
+
+| Campo | Informação |
+|---|---|
+| **Descrição** | Como professor ou administrador, eu quero baixar relatórios em XLSX, para organizar e analisar os dados em uma planilha. |
+| **Critérios de Aceitação** | - A exportação deve estar disponível para relatórios individuais, de turma e de baixa frequência. <br> - O arquivo deve ser baixado com extensão `.xlsx`. <br> - As planilhas devem possuir cabeçalhos identificáveis e respeitar as permissões do usuário autenticado. |
+| **Prioridade** | Média |
+| **Rastreabilidade** | RF40 |
+
+---
+
 ## Histórico de Versão
 
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 01/06/2026 | Criação inicial das Histórias de Usuário a partir dos requisitos funcionais elicitados. | [Camila Silva](https://github.com/CamilaSilvaC)|
+| 1.1 | 14/06/2026 | Inclusão das histórias de administração de usuários, vínculos, atribuição de professor e exportação de relatórios. | Enzo Menali |
