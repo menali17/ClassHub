@@ -1,14 +1,17 @@
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata = {
-  title: "EngNet Presenca",
-  description: "Sistema de gestao de presenca academica para aulas praticas.",
+  title: "Frequenta — EngNet",
+  description: "Sistema de gestão de presença acadêmica.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
