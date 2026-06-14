@@ -28,7 +28,9 @@ Os modulos da API podem ser criados conforme a equipe implementar as funcionalid
 
 ## Banco de dados
 
-O banco de dados ainda nao foi configurado nesta branch. A equipe pode escolher entre PostgreSQL, MongoDB ou SQLite durante a implementacao.
+O projeto utiliza SQLite com o módulo nativo `node:sqlite`. O arquivo do banco é
+criado automaticamente em `backend/data/engnet.sqlite` na primeira execução da
+API. A estrutura completa está descrita em [Banco de Dados](arquitetura/banco_de_dados.md).
 
 ## Comandos
 
@@ -43,3 +45,9 @@ cd frontend
 npm install
 npm run dev
 ```
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 14/06/2026 | Atualização do setup com a configuração atual do banco SQLite. | Enzo Menali |
