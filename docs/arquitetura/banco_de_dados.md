@@ -57,18 +57,6 @@ O banco é composto por seis tabelas principais.
 | `usuarios` (aluno) | 1:N | `frequencias` | Um aluno acumula registros de presença e falta. |
 | `usuarios` | 1:N | `sessoes` | Um usuário pode possuir sessões de autenticação. |
 
-```text
-usuarios (professor) 1 ---- N turmas
-                               |
-                               | 1
-                               |
-                               N
-                             aulas 1 ---- N frequencias N ---- 1 usuarios (aluno)
-                               |
-turmas N ---- N usuarios      |
-       por turma_alunos       |
-```
-
 ## Estrutura das tabelas
 
 ### Usuários
