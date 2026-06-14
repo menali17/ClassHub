@@ -561,6 +561,90 @@ class DatabaseService {
       .all(...parameters);
   }
 
+  getDashboardCounts(profile, userId) {
+    if (profile === "professor") {
+      return this.database
+        .prepare(`
+          SELECT
+            COUNT(DISTINCT ta.aluno_id) AS total_alunos,
+            COUNT(DISTINCT a.id) AS total_aulas
+          FROM turmas t
+          LEFT JOIN turma_alunos ta ON ta.turma_id = t.id
+          LEFT JOIN aulas a ON a.turma_id = t.id
+          WHERE t.professor_id = ?
+        `)
+        .get(userId);
+    }
+
+    return this.database
+      .prepare(`
+        SELECT
+          (SELECT COUNT(*) FROM usuarios WHERE perfil = 'aluno') AS total_alunos,
+          (SELECT COUNT(*) FROM aulas) AS total_aulas
+      `)
+      .get();
+  }
+
+  listAttendanceSummaries(profile, userId, classId = null) {
+    const conditions = [];
+    const parameters = [];
+
+    if (profile === "professor") {
+      conditions.push("t.professor_id = ?");
+      parameters.push(userId);
+    }
+
+    if (classId !== null) {
+      conditions.push("t.id = ?");
+      parameters.push(classId);
+    }
+
+    const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    return this.database
+      .prepare(`
+        SELECT
+          t.id AS turma_id,
+          t.nome AS turma_nome,
+          t.codigo AS turma_codigo,
+          u.id AS aluno_id,
+          u.nome AS aluno_nome,
+          u.matricula,
+          COUNT(f.id) AS total_aulas,
+          COALESCE(SUM(CASE WHEN f.situacao = 'presente' THEN 1 ELSE 0 END), 0) AS presencas,
+          COALESCE(SUM(CASE WHEN f.situacao = 'falta' THEN 1 ELSE 0 END), 0) AS faltas
+        FROM turma_alunos ta
+        INNER JOIN turmas t ON t.id = ta.turma_id
+        INNER JOIN usuarios u ON u.id = ta.aluno_id
+        LEFT JOIN aulas a ON a.turma_id = t.id AND a.status = 'finalizada'
+        LEFT JOIN frequencias f ON f.aula_id = a.id AND f.aluno_id = u.id
+        ${where}
+        GROUP BY t.id, u.id
+        ORDER BY t.nome, u.nome
+      `)
+      .all(...parameters);
+  }
+
+  listClassAttendanceDetails(classId) {
+    return this.database
+      .prepare(`
+        SELECT
+          a.id AS aula_id,
+          a.data,
+          a.horario,
+          f.aluno_id,
+          u.nome AS aluno_nome,
+          u.matricula,
+          f.situacao
+        FROM aulas a
+        INNER JOIN frequencias f ON f.aula_id = a.id
+        INNER JOIN usuarios u ON u.id = f.aluno_id
+        WHERE a.turma_id = ? AND a.status = 'finalizada'
+        ORDER BY a.data DESC, a.horario DESC, a.id DESC, u.nome
+      `)
+      .all(classId);
+  }
+
   onModuleDestroy() {
     this.database.close();
   }
