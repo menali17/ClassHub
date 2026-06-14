@@ -91,6 +91,8 @@ class DatabaseService {
       CREATE INDEX IF NOT EXISTS idx_usuarios_matricula ON usuarios(matricula);
       CREATE INDEX IF NOT EXISTS idx_turmas_professor ON turmas(professor_id);
       CREATE INDEX IF NOT EXISTS idx_aulas_turma ON aulas(turma_id);
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_aulas_turma_data_horario
+        ON aulas(turma_id, data, horario);
       CREATE INDEX IF NOT EXISTS idx_frequencias_aluno ON frequencias(aluno_id);
       CREATE INDEX IF NOT EXISTS idx_sessoes_usuario ON sessoes(usuario_id);
       CREATE INDEX IF NOT EXISTS idx_sessoes_token ON sessoes(token_hash);
@@ -416,6 +418,147 @@ class DatabaseService {
     this.database
       .prepare("INSERT INTO turma_alunos (turma_id, aluno_id) VALUES (?, ?)")
       .run(classId, studentId);
+  }
+
+  findLessonByClassDateTime(classId, date, schedule) {
+    return this.database
+      .prepare(`
+        SELECT id
+        FROM aulas
+        WHERE turma_id = ? AND data = ? AND horario = ?
+      `)
+      .get(classId, date, schedule);
+  }
+
+  createLesson(classId, date, schedule) {
+    const result = this.database
+      .prepare(`
+        INSERT INTO aulas (turma_id, data, horario)
+        VALUES (?, ?, ?)
+      `)
+      .run(classId, date, schedule);
+
+    return this.findLessonById(Number(result.lastInsertRowid));
+  }
+
+  findLessonById(lessonId) {
+    return this.database
+      .prepare(`
+        SELECT
+          a.id,
+          a.turma_id,
+          a.data,
+          a.horario,
+          a.status,
+          t.nome AS turma_nome,
+          t.codigo AS turma_codigo,
+          t.professor_id
+        FROM aulas a
+        INNER JOIN turmas t ON t.id = a.turma_id
+        WHERE a.id = ?
+      `)
+      .get(lessonId);
+  }
+
+  listClassLessons(classId) {
+    return this.database
+      .prepare(`
+        SELECT
+          a.id,
+          a.turma_id,
+          a.data,
+          a.horario,
+          a.status,
+          COUNT(f.id) AS frequencias_registradas
+        FROM aulas a
+        LEFT JOIN frequencias f ON f.aula_id = a.id
+        WHERE a.turma_id = ?
+        GROUP BY a.id
+        ORDER BY a.data DESC, a.horario DESC, a.id DESC
+      `)
+      .all(classId);
+  }
+
+  saveAttendance(lessonId, attendance) {
+    const upsertAttendance = this.database.prepare(`
+      INSERT INTO frequencias (aula_id, aluno_id, situacao)
+      VALUES (?, ?, ?)
+      ON CONFLICT(aula_id, aluno_id) DO UPDATE SET
+        situacao = excluded.situacao,
+        registrada_em = CURRENT_TIMESTAMP
+    `);
+
+    this.database.exec("BEGIN IMMEDIATE TRANSACTION;");
+
+    try {
+      attendance.forEach(({ studentId, status }) => {
+        upsertAttendance.run(lessonId, studentId, status);
+      });
+
+      this.database
+        .prepare("UPDATE aulas SET status = 'finalizada' WHERE id = ?")
+        .run(lessonId);
+      this.database.exec("COMMIT;");
+    } catch (error) {
+      this.database.exec("ROLLBACK;");
+      throw error;
+    }
+
+    return this.findLessonById(lessonId);
+  }
+
+  listLessonAttendance(lessonId) {
+    return this.database
+      .prepare(`
+        SELECT
+          f.aluno_id,
+          u.nome AS aluno_nome,
+          u.matricula,
+          f.situacao
+        FROM frequencias f
+        INNER JOIN usuarios u ON u.id = f.aluno_id
+        WHERE f.aula_id = ?
+        ORDER BY u.nome
+      `)
+      .all(lessonId);
+  }
+
+  listStudentClasses(studentId, profile, userId) {
+    const professorFilter = profile === "professor" ? "AND t.professor_id = ?" : "";
+    const parameters = profile === "professor" ? [studentId, userId] : [studentId];
+
+    return this.database
+      .prepare(`
+        SELECT t.id, t.nome, t.codigo
+        FROM turma_alunos ta
+        INNER JOIN turmas t ON t.id = ta.turma_id
+        WHERE ta.aluno_id = ? ${professorFilter}
+        ORDER BY t.nome
+      `)
+      .all(...parameters);
+  }
+
+  listStudentAttendanceRecords(studentId, profile, userId) {
+    const professorFilter = profile === "professor" ? "AND t.professor_id = ?" : "";
+    const parameters = profile === "professor" ? [studentId, userId] : [studentId];
+
+    return this.database
+      .prepare(`
+        SELECT
+          t.id AS turma_id,
+          a.id AS aula_id,
+          a.data,
+          a.horario,
+          f.situacao
+        FROM frequencias f
+        INNER JOIN aulas a ON a.id = f.aula_id AND a.status = 'finalizada'
+        INNER JOIN turmas t ON t.id = a.turma_id
+        INNER JOIN turma_alunos ta
+          ON ta.turma_id = t.id AND ta.aluno_id = f.aluno_id
+        WHERE f.aluno_id = ? ${professorFilter}
+        ORDER BY t.nome, a.data DESC, a.horario DESC, a.id DESC
+      `)
+      .all(...parameters);
   }
 
   onModuleDestroy() {

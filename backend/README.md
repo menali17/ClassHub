@@ -74,6 +74,22 @@ As rotas abaixo exigem autenticação:
 
 O professor visualiza e altera somente suas próprias turmas. O administrador possui acesso a todas as turmas.
 
+## Aulas e frequência
+
+As rotas abaixo exigem autenticação:
+
+| Método | Rota | Acesso | Descrição |
+|---|---|---|---|
+| `POST` | `/api/turmas/:turmaId/aulas` | Professor responsável | Cria uma aula com data e horário. |
+| `GET` | `/api/turmas/:turmaId/aulas` | Professor responsável e administrador | Lista as aulas da turma. |
+| `PUT` | `/api/aulas/:aulaId/frequencias` | Professor responsável | Registra ou corrige a chamada completa. |
+| `GET` | `/api/alunos/:alunoId/frequencia` | Professor responsável e administrador | Consulta o histórico e os percentuais do aluno. |
+| `GET` | `/api/alunos/me/frequencia` | Aluno | Consulta apenas a própria frequência. |
+
+A chamada deve conter todos os alunos vinculados à turma, marcados como
+`presente` ou `falta`. O reenvio atualiza a chamada sem duplicar registros.
+Somente percentuais abaixo de `75%` são classificados como baixa frequência.
+
 ## Onde mexer
 
 ```text
@@ -82,21 +98,15 @@ src/app.module.js     # registra controllers e services
 src/app.controller.js # recebe a requisicao HTTP inicial
 src/app.service.js    # guarda a regra inicial
 src/database          # cria e acessa o banco SQLite
+src/modules/auth      # autenticacao e sessoes
+src/modules/turmas    # turmas e vinculo de alunos
+src/modules/frequencias # aulas, chamadas e historicos
 ```
 
-## Proximo passo
+## Próximo passo
 
-Quando começarmos as funcionalidades, criem modulos seguindo o padrao do Nest:
-
-```text
-src/modules/turmas
-src/modules/alunos
-src/modules/aulas
-src/modules/frequencias
-src/modules/relatorios
-```
-
-Cada modulo pode ter `controller`, `service`, `module` e `dto`.
+Implementar os indicadores do dashboard e os relatórios usando os dados de
+aulas e frequências já persistidos.
 
 ## Integração com o front-end
 

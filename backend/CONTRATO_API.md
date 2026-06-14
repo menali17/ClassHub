@@ -272,7 +272,10 @@ Lista os professores disponíveis para o administrador atribuir a uma turma. Pro
 
 ### `POST /api/turmas/:turmaId/aulas`
 
-**Situação:** planejada para 13/06.
+**Situação:** implementada em 14/06/2026.
+
+Somente o professor responsável pela turma pode criar a aula. Uma mesma turma
+não pode possuir duas aulas com a mesma data e horário.
 
 ```json
 {
@@ -293,11 +296,38 @@ Resposta:
 }
 ```
 
+### `GET /api/turmas/:turmaId/aulas`
+
+**Situação:** implementada em 14/06/2026.
+
+O professor responsável e o administrador podem listar as aulas da turma.
+
+```json
+{
+  "turma": {
+    "id": 1,
+    "nome": "Laboratório de Software",
+    "codigo": "LAB-SW-01"
+  },
+  "aulas": [
+    {
+      "id": 1,
+      "turmaId": 1,
+      "data": "2026-06-13",
+      "horario": "19:00",
+      "status": "finalizada",
+      "frequenciasRegistradas": 5
+    }
+  ]
+}
+```
+
 ### `PUT /api/aulas/:aulaId/frequencias`
 
-**Situação:** planejada para 13/06.
+**Situação:** implementada em 14/06/2026.
 
-Registra a chamada completa de uma aula.
+O professor responsável registra a chamada completa de uma aula. Todos os
+alunos vinculados à turma devem ser informados uma única vez.
 
 ```json
 {
@@ -314,17 +344,48 @@ Registra a chamada completa de uma aula.
 }
 ```
 
-Os únicos valores aceitos para `situacao` serão `presente` e `falta`.
+Os únicos valores aceitos para `situacao` são `presente` e `falta`. Após o
+registro, a aula recebe o status `finalizada`. Reenviar a chamada atualiza os
+registros existentes, permitindo correções sem criar frequências duplicadas.
+
+Resposta:
+
+```json
+{
+  "message": "Chamada registrada com sucesso.",
+  "aula": {
+    "id": 1,
+    "turmaId": 1,
+    "data": "2026-06-13",
+    "horario": "19:00",
+    "status": "finalizada"
+  },
+  "resumo": {
+    "totalAlunos": 5,
+    "presentes": 4,
+    "faltas": 1
+  },
+  "frequencias": [
+    {
+      "alunoId": 3,
+      "nome": "Ana Souza",
+      "matricula": "20260001",
+      "situacao": "presente"
+    }
+  ]
+}
+```
 
 ### `GET /api/alunos/:alunoId/frequencia`
 
-**Situação:** planejada para 13/06.
+**Situação:** implementada em 14/06/2026.
 
-Professores e administradores consultam a frequência de um aluno.
+O professor consulta alunos vinculados às próprias turmas. O administrador
+pode consultar qualquer aluno.
 
 ### `GET /api/alunos/me/frequencia`
 
-**Situação:** planejada para 13/06.
+**Situação:** implementada em 14/06/2026.
 
 O aluno autenticado consulta apenas a própria frequência.
 
@@ -348,7 +409,12 @@ Resposta das duas consultas:
     {
       "turmaId": 1,
       "nome": "Laboratório de Software",
+      "codigo": "LAB-SW-01",
+      "totalAulas": 4,
+      "presencas": 3,
+      "faltas": 1,
       "percentualPresenca": 75,
+      "baixaFrequencia": false,
       "historico": [
         {
           "aulaId": 1,
