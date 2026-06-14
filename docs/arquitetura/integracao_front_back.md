@@ -1,228 +1,361 @@
 # Integração entre Front-end e Back-end
 
-Este documento define como a aplicação Next.js deve se comunicar com a API
-NestJS. O objetivo é manter os formatos das requisições previsíveis e evitar
-diferenças entre o que a interface envia e o que o back-end espera receber.
+Este documento define o padrão de comunicação entre o front-end desenvolvido em Next.js e a API REST desenvolvida em NestJS.
 
-## Situação atual
+O objetivo é manter as requisições e respostas previsíveis, reduzir divergências entre as duas aplicações e facilitar a implementação das telas do sistema.
 
-O back-end já disponibiliza rotas para autenticação, perfil, administração de
-usuários, turmas, aulas, frequências, dashboard e relatórios. O front-end está
-configurado com Next.js, mas ainda precisa conectar suas telas a essas rotas.
+Os formatos completos dos corpos das requisições e respostas estão documentados em `backend/CONTRATO_API.md`. Sempre que uma rota, campo ou regra da API for alterada, o contrato também deverá ser atualizado.
 
-O arquivo `backend/CONTRATO_API.md` é a referência principal dos corpos das
-requisições e respostas. Quando uma rota for alterada, o contrato também deve
-ser atualizado.
+---
 
-## Endereços locais
+## 1. Situação atual
 
-| Aplicação | Endereço padrão |
-|---|---|
-| Front-end | `http://localhost:3000` |
-| API | `http://localhost:3333/api` |
+O back-end já disponibiliza recursos para:
 
-No back-end, a variável `FRONTEND_URL` define qual origem pode acessar a API
-por meio do CORS:
+* autenticação e encerramento de sessão;
+* consulta e atualização de perfil;
+* administração de alunos e professores;
+* gerenciamento de turmas;
+* criação de aulas;
+* registro e consulta de frequências;
+* consulta do dashboard;
+* geração e exportação de relatórios.
+
+O front-end possui a estrutura inicial em Next.js, mas ainda precisa integrar suas páginas e componentes às rotas disponíveis na API.
+
+Este documento descreve o padrão recomendado para essa integração. As pastas e arquivos sugeridos para o front-end ainda deverão ser criados durante a implementação.
+
+---
+
+## 2. Endereços locais
+
+| Aplicação | Endereço padrão             |
+| --------- | --------------------------- |
+| Front-end | `http://localhost:3000`     |
+| API       | `http://localhost:3333/api` |
+
+No back-end, a variável `FRONTEND_URL` define qual origem pode acessar a API por meio do CORS:
 
 ```env
 FRONTEND_URL=http://localhost:3000
 ```
 
-Para o front-end, recomenda-se configurar o endereço da API em uma variável
-pública de ambiente:
+No front-end, o endereço-base da API deverá ser definido em uma variável pública de ambiente:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3333/api
 ```
 
-Essa variável ainda precisa ser adicionada quando a integração for iniciada.
+Essa variável deverá ser adicionada ao arquivo `.env.local` do front-end quando a integração for iniciada.
 
-## Formato da comunicação
+---
 
-As aplicações se comunicam por HTTP e trocam dados em JSON. Requisições que
-enviam conteúdo devem informar:
+## 3. Formato da comunicação
+
+O front-end e o back-end se comunicam por HTTP e utilizam JSON para troca de dados.
+
+As requisições que enviam conteúdo devem incluir o cabeçalho:
 
 ```text
 Content-Type: application/json
 ```
 
-As rotas protegidas também exigem:
+As rotas protegidas também exigem o token da sessão:
 
 ```text
 Authorization: Bearer <token>
 ```
 
-## Fluxo de autenticação
+O front-end não deve acessar diretamente o arquivo SQLite. Toda leitura ou alteração de dados deve ocorrer por meio da API.
+
+---
+
+## 4. Fluxo de autenticação
+
+O fluxo de autenticação deve seguir estas etapas:
 
 1. O usuário informa e-mail e senha no front-end.
-2. O front-end envia `POST /api/auth/login`.
-3. A API valida as credenciais e retorna o usuário e o token da sessão.
-4. O front-end mantém o token durante a sessão.
-5. As próximas requisições protegidas enviam o token como `Bearer`.
-6. No logout, o front-end envia `POST /api/auth/logout`.
-7. A API revoga a sessão e o front-end remove o token local.
+2. O front-end envia uma requisição para `POST /auth/login`.
+3. A API valida as credenciais.
+4. A API retorna o token da sessão e os dados do usuário autenticado.
+5. O front-end armazena o token durante a sessão.
+6. As requisições protegidas enviam o token no cabeçalho `Authorization`.
+7. Ao carregar novamente a aplicação, o front-end pode consultar `GET /auth/me` para validar a sessão.
+8. No logout, o front-end envia `POST /auth/logout`.
+9. A API revoga a sessão e o front-end remove o token armazenado.
 
-Exemplo de login:
+### Exemplo de login
 
 ```javascript
-const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
+const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email,
+      senha,
+    }),
   },
-  body: JSON.stringify({ email, senha }),
-});
+);
 
 const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.message || "Não foi possível realizar o login.");
+}
 ```
 
-Exemplo de rota protegida:
+### Exemplo de requisição protegida
 
 ```javascript
-const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/turmas`, {
-  headers: {
-    Authorization: `Bearer ${token}`,
+const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/turmas`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   },
-});
+);
 ```
 
-## Rotas disponíveis
+O back-end continua responsável pela validação definitiva das permissões. Ocultar uma funcionalidade na interface não substitui a autorização realizada pela API.
 
-### Autenticação
+---
 
-| Método | Rota | Finalidade |
-|---|---|---|
-| `POST` | `/auth/login` | Iniciar a sessão. |
-| `GET` | `/auth/me` | Consultar o usuário autenticado. |
-| `POST` | `/auth/logout` | Encerrar a sessão. |
+## 5. Rotas disponíveis
 
-### Turmas e usuários
+As rotas apresentadas nesta seção consideram a URL-base:
 
-| Método | Rota | Finalidade |
-|---|---|---|
-| `GET` | `/turmas` | Listar as turmas permitidas para o usuário. |
-| `POST` | `/turmas` | Criar uma turma. |
-| `GET` | `/turmas/:id` | Consultar uma turma. |
-| `PATCH` | `/turmas/:id` | Editar uma turma. |
-| `DELETE` | `/turmas/:id` | Remover uma turma como administrador. |
-| `GET` | `/turmas/:id/alunos` | Listar os alunos da turma. |
-| `POST` | `/turmas/:id/alunos` | Vincular um aluno à turma. |
-| `DELETE` | `/turmas/:id/alunos/:alunoId` | Desvincular um aluno da turma. |
-| `GET` | `/alunos` | Listar alunos cadastrados. |
-| `GET` | `/professores` | Listar professores. |
+```text
+http://localhost:3333/api
+```
 
-### Perfil e administração
+Por isso, os caminhos são apresentados sem repetir o prefixo `/api`.
 
-| Método | Rota | Finalidade |
-|---|---|---|
-| `GET` | `/perfil` | Consultar o próprio perfil. |
-| `PATCH` | `/perfil` | Atualizar o próprio perfil. |
-| `PATCH` | `/perfil/senha` | Alterar a própria senha. |
-| `POST` | `/alunos` | Cadastrar aluno como administrador. |
-| `GET/PATCH/DELETE` | `/alunos/:id` | Consultar, editar ou desativar aluno. |
-| `POST` | `/professores` | Cadastrar professor como administrador. |
-| `GET/PATCH/DELETE` | `/professores/:id` | Consultar, editar ou desativar professor. |
+### 5.1 Autenticação
 
-### Aulas e frequências
+| Método | Rota           | Finalidade                         |
+| ------ | -------------- | ---------------------------------- |
+| `POST` | `/auth/login`  | Iniciar uma sessão.                |
+| `GET`  | `/auth/me`     | Consultar o usuário autenticado.   |
+| `POST` | `/auth/logout` | Encerrar e revogar a sessão atual. |
 
-| Método | Rota | Finalidade |
-|---|---|---|
-| `POST` | `/turmas/:turmaId/aulas` | Criar uma aula. |
-| `GET` | `/turmas/:turmaId/aulas` | Listar as aulas da turma. |
-| `PUT` | `/aulas/:aulaId/frequencias` | Registrar ou corrigir a chamada completa. |
-| `GET` | `/alunos/:alunoId/frequencia` | Consultar a frequência de um aluno autorizado. |
-| `GET` | `/alunos/me/frequencia` | Consultar a frequência do aluno autenticado. |
+---
 
-### Dashboard e relatórios
+### 5.2 Perfil do usuário
 
-| Método | Rota | Finalidade |
-|---|---|---|
-| `GET` | `/dashboard` | Consultar totais e alertas de baixa frequência. |
-| `GET` | `/relatorios/alunos/:alunoId` | Consultar relatório individual. |
-| `GET` | `/relatorios/alunos-baixa-frequencia` | Consultar alunos abaixo de 75%. |
-| `GET` | `/relatorios/turmas/:turmaId` | Consultar relatório de uma turma. |
-| `GET` | `/relatorios/.../exportar?formato=pdf` | Baixar relatório em PDF ou XLSX. |
+| Método  | Rota            | Finalidade                   |
+| ------- | --------------- | ---------------------------- |
+| `GET`   | `/perfil`       | Consultar os próprios dados. |
+| `PATCH` | `/perfil`       | Atualizar os próprios dados. |
+| `PATCH` | `/perfil/senha` | Alterar a própria senha.     |
 
-Os exemplos completos dos corpos e respostas estão no contrato da API.
+---
 
-## Organização recomendada no front-end
+### 5.3 Administração de alunos
 
-Para evitar requisições espalhadas pelas páginas, a integração pode ser
-centralizada em uma camada própria:
+As operações de cadastro, edição, redefinição de senha e desativação são destinadas ao administrador.
+
+| Método   | Rota                          | Finalidade                           |
+| -------- | ----------------------------- | ------------------------------------ |
+| `GET`    | `/alunos`                     | Listar os alunos cadastrados.        |
+| `POST`   | `/alunos`                     | Cadastrar um aluno.                  |
+| `GET`    | `/alunos/:id`                 | Consultar um aluno e suas turmas.    |
+| `PATCH`  | `/alunos/:id`                 | Editar os dados de um aluno.         |
+| `DELETE` | `/alunos/:id`                 | Desativar um aluno.                  |
+| `POST`   | `/alunos/:id/redefinir-senha` | Definir uma nova senha para o aluno. |
+
+---
+
+### 5.4 Administração de professores
+
+| Método   | Rota                               | Finalidade                               |
+| -------- | ---------------------------------- | ---------------------------------------- |
+| `GET`    | `/professores`                     | Listar os professores cadastrados.       |
+| `POST`   | `/professores`                     | Cadastrar um professor.                  |
+| `GET`    | `/professores/:id`                 | Consultar um professor e suas turmas.    |
+| `PATCH`  | `/professores/:id`                 | Editar os dados de um professor.         |
+| `DELETE` | `/professores/:id`                 | Desativar um professor.                  |
+| `POST`   | `/professores/:id/redefinir-senha` | Definir uma nova senha para o professor. |
+
+---
+
+### 5.5 Gerenciamento de turmas
+
+| Método   | Rota                          | Finalidade                                   |
+| -------- | ----------------------------- | -------------------------------------------- |
+| `GET`    | `/turmas`                     | Listar as turmas disponíveis para o usuário. |
+| `POST`   | `/turmas`                     | Criar uma turma.                             |
+| `GET`    | `/turmas/:id`                 | Consultar os dados de uma turma.             |
+| `PATCH`  | `/turmas/:id`                 | Editar os dados de uma turma.                |
+| `DELETE` | `/turmas/:id`                 | Remover uma turma como administrador.        |
+| `GET`    | `/turmas/:id/alunos`          | Listar os alunos vinculados à turma.         |
+| `POST`   | `/turmas/:id/alunos`          | Vincular um aluno à turma.                   |
+| `DELETE` | `/turmas/:id/alunos/:alunoId` | Desvincular um aluno da turma.               |
+
+O professor deve visualizar e alterar apenas as turmas pelas quais é responsável. O administrador pode acessar todas as turmas.
+
+---
+
+### 5.6 Aulas e frequências
+
+| Método | Rota                          | Finalidade                                                     |
+| ------ | ----------------------------- | -------------------------------------------------------------- |
+| `POST` | `/turmas/:turmaId/aulas`      | Criar uma aula para a turma.                                   |
+| `GET`  | `/turmas/:turmaId/aulas`      | Listar as aulas da turma.                                      |
+| `PUT`  | `/aulas/:aulaId/frequencias`  | Registrar ou corrigir a chamada completa.                      |
+| `GET`  | `/alunos/:alunoId/frequencia` | Consultar o histórico e os percentuais de um aluno autorizado. |
+| `GET`  | `/alunos/me/frequencia`       | Consultar a frequência do aluno autenticado.                   |
+
+A chamada deve enviar a situação de todos os alunos atualmente vinculados à turma. O reenvio da chamada atualiza os registros existentes sem criar duplicações.
+
+---
+
+### 5.7 Dashboard
+
+| Método | Rota         | Finalidade                                                              |
+| ------ | ------------ | ----------------------------------------------------------------------- |
+| `GET`  | `/dashboard` | Consultar totais, taxa média de presença e alertas de baixa frequência. |
+
+Para professores, os indicadores devem considerar somente as turmas sob sua responsabilidade.
+
+---
+
+### 5.8 Relatórios
+
+| Método | Rota                                                        | Finalidade                                          |
+| ------ | ----------------------------------------------------------- | --------------------------------------------------- |
+| `GET`  | `/relatorios/alunos/:alunoId`                               | Consultar o relatório individual de um aluno.       |
+| `GET`  | `/relatorios/alunos-baixa-frequencia`                       | Consultar os alunos abaixo do limite de frequência. |
+| `GET`  | `/relatorios/alunos-baixa-frequencia?turmaId=:id`           | Filtrar a baixa frequência por turma.               |
+| `GET`  | `/relatorios/turmas/:turmaId`                               | Consultar o histórico completo de uma turma.        |
+| `GET`  | `/relatorios/alunos/:alunoId/exportar?formato=pdf`          | Exportar o relatório individual em PDF.             |
+| `GET`  | `/relatorios/alunos/:alunoId/exportar?formato=xlsx`         | Exportar o relatório individual em XLSX.            |
+| `GET`  | `/relatorios/alunos-baixa-frequencia/exportar?formato=pdf`  | Exportar a lista de baixa frequência em PDF.        |
+| `GET`  | `/relatorios/alunos-baixa-frequencia/exportar?formato=xlsx` | Exportar a lista de baixa frequência em XLSX.       |
+| `GET`  | `/relatorios/turmas/:turmaId/exportar?formato=pdf`          | Exportar o relatório da turma em PDF.               |
+| `GET`  | `/relatorios/turmas/:turmaId/exportar?formato=xlsx`         | Exportar o relatório da turma em XLSX.              |
+
+Os exemplos completos dos corpos, parâmetros e respostas estão disponíveis em `backend/CONTRATO_API.md`.
+
+---
+
+## 6. Organização recomendada no front-end
+
+Para evitar requisições HTTP espalhadas entre páginas e componentes, recomenda-se centralizar a integração em uma camada de serviços.
 
 ```text
 frontend/src/
 ├── app/
 ├── components/
-├── services/
-│   ├── api.js
-│   ├── auth.js
-│   ├── usuarios.js
-│   ├── turmas.js
-│   ├── frequencias.js
-│   └── relatorios.js
-└── contexts/
-    └── auth-context.jsx
+├── contexts/
+│   └── auth-context.jsx
+└── services/
+    ├── api.js
+    ├── auth.js
+    ├── usuarios.js
+    ├── turmas.js
+    ├── frequencias.js
+    └── relatorios.js
 ```
 
-Essa estrutura ainda não foi criada. Ela representa o padrão recomendado para
-a implementação: `api.js` concentra a URL, os cabeçalhos e o tratamento básico
-das respostas; os demais arquivos agrupam as chamadas de cada funcionalidade.
+Responsabilidades sugeridas:
 
-## Tratamento de respostas
+* `api.js`: URL-base, cabeçalhos, token e tratamento comum de respostas;
+* `auth.js`: login, consulta da sessão e logout;
+* `usuarios.js`: perfil, alunos e professores;
+* `turmas.js`: turmas e vínculos de alunos;
+* `frequencias.js`: aulas, chamadas e históricos;
+* `relatorios.js`: dashboard, relatórios e exportações;
+* `auth-context.jsx`: estado do usuário autenticado e controle da sessão.
 
-O front-end deve verificar `response.ok` antes de considerar uma operação bem-
-sucedida. Os principais códigos esperados são:
+Essa estrutura representa uma recomendação para a implementação e ainda deverá ser criada no front-end.
 
-| Código | Significado | Comportamento esperado na interface |
-|---:|---|---|
-| `200` | Consulta ou alteração concluída. | Atualizar a tela e informar sucesso quando necessário. |
-| `201` | Registro criado. | Exibir o novo item ou retornar à listagem. |
-| `400` | Dados inválidos ou incompletos. | Mostrar a mensagem próxima ao formulário. |
-| `401` | Sessão ausente, inválida ou expirada. | Limpar a sessão e retornar ao login. |
-| `403` | Usuário sem permissão. | Informar que a ação não está disponível. |
-| `404` | Registro não encontrado. | Informar que o conteúdo não existe. |
-| `409` | Conflito ou dado duplicado. | Apresentar a mensagem devolvida pela API. |
-| `500` | Erro interno. | Informar falha temporária sem expor detalhes técnicos. |
+---
 
-Durante uma requisição, botões de envio devem permanecer desabilitados para
-evitar ações repetidas. A interface também deve apresentar estados de
-carregamento e mensagens de erro retornadas pela API.
+## 7. Tratamento de respostas
 
-## Regras importantes para a integração
+O front-end deve verificar `response.ok` antes de considerar uma requisição bem-sucedida.
 
-- O front-end nunca deve acessar o arquivo SQLite diretamente.
-- As permissões exibidas na interface devem acompanhar o perfil autenticado.
-- O back-end continua responsável pela validação definitiva das permissões.
-- Datas de aula devem usar o formato `AAAA-MM-DD`.
-- Horários devem usar o formato `HH:mm`.
-- A situação da frequência aceita apenas `presente` ou `falta`.
-- A chamada deve enviar todos os alunos vinculados à turma.
-- Uma frequência abaixo de `75%` deve ser apresentada como baixa frequência.
-- Alterações nas respostas da API devem ser registradas no contrato antes da
-  atualização do front-end.
+| Código | Significado                           | Comportamento esperado                                           |
+| -----: | ------------------------------------- | ---------------------------------------------------------------- |
+|  `200` | Consulta ou alteração concluída.      | Atualizar a interface e informar sucesso quando necessário.      |
+|  `201` | Registro criado.                      | Exibir o novo item ou retornar à listagem.                       |
+|  `400` | Dados inválidos ou incompletos.       | Exibir a mensagem próxima ao formulário ou campo correspondente. |
+|  `401` | Sessão ausente, inválida ou expirada. | Limpar os dados da sessão e redirecionar para o login.           |
+|  `403` | Usuário sem permissão.                | Informar que a ação não está disponível para aquele perfil.      |
+|  `404` | Registro não encontrado.              | Informar que o conteúdo solicitado não existe.                   |
+|  `409` | Conflito ou dado duplicado.           | Apresentar a mensagem devolvida pela API.                        |
+|  `500` | Erro interno.                         | Informar uma falha temporária sem expor detalhes técnicos.       |
 
-## Sequência recomendada de implementação
+Durante o envio de uma requisição, os botões de confirmação devem permanecer desabilitados para evitar ações duplicadas.
+
+A interface também deve apresentar:
+
+* estados de carregamento;
+* mensagens de sucesso;
+* mensagens de erro;
+* confirmação para ações destrutivas;
+* feedback após criação, edição ou remoção de registros.
+
+---
+
+## 8. Regras de integração
+
+A integração deve respeitar as seguintes regras:
+
+* o front-end nunca deve acessar o banco SQLite diretamente;
+* todas as operações devem ocorrer por meio da API REST;
+* o token deve ser enviado nas rotas protegidas;
+* as funcionalidades apresentadas devem considerar o perfil autenticado;
+* o back-end continua responsável pela autorização definitiva;
+* datas de aula devem usar o formato `AAAA-MM-DD`;
+* horários devem usar o formato `HH:mm`;
+* a situação da frequência aceita apenas `presente` ou `falta`;
+* a chamada deve incluir todos os alunos vinculados à turma;
+* frequências abaixo do limite definido no back-end devem ser apresentadas como baixa frequência;
+* alterações nas rotas, campos ou respostas devem ser registradas no contrato da API antes da atualização do front-end.
+
+O limite padrão de baixa frequência é `75%`, mas esse valor pode ser alterado no back-end por meio da variável `LOW_ATTENDANCE_THRESHOLD`. Por isso, sempre que possível, o front-end deve utilizar o valor retornado pela API, evitando repetir uma regra fixa na interface.
+
+---
+
+## 9. Sequência recomendada de implementação
+
+A integração pode ser realizada na seguinte ordem:
 
 1. Configurar `NEXT_PUBLIC_API_URL`.
 2. Criar o cliente HTTP compartilhado.
-3. Integrar login, consulta da sessão e logout.
-4. Integrar listagem de turmas e alunos.
-5. Integrar as telas administrativas de alunos e professores.
-6. Integrar criação de aulas e registro da chamada.
-7. Integrar dashboard, relatórios e downloads.
-8. Integrar a consulta de frequência do aluno.
-9. Validar os três perfis e os estados de erro.
+3. Implementar login, consulta da sessão e logout.
+4. Criar o contexto de autenticação.
+5. Integrar a listagem e o gerenciamento de turmas.
+6. Integrar a listagem e o vínculo de alunos.
+7. Integrar as telas administrativas de alunos e professores.
+8. Integrar a criação de aulas.
+9. Integrar o registro e a correção da chamada.
+10. Integrar o dashboard.
+11. Integrar os relatórios e os downloads.
+12. Integrar a consulta de frequência do aluno.
+13. Validar os fluxos dos perfis de administrador, professor e aluno.
+14. Validar estados de carregamento, ausência de dados e respostas de erro.
 
-## Documentos relacionados
+---
 
-- [Arquitetura do Sistema](arquitetura_sistema.md)
-- [Banco de Dados](banco_de_dados.md)
-- [Contrato da API no GitHub](https://github.com/menali17/Desafio_4_Trainee_EngNet/blob/developer/backend/CONTRATO_API.md)
+## 10. Documentos relacionados
 
-## Histórico de Versão
+* [Arquitetura do Sistema](arquitetura_sistema.md)
+* [Banco de Dados](banco_de_dados.md)
+* [Contrato da API no GitHub](https://github.com/menali17/Desafio_4_Trainee_EngNet/blob/developer/backend/CONTRATO_API.md)
 
-| Versão | Data | Descrição | Autor(es) |
-|---|---|---|---|
-| 1.0 | 14/06/2026 | Definição do padrão de integração entre Next.js e a API NestJS. | Enzo Menali |
-| 1.1 | 14/06/2026 | Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios. | Enzo Menali |
+---
+
+## Histórico de versão
+
+| Versão | Data       | Descrição                                                                                          | Autor(es)   |
+| ------ | ---------- | -------------------------------------------------------------------------------------------------- | ----------- |
+| 1.0    | 14/06/2026 | Definição inicial do padrão de integração entre Next.js e a API NestJS.                            | Enzo Menali |
+| 1.1    | 14/06/2026 | Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios.                  | Enzo Menali |
+| 1.2    | 14/06/2026 | Reorganização das rotas, esclarecimento da situação atual e detalhamento das regras de integração. | Enzo Menali |
