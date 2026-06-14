@@ -432,7 +432,11 @@ Resposta das duas consultas:
 
 ### `GET /api/dashboard`
 
-**Situação:** planejada para 14/06.
+**Situação:** implementada em 14/06/2026.
+
+Disponível para professores e administradores. O professor recebe indicadores
+somente das turmas sob sua responsabilidade. O administrador recebe os dados
+gerais do sistema.
 
 ```json
 {
@@ -449,6 +453,119 @@ Resposta das duas consultas:
       "percentualPresenca": 50
     }
   ]
+}
+```
+
+Alunos sem aulas finalizadas não são classificados como baixa frequência. O
+alerta é exibido apenas quando existe ao menos uma chamada registrada e o
+percentual é menor que `75%`.
+
+## Relatórios
+
+As rotas de relatórios estão disponíveis para professores e administradores.
+O professor acessa somente dados relacionados às próprias turmas.
+
+### `GET /api/relatorios/alunos/:alunoId`
+
+**Situação:** implementada em 14/06/2026.
+
+Gera o relatório individual com resumo geral, percentuais por turma e histórico
+de presenças e faltas. A resposta possui o mesmo conteúdo da consulta de
+frequência do aluno, acrescido do campo `geradoEm`.
+
+```json
+{
+  "geradoEm": "2026-06-14T18:00:00.000Z",
+  "aluno": {
+    "id": 3,
+    "nome": "Ana Souza",
+    "matricula": "20260001"
+  },
+  "resumoGeral": {
+    "totalAulas": 4,
+    "presencas": 3,
+    "faltas": 1,
+    "percentualPresenca": 75,
+    "baixaFrequencia": false
+  },
+  "turmas": []
+}
+```
+
+### `GET /api/relatorios/alunos-baixa-frequencia`
+
+**Situação:** implementada em 14/06/2026.
+
+Lista os alunos com percentual abaixo do limite configurado. O filtro de turma
+é opcional:
+
+```text
+GET /api/relatorios/alunos-baixa-frequencia?turmaId=1
+```
+
+Resposta:
+
+```json
+{
+  "geradoEm": "2026-06-14T18:00:00.000Z",
+  "limiteBaixaFrequencia": 75,
+  "turma": {
+    "id": 1,
+    "nome": "Laboratório de Software",
+    "codigo": "LAB-SW-01"
+  },
+  "totalAlunos": 1,
+  "alunos": [
+    {
+      "id": 3,
+      "nome": "Ana Souza",
+      "matricula": "20260001",
+      "turma": {
+        "id": 1,
+        "nome": "Laboratório de Software",
+        "codigo": "LAB-SW-01"
+      },
+      "totalAulas": 4,
+      "presencas": 2,
+      "faltas": 2,
+      "percentualPresenca": 50
+    }
+  ]
+}
+```
+
+Quando `turmaId` não é informado, o campo `turma` da resposta recebe `null` e
+o relatório considera todas as turmas permitidas para o usuário.
+
+### `GET /api/relatorios/turmas/:turmaId`
+
+**Situação:** implementada em 14/06/2026.
+
+Gera o histórico completo da turma, com resumo geral, percentual de cada aluno
+e registros de cada aula finalizada.
+
+```json
+{
+  "geradoEm": "2026-06-14T18:00:00.000Z",
+  "turma": {
+    "id": 1,
+    "nome": "Laboratório de Software",
+    "codigo": "LAB-SW-01",
+    "horario": "Segunda, 19:00",
+    "professor": {
+      "id": 2,
+      "nome": "Professor EngNet"
+    }
+  },
+  "resumo": {
+    "totalAlunos": 5,
+    "totalAulas": 4,
+    "presencas": 17,
+    "faltas": 3,
+    "percentualPresenca": 85
+  },
+  "alunos": [],
+  "aulas": []
 }
 ```
 

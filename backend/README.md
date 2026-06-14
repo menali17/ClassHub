@@ -90,6 +90,22 @@ A chamada deve conter todos os alunos vinculados à turma, marcados como
 `presente` ou `falta`. O reenvio atualiza a chamada sem duplicar registros.
 Somente percentuais abaixo de `75%` são classificados como baixa frequência.
 
+## Dashboard e relatórios
+
+As rotas abaixo exigem autenticação de professor ou administrador:
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/api/dashboard` | Retorna totais, taxa média de presença e alertas de baixa frequência. |
+| `GET` | `/api/relatorios/alunos/:alunoId` | Gera o relatório individual do aluno. |
+| `GET` | `/api/relatorios/alunos-baixa-frequencia` | Lista alunos abaixo do limite de frequência. |
+| `GET` | `/api/relatorios/alunos-baixa-frequencia?turmaId=:id` | Filtra os alunos por turma. |
+| `GET` | `/api/relatorios/turmas/:turmaId` | Gera o histórico completo da turma. |
+
+Os indicadores do professor consideram apenas suas turmas. Os relatórios são
+gerados em JSON para consumo pelo front-end e incluem somente aulas com chamada
+finalizada nos cálculos de presença.
+
 ## Onde mexer
 
 ```text
@@ -101,12 +117,12 @@ src/database          # cria e acessa o banco SQLite
 src/modules/auth      # autenticacao e sessoes
 src/modules/turmas    # turmas e vinculo de alunos
 src/modules/frequencias # aulas, chamadas e historicos
+src/modules/relatorios # dashboard e relatorios academicos
 ```
 
 ## Próximo passo
 
-Implementar os indicadores do dashboard e os relatórios usando os dados de
-aulas e frequências já persistidos.
+Integrar as rotas disponíveis com as telas do front-end.
 
 ## Integração com o front-end
 
