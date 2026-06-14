@@ -6,6 +6,19 @@ class RelatoriosController {
   constructor(relatoriosService) {
     this.relatoriosService = relatoriosService;
   }
+  async exportAllStudents(format, request, response) {
+    return this.sendExport(
+      response,
+      await this.relatoriosService.exportAllStudentsReport(format, request.user),
+    );
+  }
+
+  async exportAllClasses(format, request, response) {
+    return this.sendExport(
+      response,
+      await this.relatoriosService.exportAllClassesReport(format, request.user),
+    );
+  }
 
   getLowAttendanceReport(classId, request) {
     return this.relatoriosService.getLowAttendanceReport(classId, request.user);
@@ -77,6 +90,19 @@ UseGuards(AuthGuard)(
   "getIndividualReport",
   Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "getIndividualReport"),
 );
+Query("formato")(RelatoriosController.prototype, "exportAllStudents", 0);
+Req()(RelatoriosController.prototype, "exportAllStudents", 1);
+Res()(RelatoriosController.prototype, "exportAllStudents", 2);
+UseGuards(AuthGuard)(
+  RelatoriosController.prototype,
+  "exportAllStudents",
+  Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "exportAllStudents"),
+);
+Get("alunos/exportar")(
+  RelatoriosController.prototype,
+  "exportAllStudents",
+  Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "exportAllStudents"),
+);
 Get("alunos/:alunoId")(
   RelatoriosController.prototype,
   "getIndividualReport",
@@ -97,6 +123,20 @@ UseGuards(AuthGuard)(
   "getClassReport",
   Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "getClassReport"),
 );
+Query("formato")(RelatoriosController.prototype, "exportAllClasses", 0);
+Req()(RelatoriosController.prototype, "exportAllClasses", 1);
+Res()(RelatoriosController.prototype, "exportAllClasses", 2);
+UseGuards(AuthGuard)(
+  RelatoriosController.prototype,
+  "exportAllClasses",
+  Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "exportAllClasses"),
+);
+Get("turmas/exportar")(
+  RelatoriosController.prototype,
+  "exportAllClasses",
+  Object.getOwnPropertyDescriptor(RelatoriosController.prototype, "exportAllClasses"),
+);
+
 Get("turmas/:turmaId")(
   RelatoriosController.prototype,
   "getClassReport",
