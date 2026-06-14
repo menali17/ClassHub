@@ -3,6 +3,93 @@ const ExcelJS = require("exceljs");
 const PDFDocument = require("pdfkit");
 
 class ExportacoesService {
+  async allStudents(report, format) {
+  const normalizedFormat = this.validateFormat(format);
+  const baseName = "relatorio-geral-alunos";
+
+  if (normalizedFormat === "xlsx") {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Alunos");
+
+    sheet.columns = [
+      { header: "Aluno", key: "nome", width: 28 },
+      { header: "Matricula", key: "matricula", width: 16 },
+      { header: "Turma", key: "turma", width: 28 },
+      { header: "Aulas", key: "totalAulas", width: 10 },
+      { header: "Presencas", key: "presencas", width: 12 },
+      { header: "Faltas", key: "faltas", width: 10 },
+      { header: "Percentual", key: "percentual", width: 14 },
+      { header: "Situacao", key: "situacao", width: 18 },
+    ];
+
+    report.alunos.forEach((student) => {
+      sheet.addRow({
+        ...student,
+        turma: student.turma.nome,
+        percentual: `${student.percentualPresenca}%`,
+        situacao: student.baixaFrequencia ? "Baixa frequencia" : "Regular",
+      });
+    });
+
+    this.styleHeader(sheet);
+    return this.excelResult(workbook, baseName);
+  }
+
+  return this.pdfResult(baseName, (document) => {
+    this.pdfTitle(document, "Relatorio Geral por Aluno");
+    document.text(`Total de alunos: ${report.totalAlunos}`);
+    document.text(`Frequencia media: ${report.resumo.percentualPresenca}%`);
+    document.moveDown();
+
+    report.alunos.forEach((student) => {
+      document.text(
+        `${student.nome} | ${student.matricula || "-"} | ${student.turma.nome} | ${student.percentualPresenca}% | ${student.baixaFrequencia ? "Baixa frequencia" : "Regular"}`,
+      );
+    });
+  });
+}
+
+async allClasses(report, format) {
+  const normalizedFormat = this.validateFormat(format);
+  const baseName = "relatorio-geral-turmas";
+
+  if (normalizedFormat === "xlsx") {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Turmas");
+
+    sheet.columns = [
+      { header: "Turma", key: "nome", width: 28 },
+      { header: "Codigo", key: "codigo", width: 16 },
+      { header: "Alunos", key: "totalAlunos", width: 10 },
+      { header: "Aulas", key: "totalAulas", width: 10 },
+      { header: "Presencas", key: "presencas", width: 12 },
+      { header: "Faltas", key: "faltas", width: 10 },
+      { header: "Frequencia media", key: "percentual", width: 18 },
+    ];
+
+    report.turmas.forEach((turma) => {
+      sheet.addRow({
+        ...turma,
+        percentual: `${turma.percentualPresenca}%`,
+      });
+    });
+
+    this.styleHeader(sheet);
+    return this.excelResult(workbook, baseName);
+  }
+
+  return this.pdfResult(baseName, (document) => {
+    this.pdfTitle(document, "Relatorio Geral por Turma");
+    document.text(`Total de turmas: ${report.totalTurmas}`);
+    document.moveDown();
+
+    report.turmas.forEach((turma) => {
+      document.text(
+        `${turma.nome} | ${turma.codigo || "-"} | ${turma.totalAlunos} alunos | ${turma.percentualPresenca}%`,
+      );
+    });
+  });
+}
   async individual(report, format) {
     const normalizedFormat = this.validateFormat(format);
     const baseName = `frequencia-${this.slug(report.aluno.nome)}`;

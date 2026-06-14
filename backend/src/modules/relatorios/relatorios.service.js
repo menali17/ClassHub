@@ -172,6 +172,94 @@ class RelatoriosService {
     };
   }
 
+  getAllStudentsReport(user) {
+  this.ensureStaff(user);
+
+  const summaries = this.toAttendanceSummaries(
+    this.databaseService.listAttendanceSummaries(user.perfil, user.id),
+  );
+
+  const totals = this.sumSummaries(summaries);
+
+  return {
+    geradoEm: new Date().toISOString(),
+    totalAlunos: summaries.length,
+    resumo: {
+      totalAulas: totals.totalAulas,
+      presencas: totals.presencas,
+      faltas: totals.faltas,
+      percentualPresenca: this.calculatePercentage(totals.presencas, totals.totalAulas),
+    },
+    alunos: summaries.map((summary) => ({
+      id: summary.aluno.id,
+      nome: summary.aluno.nome,
+      matricula: summary.aluno.matricula,
+      turma: summary.turma,
+      totalAulas: summary.totalAulas,
+      presencas: summary.presencas,
+      faltas: summary.faltas,
+      percentualPresenca: summary.percentualPresenca,
+      baixaFrequencia: summary.baixaFrequencia,
+    })),
+  };
+}
+
+getAllClassesReport(user) {
+  this.ensureStaff(user);
+
+  const summaries = this.toAttendanceSummaries(
+    this.databaseService.listAttendanceSummaries(user.perfil, user.id),
+  );
+
+  const turmasMap = new Map();
+
+  summaries.forEach((summary) => {
+    const turmaId = summary.turma.id;
+
+    if (!turmasMap.has(turmaId)) {
+      turmasMap.set(turmaId, {
+        ...summary.turma,
+        totalAlunos: 0,
+        totalAulas: 0,
+        presencas: 0,
+        faltas: 0,
+        percentualPresenca: 0,
+      });
+    }
+
+    const turma = turmasMap.get(turmaId);
+    turma.totalAlunos += 1;
+    turma.totalAulas += summary.totalAulas;
+    turma.presencas += summary.presencas;
+    turma.faltas += summary.faltas;
+  });
+
+  const turmas = Array.from(turmasMap.values()).map((turma) => ({
+    ...turma,
+    percentualPresenca: this.calculatePercentage(turma.presencas, turma.totalAulas),
+  }));
+
+  return {
+    geradoEm: new Date().toISOString(),
+    totalTurmas: turmas.length,
+    turmas,
+  };
+}
+
+async exportAllStudentsReport(format, user) {
+  return this.exportacoesService.allStudents(
+    this.getAllStudentsReport(user),
+    format,
+  );
+}
+
+async exportAllClassesReport(format, user) {
+  return this.exportacoesService.allClasses(
+    this.getAllClassesReport(user),
+    format,
+  );
+}
+
   async exportIndividualReport(studentIdValue, format, user) {
     return this.exportacoesService.individual(
       this.getIndividualReport(studentIdValue, user),

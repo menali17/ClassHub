@@ -113,3 +113,7 @@ export const updatePerfil = (data) =>
 
 export const updateSenha = (data) =>
   request("/auth/senha", { method: "PATCH", body: JSON.stringify(data) });
+
+export const getAuthToken = () => getToken();
+
+export const API_BASE_URL = BASE;
