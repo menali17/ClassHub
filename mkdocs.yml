@@ -65,7 +65,9 @@ nav:
       - Metodologia: planejamento/metodologia.md
 
   - Arquitetura e Desenvolvimento:
+      - Arquitetura do Sistema: arquitetura/arquitetura_sistema.md
       - Banco de Dados: arquitetura/banco_de_dados.md
+      - Integração Front-end e Back-end: arquitetura/integracao_front_back.md
 
   - Boas Práticas:
       - Visão Geral: boas_praticas/index.md
