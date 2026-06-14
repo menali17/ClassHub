@@ -1,61 +1,155 @@
-# Desafio 4 Trainee EngNet
+# ClassHub
 
-Sistema de gestao de presenca academica para aulas praticas e laboratoriais.
+Sistema de gestão de presença acadêmica desenvolvido durante o Desafio 4 do Programa Trainee EngNet.
 
-Esta branch deixa apenas a base inicial do front-end e do back-end para a equipe
-comecar o desenvolvimento sem se perder nas pastas.
+A aplicação permite o gerenciamento de alunos, professores, turmas, aulas e registros de frequência, além da geração de relatórios em PDF e Excel.
 
-## Stack
+---
 
-- Front-end: Next.js, JavaScript, Tailwind CSS e HTML semantico.
-- Back-end: NestJS e API REST.
-- Documentacao: MkDocs.
+## Tecnologias utilizadas
 
-## Estrutura
+### Front-end
+
+* Next.js
+* JavaScript
+* Tailwind CSS
+* HTML semântico
+
+### Back-end
+
+* NestJS
+* API REST
+* SQLite
+
+### Documentação
+
+* MkDocs
+
+---
+
+## Estrutura do projeto
 
 ```text
 .
-|-- frontend   # Next.js, Tailwind e telas da aplicacao
-|-- backend    # NestJS e API REST
-|-- docs       # Documentacao do projeto
-`-- mkdocs.yml # Configuracao do site de documentacao
+├── frontend/        # Interface da aplicação desenvolvida com Next.js
+├── backend/         # API REST desenvolvida com NestJS
+├── docs/            # Documentação do projeto
+├── mkdocs.yml       # Configuração da documentação
+├── package.json     # Scripts da aplicação
+└── package-lock.json
 ```
 
-## Como rodar
+---
 
-O frontend e o backend rodam separadamente. Abra dois terminais no VS Code.
+## Funcionalidades
 
-### Terminal 1: back-end
+* Autenticação de usuários
+* Controle de acesso por perfil
+* Cadastro e gerenciamento de alunos
+* Cadastro e gerenciamento de professores
+* Cadastro e gerenciamento de turmas
+* Associação de alunos às turmas
+* Registro de presença em aulas
+* Consulta de frequência individual
+* Dashboard com indicadores acadêmicos
+* Relatórios de frequência por aluno
+* Relatórios de alunos com baixa frequência
+* Relatórios por turma
+* Exportação de relatórios em PDF e Excel
+
+---
+
+## Como executar o projeto
+
+### Pré-requisitos
+
+É necessário possuir instalado:
+
+* Node.js 18 ou superior
+* npm
+
+---
+
+### 1. Clonar o repositório
 
 ```bash
-cd backend
-npm install
-copy .env.example .env
-npm run start:dev
+git clone https://github.com/menali17/ClassHub.git
+cd ClassHub
 ```
 
-### Terminal 2: front-end
+---
+
+### 2. Instalar as dependências
+
+Na raiz do projeto execute:
+
+```bash
+npm install
+```
+
+Instale também as dependências do front-end e back-end:
 
 ```bash
 cd frontend
 npm install
+
+cd ../backend
+npm install
+
+cd ..
+```
+
+---
+
+### 3. Configurar variáveis de ambiente
+
+Back-end:
+
+```bash
+cd backend
+copy .env.example .env
+```
+
+Front-end:
+
+```bash
+cd frontend
 copy .env.example .env.local
+```
+
+---
+
+### 4. Executar a aplicação
+
+Com o script configurado na raiz do projeto, basta executar:
+
+```bash
 npm run dev
 ```
 
-## Onde acessar
+O comando iniciará simultaneamente:
 
-- Front-end: `http://localhost:3000`
-- API: `http://localhost:3333/api`
+* Front-end: http://localhost:3000
+* Back-end: http://localhost:3333/api
 
-## O que tem em cada parte
+---
 
-- Leia [frontend/README.md](frontend/README.md) para mexer nas telas.
-- Leia [backend/README.md](backend/README.md) para mexer na API.
+## Organização do desenvolvimento
 
-## Proximos passos sugeridos
+O projeto utiliza uma estrutura de múltiplos pacotes, permitindo que o front-end e o back-end sejam desenvolvidos separadamente, enquanto a execução durante o desenvolvimento é centralizada por meio do script da raiz do projeto.
 
-- Criar as telas dentro de `frontend/src/app`.
-- Criar os modulos da API dentro de `backend/src`.
-- Definir o banco de dados quando a equipe for implementar persistencia.
-- Integrar o front-end com os endpoints do back-end.
+---
+
+## Documentação
+
+A documentação do projeto está localizada na pasta:
+
+```text
+docs/
+```
+
+A configuração do MkDocs está definida no arquivo:
+
+```text
+mkdocs.yml
+```
