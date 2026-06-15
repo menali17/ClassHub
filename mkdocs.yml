@@ -55,6 +55,7 @@ nav:
       - Requisitos: backlog/requisitos.md
       - Priorização: backlog/priorizacao.md
       - Backlog do Produto: backlog/backlog_produto.md
+      - First Thing First: backlog/first_thing_first.md
 
   - Planejamento:
       - Visão Geral: planejamento/index.md
