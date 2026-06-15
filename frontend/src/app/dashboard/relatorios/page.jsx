@@ -5,7 +5,7 @@ import { Download, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlunosFaltosos } from "@/hooks/useAlunosFaltosos";
 import { getAlunos, getTurmas, getFrequenciaAluno, API_BASE_URL, getAuthToken } from "@/lib/api";
-import { fetchFrequenciasAlunos } from "@/lib/frequenciaHelpers";
+import { fetchFrequenciasAlunos, normalizeAlunosFaltosos } from "@/lib/frequenciaHelpers";
 import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
 import Avatar from "@/components/ui/Avatar";
 import ProgressBar from "@/components/ui/ProgressBar";
@@ -120,8 +120,8 @@ function RelatoriosContent() {
 
   const faltososDisplay =
     faltosos.length > 0
-      ? faltosos
-      : alunosComFreq.filter((a) => a.baixaFrequencia);
+      ? normalizeAlunosFaltosos(faltosos)
+      : normalizeAlunosFaltosos(alunosComFreq.filter((a) => a.baixaFrequencia));
 
   async function baixarRelatorio(formato) {
     const token = getAuthToken();
