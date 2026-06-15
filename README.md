@@ -109,6 +109,13 @@ Configuração padrão do back-end:
 
 O front-end utiliza `NEXT_PUBLIC_API_URL=http://localhost:3333/api` para acessar a API.
 
+Variáveis adicionais usadas em produção:
+
+| Variável | Exemplo | Finalidade |
+|---|---|---|
+| `AUTH_TOKEN_SECRET` | `classhub-token-secret-...` | Segredo usado para assinar os tokens de autenticação em ambiente serverless. |
+| `SEED_DEMO_ATTENDANCE` | `true` | Opcional. Força a criação de aulas e frequências demonstrativas quando o banco estiver vazio. |
+
 ### 4. Iniciar a aplicação
 
 Na raiz do projeto:
@@ -123,6 +130,37 @@ O comando inicia simultaneamente:
 - Back-end: [http://localhost:3333/api](http://localhost:3333/api)
 
 Na primeira execução, o back-end cria o banco SQLite e insere os dados de demonstração automaticamente.
+
+## Deploy
+
+O projeto está publicado na Vercel:
+
+- Front-end: [https://class-hub-kohl.vercel.app](https://class-hub-kohl.vercel.app)
+- Back-end/API: [https://class-hub-api.vercel.app/api](https://class-hub-api.vercel.app/api)
+
+No deploy atual, o back-end utiliza SQLite em ambiente serverless, com o banco armazenado em `/tmp/engnet.sqlite`. Esse diretório é temporário na Vercel, portanto os dados criados manualmente, como chamadas registradas durante o uso, podem ser apagados quando a função reinicia ou quando a aplicação é atendida por outra instância.
+
+Para manter a demonstração coerente mesmo com essa limitação, o back-end cria dados demonstrativos de aulas e frequências quando o banco do ambiente serverless inicia vazio. Assim, as telas de dashboard, baixa frequência e relatórios por turma continuam apresentando informações para avaliação do desafio.
+
+Essa configuração atende ao objetivo de demonstração do projeto. Para uso real, o sistema precisaria ser conectado a um banco persistente, como PostgreSQL, Turso, Supabase, Neon, Railway ou outro serviço equivalente.
+
+### Variáveis de ambiente na Vercel
+
+Back-end (`class-hub-api`):
+
+| Variável | Valor usado |
+|---|---|
+| `FRONTEND_URL` | `https://class-hub-kohl.vercel.app` |
+| `DATABASE_PATH` | `/tmp/engnet.sqlite` |
+| `LOW_ATTENDANCE_THRESHOLD` | `75` |
+| `AUTH_TOKEN_EXPIRATION_HOURS` | `8` |
+| `AUTH_TOKEN_SECRET` | Segredo configurado no painel da Vercel |
+
+Front-end (`class-hub`):
+
+| Variável | Valor usado |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | `https://class-hub-api.vercel.app/api` |
 
 ## Credenciais de demonstração
 
