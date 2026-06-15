@@ -142,8 +142,6 @@ No deploy atual, o back-end utiliza SQLite em ambiente serverless, com o banco a
 
 Para manter a demonstração coerente mesmo com essa limitação, o back-end cria dados demonstrativos de aulas e frequências quando o banco do ambiente serverless inicia vazio. Assim, as telas de dashboard, baixa frequência e relatórios por turma continuam apresentando informações para avaliação do desafio.
 
-Essa configuração atende ao objetivo de demonstração do projeto. Para uso real, o sistema precisaria ser conectado a um banco persistente, como PostgreSQL, Turso, Supabase, Neon, Railway ou outro serviço equivalente.
-
 ### Variáveis de ambiente na Vercel
 
 Back-end (`class-hub-api`):
