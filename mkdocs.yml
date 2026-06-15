@@ -47,6 +47,7 @@ nav:
       - Objetivos: visao/objetivos.md
       - Perfil e Personas: visao/perfil_personas.md
       - Solução Proposta: visao/solucao_proposta.md
+      - Benchmarking: visao/benchmarking.md
 
   - Requisitos e Backlog:
       - Visão Geral: backlog/index.md
