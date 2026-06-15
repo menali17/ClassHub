@@ -19,6 +19,46 @@ class TurmasService {
       .map((classData) => this.toClassResponse(classData));
   }
 
+    listMyClasses(user) {
+    if (!user || user.perfil !== "aluno") {
+      throw new ForbiddenException("Apenas alunos podem acessar suas próprias turmas.");
+    }
+
+    const summaries = this.databaseService.listAttendanceSummaries(user.perfil, user.id);
+    const turmasMap = new Map();
+
+    summaries.forEach((summary) => {
+      const turmaId = Number(summary.turma_id);
+
+      if (!turmasMap.has(turmaId)) {
+        turmasMap.set(turmaId, {
+          id: turmaId,
+          nome: summary.turma_nome,
+          codigo: summary.turma_codigo,
+          horario: summary.horario ?? null,
+          professor: {
+            id: summary.professor_id ? Number(summary.professor_id) : null,
+            nome: summary.professor_nome ?? "—",
+          },
+          totalAulas: 0,
+          presencas: 0,
+          faltas: 0,
+        });
+      }
+
+      const turma = turmasMap.get(turmaId);
+      turma.totalAulas += Number(summary.total_aulas);
+      turma.presencas += Number(summary.presencas);
+      turma.faltas += Number(summary.faltas);
+    });
+
+    return Array.from(turmasMap.values()).map((turma) => ({
+      ...turma,
+      quantidadeAlunos: 1,
+      percentualPresenca: this.calculatePercentage(turma.presencas, turma.totalAulas),
+    }));
+  }
+
   getClass(classIdValue, user) {
     const classData = this.getAccessibleClass(classIdValue, user);
     return this.toClassResponse(classData);
@@ -221,6 +261,10 @@ class TurmasService {
     }
 
     return text;
+  }
+
+  calculatePercentage(present, total) {
+    return total === 0 ? 0 : Number(((present / total) * 100).toFixed(2));
   }
 
   toClassResponse(classData, includeQuantity = true) {
