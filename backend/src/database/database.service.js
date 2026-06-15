@@ -154,14 +154,43 @@ class DatabaseService {
         passwordHash,
         "administrador",
       );
-      const teacherId = Number(
-        insertUser.run(
-          "Professor EngNet",
-          "professor@engnet.com",
-          null,
-          passwordHash,
-          "professor",
-        ).lastInsertRowid,
+
+      const teacherIds = [];
+
+      teacherIds.push(
+        Number(
+          insertUser.run(
+            "Prof. Carlos Henrique",
+            "professor01@engnet.com",
+            null,
+            passwordHash,
+            "professor",
+          ).lastInsertRowid,
+        ),
+      );
+
+      teacherIds.push(
+        Number(
+          insertUser.run(
+            "Prof. Mariana Costa",
+            "professor02@engnet.com",
+            null,
+            passwordHash,
+            "professor",
+          ).lastInsertRowid,
+        ),
+      );
+
+      teacherIds.push(
+        Number(
+          insertUser.run(
+            "Prof. Ricardo Almeida",
+            "professor03@engnet.com",
+            null,
+            passwordHash,
+            "professor",
+          ).lastInsertRowid,
+        ),
       );
 
       const studentNames = [
@@ -175,6 +204,11 @@ class DatabaseService {
         "Henrique Silva",
         "Isabela Santos",
         "Joao Oliveira",
+        "Larissa Ferreira",
+        "Matheus Gomes",
+        "Natalia Ribeiro",
+        "Pedro Henrique",
+        "Rafaela Barbosa",
       ];
 
       const studentIds = studentNames.map((name, index) =>
@@ -193,21 +227,59 @@ class DatabaseService {
         INSERT INTO turmas (nome, codigo, horario, professor_id)
         VALUES (?, ?, ?, ?)
       `);
-      const firstClassId = Number(
-        insertClass.run("Laboratorio de Software", "LAB-SW-01", "Segunda, 19:00", teacherId)
-          .lastInsertRowid,
+
+      const labId = Number(
+        insertClass.run(
+          "Laboratorio de Software",
+          "LAB-SW-01",
+          "Segunda, 19:00",
+          teacherIds[0],
+        ).lastInsertRowid,
       );
-      const secondClassId = Number(
-        insertClass.run("Projeto Integrador", "PI-01", "Quarta, 19:00", teacherId).lastInsertRowid,
+
+      const piId = Number(
+        insertClass.run(
+          "Projeto Integrador",
+          "PI-01",
+          "Quarta, 19:00",
+          teacherIds[0],
+        ).lastInsertRowid,
+      );
+
+      const redesId = Number(
+        insertClass.run(
+          "Redes de Computadores",
+          "REDES-01",
+          "Terça, 20:40",
+          teacherIds[1],
+        ).lastInsertRowid,
+      );
+
+      const bdId = Number(
+        insertClass.run(
+          "Banco de Dados",
+          "BD-01",
+          "Quinta, 20:40",
+          teacherIds[2],
+        ).lastInsertRowid,
       );
 
       const linkStudent = this.database.prepare(`
         INSERT INTO turma_alunos (turma_id, aluno_id)
         VALUES (?, ?)
       `);
-      studentIds.forEach((studentId, index) => {
-        const classId = index < 5 ? firstClassId : secondClassId;
-        linkStudent.run(classId, studentId);
+
+      const turmaMap = {
+        [labId]: [0, 1, 2, 3, 4, 5, 6],
+        [piId]: [7, 8, 9, 10, 11, 12],
+        [redesId]: [0, 2, 5, 7, 9, 13, 14],
+        [bdId]: [1, 3, 4, 6, 8, 10, 13, 14],
+      };
+
+      Object.entries(turmaMap).forEach(([classId, indexes]) => {
+        indexes.forEach((index) => {
+          linkStudent.run(Number(classId), studentIds[index]);
+        });
       });
 
       this.database.exec("COMMIT;");
@@ -829,4 +901,4 @@ class DatabaseService {
 
 Injectable()(DatabaseService);
 
-module.exports = { DatabaseService };
+module.exports = { DatabaseService }
