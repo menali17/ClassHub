@@ -3,6 +3,12 @@ import Avatar from "@/components/ui/Avatar";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { getFrequencyStatus } from "@/utils/formatters";
 
+function getAlunoKey(aluno, index) {
+  const id = aluno.id ?? aluno.alunoId ?? aluno.matricula ?? aluno.email ?? aluno.nome ?? "aluno";
+  const turma = aluno.turmaId ?? aluno.turma?.id ?? aluno.turma ?? "sem-turma";
+  return `${id}-${turma}-${index}`;
+}
+
 export default function AlunosFaltososList({
   alunos = [],
   loading = false,
@@ -34,10 +40,10 @@ export default function AlunosFaltososList({
 
   return (
     <div className="divide-y divide-bg-border">
-      {alunos.map((a) => {
+      {alunos.map((a, index) => {
         const st = getFrequencyStatus(a.percentualPresenca ?? 0);
         return (
-          <div key={a.id} className="px-5 py-4 flex items-center gap-4">
+          <div key={getAlunoKey(a, index)} className="px-5 py-4 flex items-center gap-4">
             <Avatar name={a.nome} size="md" />
             <div className="flex-1 min-w-0">
               <p className="font-medium text-sm">{a.nome}</p>

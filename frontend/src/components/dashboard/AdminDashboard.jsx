@@ -12,6 +12,7 @@ import {
   extractAlunosFaltosos,
   calcTaxaMediaPresenca,
   aggregateFrequenciaPorTurma,
+  normalizeAlunosFaltosos,
 } from "@/lib/frequenciaHelpers";
 
 function ChartEmptyState({ message }) {
@@ -53,7 +54,7 @@ export default function AdminDashboard() {
       setTurmas(turmasData);
       setHealth(healthData);
       const dashboardFaltosos = Array.isArray(dashData?.alunosComBaixaFrequencia)
-        ? dashData.alunosComBaixaFrequencia
+        ? normalizeAlunosFaltosos(dashData.alunosComBaixaFrequencia)
         : null;
       if (dashboardFaltosos) setFaltosos(dashboardFaltosos);
 

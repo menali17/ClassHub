@@ -7,6 +7,7 @@ import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlunosFaltosos } from "@/hooks/useAlunosFaltosos";
 import { getDashboard, getTurmas, getApiHealth } from "@/lib/api";
+import { normalizeAlunosFaltosos } from "@/lib/frequenciaHelpers";
 import { getFrequencyStatus } from "@/utils/formatters";
 
 export default function ProfessorDashboard() {
@@ -38,7 +39,7 @@ export default function ProfessorDashboard() {
   const totalAulas = dash?.totalAulas ?? registros.aulas ?? 0;
   const frequenciaMedia = dash?.taxaMediaPresenca ?? taxaMedia ?? null;
   const alunosEmRisco = dash?.alunosComBaixaFrequencia?.length
-    ? dash.alunosComBaixaFrequencia
+    ? normalizeAlunosFaltosos(dash.alunosComBaixaFrequencia)
     : faltosos;
   const metaFrequencia = dash?.limiteBaixaFrequencia ?? registros.limiteBaixaFrequencia ?? 75;
 
@@ -155,10 +156,10 @@ export default function ProfessorDashboard() {
         </div>
         {dash?.alunosComBaixaFrequencia?.length ? (
           <div className="divide-y divide-bg-border">
-            {alunosEmRisco.map((a) => {
+            {alunosEmRisco.map((a, index) => {
               const st = getFrequencyStatus(a.percentualPresenca);
               return (
-                <div key={a.id} className="px-5 py-4 flex items-center gap-3">
+                <div key={`${a.id ?? a.matricula ?? a.nome}-${a.turmaId ?? a.turma ?? index}`} className="px-5 py-4 flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm">{a.nome}</p>
                     <p className="text-caption text-neutral-500">{a.turma}</p>

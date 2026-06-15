@@ -16,7 +16,7 @@ export async function fetchFrequenciasAlunos(alunos) {
 
 /** Alunos com baixa frequência (< limite do backend). */
 export function extractAlunosFaltosos(frequencias) {
-  return frequencias
+  return normalizeAlunosFaltosos(frequencias
     .filter((f) => f.resumoGeral?.baixaFrequencia)
     .map((f) => {
       const turmaCritica =
@@ -36,7 +36,48 @@ export function extractAlunosFaltosos(frequencias) {
         totalAulas: f.resumoGeral.totalAulas,
       };
     })
-    .sort((a, b) => a.percentualPresenca - b.percentualPresenca);
+    .sort((a, b) => a.percentualPresenca - b.percentualPresenca));
+}
+
+function getTurmaLabel(turma) {
+  if (!turma) return "";
+  if (typeof turma === "string") return turma;
+  return turma.nome ?? "";
+}
+
+export function normalizeAlunosFaltosos(alunos) {
+  if (!Array.isArray(alunos)) return [];
+
+  const byAluno = new Map();
+
+  for (const aluno of alunos) {
+    const key = aluno.id ?? aluno.alunoId ?? aluno.matricula ?? aluno.email;
+
+    if (key == null) {
+      byAluno.set(Symbol(), aluno);
+      continue;
+    }
+
+    const current = byAluno.get(key);
+    if (!current) {
+      byAluno.set(key, { ...aluno });
+      continue;
+    }
+
+    const currentPct = current.percentualPresenca ?? Number.POSITIVE_INFINITY;
+    const nextPct = aluno.percentualPresenca ?? Number.POSITIVE_INFINITY;
+    const base = nextPct < currentPct ? { ...current, ...aluno } : current;
+    const turmas = new Set([getTurmaLabel(current.turma), getTurmaLabel(aluno.turma)].filter(Boolean));
+
+    byAluno.set(key, {
+      ...base,
+      turma: turmas.size > 0 ? Array.from(turmas).join(", ") : base.turma,
+    });
+  }
+
+  return Array.from(byAluno.values()).sort(
+    (a, b) => (a.percentualPresenca ?? 0) - (b.percentualPresenca ?? 0),
+  );
 }
 
 export function calcTaxaMediaPresenca(frequencias) {
