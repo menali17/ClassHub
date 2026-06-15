@@ -21,6 +21,7 @@ class DatabaseService {
     this.createSchema();
     this.migrateSchema();
     this.seedDatabase();
+    this.seedDemoAttendance();
   }
 
   createSchema() {
@@ -287,6 +288,82 @@ class DatabaseService {
       this.database.exec("ROLLBACK;");
       throw error;
     }
+  }
+
+  seedDemoAttendance() {
+    const shouldSeedDemoAttendance =
+      process.env.SEED_DEMO_ATTENDANCE === "true" || process.env.VERCEL === "1";
+
+    if (!shouldSeedDemoAttendance) {
+      return;
+    }
+
+    const existingLessons = this.database
+      .prepare("SELECT COUNT(*) AS total FROM aulas")
+      .get().total;
+
+    if (existingLessons > 0) {
+      return;
+    }
+
+    const classes = this.database
+      .prepare("SELECT id, horario FROM turmas ORDER BY id")
+      .all();
+
+    if (classes.length === 0) {
+      return;
+    }
+
+    const lessonDates = ["2026-06-02", "2026-06-09", "2026-06-13"];
+    const insertLesson = this.database.prepare(`
+      INSERT INTO aulas (turma_id, data, horario, status)
+      VALUES (?, ?, ?, 'finalizada')
+    `);
+    const insertAttendance = this.database.prepare(`
+      INSERT INTO frequencias (aula_id, aluno_id, situacao)
+      VALUES (?, ?, ?)
+    `);
+
+    this.database.exec("BEGIN TRANSACTION;");
+
+    try {
+      classes.forEach((classData, classIndex) => {
+        const students = this.listClassStudents(classData.id);
+
+        lessonDates.forEach((date, lessonIndex) => {
+          const lessonId = Number(
+            insertLesson.run(classData.id, date, classData.horario).lastInsertRowid,
+          );
+
+          students.forEach((student, studentIndex) => {
+            const status =
+              this.demoAttendanceStatus(classIndex, lessonIndex, studentIndex);
+            insertAttendance.run(lessonId, student.id, status);
+          });
+        });
+      });
+
+      this.database.exec("COMMIT;");
+    } catch (error) {
+      this.database.exec("ROLLBACK;");
+      throw error;
+    }
+  }
+
+  demoAttendanceStatus(classIndex, lessonIndex, studentIndex) {
+    if (studentIndex === 0 && lessonIndex > 0) {
+      return "falta";
+    }
+
+    if (studentIndex === 1 && lessonIndex === 2) {
+      return "falta";
+    }
+
+    if (classIndex % 2 === 0 && studentIndex === 2 && lessonIndex === 1) {
+      return "falta";
+    }
+
+    return "presente";
   }
 
   hashPassword(password) {
