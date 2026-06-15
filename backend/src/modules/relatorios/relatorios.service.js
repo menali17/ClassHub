@@ -22,6 +22,7 @@ class RelatoriosService {
       this.databaseService.listAttendanceSummaries(user.perfil, user.id),
     );
     const totals = this.sumSummaries(summaries);
+    const weeklyAttendance = this.databaseService.listWeeklyAttendance(user.perfil, user.id);
 
     return {
       totalAlunos: Number(counts.total_alunos),
@@ -30,6 +31,13 @@ class RelatoriosService {
       totalAulas: Number(counts.total_aulas),
       taxaMediaPresenca: this.calculatePercentage(totals.presencas, totals.totalAulas),
       limiteBaixaFrequencia: this.databaseService.lowAttendanceThreshold,
+      evolucaoSemanal: weeklyAttendance.map((week) => ({
+        semana: this.formatWeekLabel(week.inicio),
+        valor: this.calculatePercentage(
+          Number(week.presencas),
+          Number(week.total_registros),
+        ),
+      })),
       alunosComBaixaFrequencia: summaries
         .filter((summary) => summary.baixaFrequencia)
         .sort((first, second) => first.percentualPresenca - second.percentualPresenca)
@@ -354,6 +362,11 @@ async exportAllClassesReport(format, user) {
 
   calculatePercentage(present, total) {
     return total === 0 ? 0 : Number(((present / total) * 100).toFixed(2));
+  }
+
+  formatWeekLabel(date) {
+    const [, month, day] = String(date || "").split("-");
+    return month && day ? `${day}/${month}` : "Semana";
   }
 }
 

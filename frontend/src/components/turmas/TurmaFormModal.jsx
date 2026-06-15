@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 import { createTurma, updateTurma, getProfessores } from "@/lib/api";
 
-export default function TurmaFormModal({ open, onClose, turma, onSaved }) {
+export default function TurmaFormModal({ open, onClose, turma, onSaved, canAssignProfessor = false }) {
   const [nome,        setNome]        = useState("");
   const [codigo,      setCodigo]      = useState("");
   const [horario,     setHorario]     = useState("");
@@ -28,11 +28,11 @@ export default function TurmaFormModal({ open, onClose, turma, onSaved }) {
   }, [turma, open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || !canAssignProfessor) return;
     getProfessores()
       .then((data) => setProfessores(Array.isArray(data) ? data : []))
       .catch(() => setProfessores([]));
-  }, [open]);
+  }, [open, canAssignProfessor]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -40,7 +40,7 @@ export default function TurmaFormModal({ open, onClose, turma, onSaved }) {
     setLoading(true);
     try {
       const payload = { nome, codigo, horario };
-      if (professorId) payload.professorId = Number(professorId);
+      if (canAssignProfessor && professorId) payload.professorId = Number(professorId);
 
       if (turma) {
         await updateTurma(turma.id, payload);
@@ -86,25 +86,27 @@ export default function TurmaFormModal({ open, onClose, turma, onSaved }) {
             className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-neutral-700">
-            Professor responsável {!turma ? "*" : ""}
-          </label>
-          <select
-            value={professorId}
-            onChange={(e) => setProfessorId(e.target.value)}
-            required={!turma}
-            className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-          >
-            <option value="">— selecione —</option>
-            {professores.map((p) => (
-              <option key={p.id} value={p.id}>{p.nome}</option>
-            ))}
-          </select>
-          {professores.length === 0 && (
-            <p className="text-xs text-neutral-500">Cadastre professores antes de criar turmas.</p>
-          )}
-        </div>
+        {canAssignProfessor && (
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-neutral-700">
+              Professor responsável {!turma ? "*" : ""}
+            </label>
+            <select
+              value={professorId}
+              onChange={(e) => setProfessorId(e.target.value)}
+              required={!turma}
+              className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="">— selecione —</option>
+              {professores.map((p) => (
+                <option key={p.id} value={p.id}>{p.nome}</option>
+              ))}
+            </select>
+            {professores.length === 0 && (
+              <p className="text-xs text-neutral-500">Cadastre professores antes de criar turmas.</p>
+            )}
+          </div>
+        )}
 
         {error && <p className="text-xs text-error bg-red-50 border border-red-200 rounded-lg p-3">{error}</p>}
 

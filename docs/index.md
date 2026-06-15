@@ -17,7 +17,6 @@ A documentação está dividida nas seguintes seções:
 
 - [Visão do Produto e Projeto](visao/index.md)
 - [Requisitos e Backlog](backlog/index.md)
-- [Casos de Uso](casos_de_uso.md)
 - [Planejamento](planejamento/index.md)
 
 ## Integrantes da Equipe

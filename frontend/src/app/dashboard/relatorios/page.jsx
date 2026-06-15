@@ -434,27 +434,42 @@ function RelatoriosContent() {
                   <th className="px-5 py-3 font-medium">Turma</th>
                   <th className="px-5 py-3 font-medium hidden md:table-cell">Código</th>
                   <th className="px-5 py-3 font-medium">Alunos</th>
+                  <th className="px-5 py-3 font-medium">Frequência</th>
                   <th className="px-5 py-3 font-medium hidden sm:table-cell">Horário</th>
                   <th className="px-5 py-3 font-medium hidden lg:table-cell">Professor</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-bg-border">
-                {turmas.map((t) => (
-                  <tr key={t.id} className="hover:bg-bg-light">
-                    <td className="px-5 py-3 font-medium">{t.nome}</td>
-                    <td className="px-5 py-3 text-neutral-500 hidden md:table-cell">{t.codigo}</td>
-                    <td className="px-5 py-3 text-neutral-500">{t.quantidadeAlunos ?? "—"}</td>
-                    <td className="px-5 py-3 text-neutral-500 hidden sm:table-cell">{t.horario}</td>
-                    <td className="px-5 py-3 text-neutral-500 hidden lg:table-cell">
-                      {t.professor?.nome ?? "—"}
-                    </td>
-                  </tr>
-                ))}
+                {turmas.map((t) => {
+                  const percentual = t.percentualPresenca;
+                  const status = percentual != null ? getFrequencyStatus(percentual) : null;
+
+                  return (
+                    <tr key={t.id} className="hover:bg-bg-light">
+                      <td className="px-5 py-3 font-medium">{t.nome}</td>
+                      <td className="px-5 py-3 text-neutral-500 hidden md:table-cell">{t.codigo}</td>
+                      <td className="px-5 py-3 text-neutral-500">{t.quantidadeAlunos ?? "—"}</td>
+                      <td className="px-5 py-3">
+                        {status ? (
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${status.bg} ${status.text}`}>
+                            {percentual}%
+                          </span>
+                        ) : (
+                          <span className="text-xs text-neutral-400">Sem registros</span>
+                        )}
+                      </td>
+                      <td className="px-5 py-3 text-neutral-500 hidden sm:table-cell">{t.horario}</td>
+                      <td className="px-5 py-3 text-neutral-500 hidden lg:table-cell">
+                        {t.professor?.nome ?? "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
 
                 {turmas.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-5 py-8 text-center text-neutral-500">
+                    <td colSpan={6} className="px-5 py-8 text-center text-neutral-500">
                       Nenhuma turma encontrada.
                     </td>
                   </tr>

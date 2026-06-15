@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Plus, Search, UserCog } from "lucide-react";
+import { KeyRound, Pencil, Plus, Search, Trash2, UserCog } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
 import ProfessorFormModal from "@/components/usuarios/ProfessorFormModal";
-import { getProfessores } from "@/lib/api";
+import { deleteProfessor, getProfessores, resetSenhaProfessor } from "@/lib/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import PasswordResetModal from "@/components/usuarios/PasswordResetModal";
 
 export default function ProfessoresPage() {
   const [professores, setProfessores] = useState([]);
@@ -13,6 +14,8 @@ export default function ProfessoresPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editando, setEditando] = useState(null);
+  const [redefinindo, setRedefinindo] = useState(null);
 
   function loadProfessores() {
     setLoading(true);
@@ -26,6 +29,27 @@ export default function ProfessoresPage() {
   useEffect(() => {
     loadProfessores();
   }, []);
+
+  function openNew() {
+    setEditando(null);
+    setModalOpen(true);
+  }
+
+  function openEdit(professor) {
+    setEditando(professor);
+    setModalOpen(true);
+  }
+
+  async function handleDelete(professor) {
+    if (!confirm(`Desativar o professor ${professor.nome}?`)) return;
+
+    try {
+      await deleteProfessor(professor.id);
+      loadProfessores();
+    } catch (err) {
+      setError(err.message || "Erro ao desativar professor.");
+    }
+  }
 
   const filtrados = professores.filter(
     (p) =>
@@ -43,7 +67,7 @@ export default function ProfessoresPage() {
               {filtrados.length} professor(es) cadastrado(s)
             </p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>
+          <Button onClick={openNew}>
             <Plus size={16} /> Novo Professor
           </Button>
         </div>
@@ -80,6 +104,8 @@ export default function ProfessoresPage() {
                   <tr className="text-left text-caption text-neutral-500 border-b border-bg-border">
                     <th className="px-5 py-3 font-medium">Professor</th>
                     <th className="px-5 py-3 font-medium hidden md:table-cell">E-mail</th>
+                    <th className="px-5 py-3 font-medium hidden lg:table-cell">Turmas</th>
+                    <th className="px-5 py-3 font-medium text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-bg-border">
@@ -87,11 +113,25 @@ export default function ProfessoresPage() {
                     <tr key={p.id} className="hover:bg-bg-light transition-colors">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-3">
-                          <Avatar name={p.nome} size="md" />
+                          <Avatar name={p.nome} fotoUrl={p.fotoUrl} size="md" />
                           <span className="font-medium">{p.nome}</span>
                         </div>
                       </td>
                       <td className="px-5 py-3 text-neutral-500 hidden md:table-cell">{p.email}</td>
+                      <td className="px-5 py-3 text-neutral-500 hidden lg:table-cell">{p.quantidadeTurmas ?? 0}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex justify-end gap-1">
+                          <button type="button" onClick={() => openEdit(p)} className="p-2 rounded-lg text-neutral-500 hover:text-orange-500 hover:bg-bg-light" title="Editar professor">
+                            <Pencil size={16} />
+                          </button>
+                          <button type="button" onClick={() => setRedefinindo(p)} className="p-2 rounded-lg text-neutral-500 hover:text-orange-500 hover:bg-bg-light" title="Redefinir senha">
+                            <KeyRound size={16} />
+                          </button>
+                          <button type="button" onClick={() => handleDelete(p)} className="p-2 rounded-lg text-neutral-500 hover:text-error hover:bg-red-50" title="Desativar professor">
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -104,6 +144,13 @@ export default function ProfessoresPage() {
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           onSaved={loadProfessores}
+          usuario={editando}
+        />
+        <PasswordResetModal
+          open={Boolean(redefinindo)}
+          usuario={redefinindo}
+          onClose={() => setRedefinindo(null)}
+          onReset={resetSenhaProfessor}
         />
       </div>
     </RoleGuard>

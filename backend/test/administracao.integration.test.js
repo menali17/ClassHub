@@ -131,7 +131,7 @@ test("administrador gerencia usuarios turmas vinculos e o proprio perfil", async
     });
     const teacherLogin = await request(baseUrl, "/api/auth/login", {
       method: "POST",
-      body: { email: "professor@engnet.com", senha: "123456" },
+      body: { email: "professor01@engnet.com", senha: "123456" },
     });
     const adminToken = adminLogin.body.token;
     const teacherToken = teacherLogin.body.token;
@@ -331,9 +331,9 @@ test("administrador gerencia usuarios turmas vinculos e o proprio perfil", async
       token: newLogin.body.token,
     });
     assert.equal(dashboard.status, 200);
-    assert.equal(dashboard.body.totalProfessores, 1);
-    assert.equal(dashboard.body.totalTurmas, 2);
-    assert.equal(dashboard.body.totalAlunos, 10);
+    assert.equal(dashboard.body.totalProfessores, 3);
+    assert.equal(dashboard.body.totalTurmas, 4);
+    assert.equal(dashboard.body.totalAlunos, 15);
   } finally {
     api.kill();
     await new Promise((resolve) => setTimeout(resolve, 300));

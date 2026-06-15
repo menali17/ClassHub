@@ -88,7 +88,7 @@ test("dashboard e relatorios calculam frequencia e respeitam perfis", async () =
 
     const teacherLogin = await request(baseUrl, "/api/auth/login", {
       method: "POST",
-      body: { email: "professor@engnet.com", senha: "123456" },
+      body: { email: "professor01@engnet.com", senha: "123456" },
     });
     const studentLogin = await request(baseUrl, "/api/auth/login", {
       method: "POST",
@@ -147,17 +147,29 @@ test("dashboard e relatorios calculam frequencia e respeitam perfis", async () =
     });
 
     assert.equal(teacherDashboard.status, 200);
-    assert.equal(teacherDashboard.body.totalAlunos, 10);
+    assert.equal(teacherDashboard.body.totalAlunos, 13);
     assert.equal(teacherDashboard.body.totalAulas, 4);
-    assert.equal(teacherDashboard.body.taxaMediaPresenca, 85);
+    assert.equal(teacherDashboard.body.taxaMediaPresenca, 89.29);
+    assert.deepEqual(teacherDashboard.body.evolucaoSemanal, [
+      { semana: "10/06", valor: 89.29 },
+    ]);
     assert.equal(teacherDashboard.body.alunosComBaixaFrequencia.length, 1);
     assert.equal(
       teacherDashboard.body.alunosComBaixaFrequencia[0].id,
       students[0].id,
     );
     assert.equal(adminDashboard.status, 200);
-    assert.equal(adminDashboard.body.totalAlunos, 10);
+    assert.equal(adminDashboard.body.totalAlunos, 15);
     assert.equal(studentDashboard.status, 403);
+
+    const teacherClasses = await request(baseUrl, "/api/turmas", {
+      token: teacherToken,
+    });
+    const classWithAttendance = teacherClasses.body.find((item) => item.id === 1);
+    const classWithoutAttendance = teacherClasses.body.find((item) => item.id === 2);
+    assert.equal(teacherClasses.status, 200);
+    assert.equal(classWithAttendance.percentualPresenca, 89.29);
+    assert.equal(classWithoutAttendance.percentualPresenca, null);
 
     const lowAttendance = await request(
       baseUrl,
@@ -186,11 +198,11 @@ test("dashboard e relatorios calculam frequencia e respeitam perfis", async () =
       token: adminToken,
     });
     assert.equal(classReport.status, 200);
-    assert.equal(classReport.body.resumo.totalAlunos, 5);
+    assert.equal(classReport.body.resumo.totalAlunos, 7);
     assert.equal(classReport.body.resumo.totalAulas, 4);
-    assert.equal(classReport.body.resumo.percentualPresenca, 85);
+    assert.equal(classReport.body.resumo.percentualPresenca, 89.29);
     assert.equal(classReport.body.aulas.length, 4);
-    assert.equal(classReport.body.aulas[0].frequencias.length, 5);
+    assert.equal(classReport.body.aulas[0].frequencias.length, students.length);
 
     const classPdf = await download(
       baseUrl,
@@ -217,6 +229,24 @@ test("dashboard e relatorios calculam frequencia e respeitam perfis", async () =
       /baixa-frequencia-lab-sw-01\.xlsx/,
     );
     assert.equal(lowAttendanceSpreadsheet.buffer.subarray(0, 2).toString(), "PK");
+
+    const allStudentsSpreadsheet = await download(
+      baseUrl,
+      "/api/relatorios/alunos/exportar?formato=xlsx",
+      adminToken,
+    );
+    assert.equal(allStudentsSpreadsheet.status, 200);
+    assert.match(allStudentsSpreadsheet.disposition, /relatorio-geral-alunos\.xlsx/);
+    assert.equal(allStudentsSpreadsheet.buffer.subarray(0, 2).toString(), "PK");
+
+    const allClassesPdf = await download(
+      baseUrl,
+      "/api/relatorios/turmas/exportar?formato=pdf",
+      teacherToken,
+    );
+    assert.equal(allClassesPdf.status, 200);
+    assert.match(allClassesPdf.disposition, /relatorio-geral-turmas\.pdf/);
+    assert.equal(allClassesPdf.buffer.subarray(0, 4).toString(), "%PDF");
 
     const invalidExport = await request(
       baseUrl,

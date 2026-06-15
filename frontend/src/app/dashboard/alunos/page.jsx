@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Plus, Search, Users } from "lucide-react";
+import { KeyRound, Pencil, Plus, Search, Trash2, Users } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
 import AlunoFormModal from "@/components/usuarios/AlunoFormModal";
-import { getAlunos } from "@/lib/api";
+import { deleteAluno, getAlunos, resetSenhaAluno } from "@/lib/api";
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import PasswordResetModal from "@/components/usuarios/PasswordResetModal";
 
 export default function AlunosPage() {
   const [alunos, setAlunos] = useState([]);
@@ -13,6 +14,8 @@ export default function AlunosPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editando, setEditando] = useState(null);
+  const [redefinindo, setRedefinindo] = useState(null);
 
   function loadAlunos() {
     setLoading(true);
@@ -26,6 +29,27 @@ export default function AlunosPage() {
   useEffect(() => {
     loadAlunos();
   }, []);
+
+  function openNew() {
+    setEditando(null);
+    setModalOpen(true);
+  }
+
+  function openEdit(aluno) {
+    setEditando(aluno);
+    setModalOpen(true);
+  }
+
+  async function handleDelete(aluno) {
+    if (!confirm(`Desativar o aluno ${aluno.nome}?`)) return;
+
+    try {
+      await deleteAluno(aluno.id);
+      loadAlunos();
+    } catch (err) {
+      setError(err.message || "Erro ao desativar aluno.");
+    }
+  }
 
   const filtrados = alunos.filter(
     (a) =>
@@ -42,7 +66,7 @@ export default function AlunosPage() {
             <h1 className="text-h2 font-bold text-neutral-900">Alunos</h1>
             <p className="text-caption text-bg-muted mt-1">{filtrados.length} aluno(s) cadastrado(s)</p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>
+          <Button onClick={openNew}>
             <Plus size={16} /> Novo Aluno
           </Button>
         </div>
@@ -80,6 +104,7 @@ export default function AlunosPage() {
                     <th className="px-5 py-3 font-medium">Aluno</th>
                     <th className="px-5 py-3 font-medium hidden md:table-cell">Matrícula</th>
                     <th className="px-5 py-3 font-medium hidden lg:table-cell">E-mail</th>
+                    <th className="px-5 py-3 font-medium text-right">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-bg-border">
@@ -93,6 +118,19 @@ export default function AlunosPage() {
                       </td>
                       <td className="px-5 py-3 text-neutral-500 hidden md:table-cell">{a.matricula}</td>
                       <td className="px-5 py-3 text-neutral-500 hidden lg:table-cell">{a.email}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex justify-end gap-1">
+                          <button type="button" onClick={() => openEdit(a)} className="p-2 rounded-lg text-neutral-500 hover:text-orange-500 hover:bg-bg-light" title="Editar aluno">
+                            <Pencil size={16} />
+                          </button>
+                          <button type="button" onClick={() => setRedefinindo(a)} className="p-2 rounded-lg text-neutral-500 hover:text-orange-500 hover:bg-bg-light" title="Redefinir senha">
+                            <KeyRound size={16} />
+                          </button>
+                          <button type="button" onClick={() => handleDelete(a)} className="p-2 rounded-lg text-neutral-500 hover:text-error hover:bg-red-50" title="Desativar aluno">
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -105,6 +143,13 @@ export default function AlunosPage() {
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           onSaved={loadAlunos}
+          usuario={editando}
+        />
+        <PasswordResetModal
+          open={Boolean(redefinindo)}
+          usuario={redefinindo}
+          onClose={() => setRedefinindo(null)}
+          onReset={resetSenhaAluno}
         />
       </div>
     </RoleGuard>

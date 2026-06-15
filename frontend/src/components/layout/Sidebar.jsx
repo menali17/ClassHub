@@ -4,10 +4,12 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, BookOpen, ClipboardList, BarChart2,
   Users, UserCog, User, LogOut, GraduationCap, ChevronLeft, ChevronRight, X,
+  Moon, Sun,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { normalizePerfil, getPerfilLabel } from "@/utils/roles";
 import Avatar from "@/components/ui/Avatar";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const menus = {
   admin: [
@@ -15,7 +17,6 @@ const menus = {
     { href: "/dashboard/turmas",      icon: BookOpen,        label: "Turmas" },
     { href: "/dashboard/alunos",      icon: Users,           label: "Alunos" },
     { href: "/dashboard/professores", icon: UserCog,         label: "Professores" },
-    { href: "/dashboard/frequencia",  icon: ClipboardList,   label: "Frequência" },
     { href: "/dashboard/relatorios",  icon: BarChart2,       label: "Relatórios" },
     { href: "/dashboard/perfil",      icon: User,            label: "Perfil" },
   ],
@@ -38,6 +39,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
   const pathname = usePathname();
   const router   = useRouter();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const perfil   = normalizePerfil(user?.perfil);
   const navItems = menus[perfil] || menus.aluno;
@@ -119,6 +121,19 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
           );
         })}
       </nav>
+
+      <div className="border-t border-white/10 px-2 py-2 flex-shrink-0">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-white/70 hover:bg-white/10 hover:text-white ${collapsed ? "justify-center" : ""}`}
+          title={theme === "dark" ? "Usar modo claro" : "Usar modo escuro"}
+          aria-label={theme === "dark" ? "Usar modo claro" : "Usar modo escuro"}
+        >
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          {!collapsed && <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>}
+        </button>
+      </div>
 
       {/* Usuário + Logout */}
       <div className="border-t border-white/10 px-2 py-3 flex items-center gap-2 overflow-hidden flex-shrink-0">

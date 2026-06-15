@@ -130,6 +130,7 @@ class UsuariosService {
       email: payload?.email,
       fotoUrl: payload?.fotoUrl,
       telefone: payload?.telefone,
+      departamento: payload?.departamento,
     };
     const fields = this.validateUpdatePayload(allowedPayload, foundUser, true);
 
@@ -216,7 +217,7 @@ class UsuariosService {
       fields.telefone = this.optionalText(payload.telefone);
     }
 
-    if (!profileEdit && foundUser.perfil === "professor" && payload?.departamento !== undefined) {
+    if (foundUser.perfil === "professor" && payload?.departamento !== undefined) {
       fields.departamento = this.optionalText(payload.departamento);
     }
 

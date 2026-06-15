@@ -1,19 +1,22 @@
 "use client";
-import { useState } from "react";
-import { Camera, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Camera } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updatePerfil, updateSenha } from "@/lib/api";
 import { getPerfilLabel } from "@/utils/roles";
 import Avatar from "@/components/ui/Avatar";
 
 export default function PerfilPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
 
   const [nome,      setNome]      = useState(user?.nome || "");
+  const [email,     setEmail]     = useState(user?.email || "");
   const [telefone,  setTelefone]  = useState(user?.telefone || "");
   const [depto,     setDepto]     = useState(user?.departamento || "");
+  const [fotoUrl,   setFotoUrl]   = useState(user?.fotoUrl || "");
   const [saving,    setSaving]    = useState(false);
   const [saveMsg,   setSaveMsg]   = useState("");
+  const [saveError, setSaveError] = useState("");
 
   const [senhaAtual,    setSenhaAtual]    = useState("");
   const [novaSenha,     setNovaSenha]     = useState("");
@@ -21,15 +24,32 @@ export default function PerfilPage() {
   const [changingPass,  setChangingPass]  = useState(false);
   const [passMsg,       setPassMsg]       = useState("");
   const [passError,     setPassError]     = useState("");
+  const fotoInputRef = useRef(null);
+  const isProfessor = user?.perfil === "professor";
+
+  useEffect(() => {
+    setNome(user?.nome || "");
+    setEmail(user?.email || "");
+    setTelefone(user?.telefone || "");
+    setDepto(user?.departamento || "");
+    setFotoUrl(user?.fotoUrl || "");
+  }, [user]);
 
   async function handleSavePerfil(e) {
     e.preventDefault();
-    setSaving(true); setSaveMsg("");
+    setSaving(true); setSaveMsg(""); setSaveError("");
     try {
-      await updatePerfil({ nome, telefone, departamento: depto });
+      await updatePerfil({
+        nome,
+        email,
+        telefone,
+        fotoUrl,
+        ...(isProfessor ? { departamento: depto } : {}),
+      });
+      await refreshUser();
       setSaveMsg("Perfil atualizado com sucesso!");
     } catch (err) {
-      setSaveMsg(err.message || "Erro ao salvar.");
+      setSaveError(err.message || "Erro ao salvar.");
     } finally {
       setSaving(false);
     }
@@ -61,8 +81,13 @@ export default function PerfilPage() {
       {/* Card foto */}
       <div className="bg-bg-card rounded-xl border border-bg-border shadow-card p-6 flex flex-col items-center gap-4">
         <div className="relative">
-          <Avatar name={user?.nome} fotoUrl={user?.fotoUrl} size="lg" />
-          <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-400 transition-colors">
+          <Avatar name={nome || user?.nome} fotoUrl={fotoUrl || user?.fotoUrl} size="lg" />
+          <button
+            type="button"
+            onClick={() => fotoInputRef.current?.focus()}
+            className="absolute -bottom-1 -right-1 w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-400 transition-colors"
+            title="Alterar foto"
+          >
             <Camera size={14} color="black" />
           </button>
         </div>
@@ -85,8 +110,8 @@ export default function PerfilPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-neutral-700">E-mail institucional</label>
-            <input value={user?.email || ""} readOnly
-              className="w-full rounded-lg border border-bg-border bg-bg-light px-4 py-2.5 text-sm text-neutral-500 cursor-not-allowed"
+            <input value={email} onChange={e => setEmail(e.target.value)} type="email" required
+              className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -96,12 +121,21 @@ export default function PerfilPage() {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-neutral-700">Departamento</label>
-            <input value={depto} onChange={e => setDepto(e.target.value)} placeholder="Ex: Ciências Exatas"
+            <label className="text-sm font-medium text-neutral-700">URL da foto</label>
+            <input ref={fotoInputRef} value={fotoUrl} onChange={e => setFotoUrl(e.target.value)} placeholder="https://exemplo.com/foto.jpg"
               className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
+          {isProfessor && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-neutral-700">Departamento</label>
+              <input value={depto} onChange={e => setDepto(e.target.value)} placeholder="Ex: Ciências Exatas"
+                className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          )}
           {saveMsg && <p className="text-sm text-success bg-green-50 border border-green-200 rounded-lg p-3">{saveMsg}</p>}
+          {saveError && <p className="text-sm text-error bg-red-50 border border-red-200 rounded-lg p-3">{saveError}</p>}
           <button type="submit" disabled={saving}
             className="w-full bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-black font-bold py-2.5 rounded-lg text-sm transition-all">
             {saving ? "Salvando..." : "Salvar alterações"}
@@ -121,13 +155,13 @@ export default function PerfilPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-neutral-700">Nova senha</label>
-            <input type="password" value={novaSenha} onChange={e => setNovaSenha(e.target.value)} required
+            <input type="password" value={novaSenha} onChange={e => setNovaSenha(e.target.value)} minLength={6} required
               className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-neutral-700">Confirmar nova senha</label>
-            <input type="password" value={confirmSenha} onChange={e => setConfirmSenha(e.target.value)} required
+            <input type="password" value={confirmSenha} onChange={e => setConfirmSenha(e.target.value)} minLength={6} required
               className="w-full rounded-lg border border-bg-border bg-bg-card px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>

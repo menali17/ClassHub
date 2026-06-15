@@ -2,10 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getDashboard } from "@/lib/api";
 
-/**
- * Hook preparado para GET /api/dashboard (endpoint planejado).
- * Retorna null quando o backend ainda não implementou a rota.
- */
+/** Carrega os indicadores consolidados do dashboard. */
 export function useDashboard({ enabled = true } = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

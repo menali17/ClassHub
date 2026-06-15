@@ -75,7 +75,7 @@ test("fluxo de aulas e frequencias respeita regras e perfis", async () => {
 
     const teacherLogin = await request(baseUrl, "/api/auth/login", {
       method: "POST",
-      body: { email: "professor@engnet.com", senha: "123456" },
+      body: { email: "professor01@engnet.com", senha: "123456" },
     });
     const studentLogin = await request(baseUrl, "/api/auth/login", {
       method: "POST",
@@ -96,7 +96,7 @@ test("fluxo de aulas e frequencias respeita regras e perfis", async () => {
     assert.equal(teacherLogin.status, 200);
     assert.equal(studentLogin.status, 200);
     assert.equal(adminLogin.status, 200);
-    assert.equal(students.length, 5);
+    assert.equal(students.length, 7);
 
     let lastLesson;
     let lastAttendance;
@@ -118,8 +118,9 @@ test("fluxo de aulas e frequencias respeita regras e perfis", async () => {
       });
 
       assert.equal(lesson.status, 201);
+      assert.equal(lesson.body.data, `2026-06-${day}`);
       assert.equal(saved.status, 200);
-      assert.equal(saved.body.resumo.totalAlunos, 5);
+      assert.equal(saved.body.resumo.totalAlunos, students.length);
       lastLesson = lesson.body;
       lastAttendance = attendance;
     }
@@ -130,7 +131,16 @@ test("fluxo de aulas e frequencias respeita regras e perfis", async () => {
       body: { frequencias: lastAttendance },
     });
     assert.equal(resent.status, 200);
-    assert.equal(resent.body.frequencias.length, 5);
+    assert.equal(resent.body.frequencias.length, students.length);
+
+    const lessons = await request(baseUrl, "/api/turmas/1/aulas", {
+      token: teacherToken,
+    });
+    assert.equal(lessons.status, 200);
+    assert.deepEqual(
+      lessons.body.aulas.slice(0, 4).map((lesson) => lesson.data),
+      ["2026-06-13", "2026-06-12", "2026-06-11", "2026-06-10"],
+    );
 
     const teacherHistory = await request(
       baseUrl,
@@ -147,9 +157,11 @@ test("fluxo de aulas e frequencias respeita regras e perfis", async () => {
     );
 
     assert.equal(teacherHistory.status, 200);
+    assert.equal(teacherHistory.body.limiteBaixaFrequencia, 75);
     assert.equal(teacherHistory.body.resumoGeral.percentualPresenca, 75);
     assert.equal(teacherHistory.body.resumoGeral.baixaFrequencia, false);
     assert.equal(ownHistory.status, 200);
+    assert.equal(ownHistory.body.limiteBaixaFrequencia, 75);
     assert.equal(ownHistory.body.aluno.id, students[0].id);
     assert.equal(adminHistory.status, 200);
 

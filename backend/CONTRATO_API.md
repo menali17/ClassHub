@@ -60,7 +60,7 @@ Requisição:
 
 ```json
 {
-  "email": "professor@engnet.com",
+  "email": "professor01@engnet.com",
   "senha": "123456"
 }
 ```
@@ -73,8 +73,8 @@ Resposta de sucesso:
   "expiraEm": "2026-06-12T07:00:00.000Z",
   "usuario": {
     "id": 2,
-    "nome": "Professor EngNet",
-    "email": "professor@engnet.com",
+    "nome": "Prof. Carlos Henrique",
+    "email": "professor01@engnet.com",
     "matricula": null,
     "perfil": "professor",
     "fotoUrl": null,
@@ -124,7 +124,7 @@ Depois do logout, o token não pode mais acessar rotas protegidas.
 | Método | Rota | Acesso | Finalidade |
 |---|---|---|---|
 | `GET` | `/api/perfil` | Usuário autenticado | Consulta os próprios dados. |
-| `PATCH` | `/api/perfil` | Usuário autenticado | Altera nome, e-mail, foto e telefone. |
+| `PATCH` | `/api/perfil` | Usuário autenticado | Altera nome, e-mail, foto, telefone e departamento quando aplicável. |
 | `PATCH` | `/api/perfil/senha` | Usuário autenticado | Altera a senha após validar a senha atual. |
 
 Exemplo de atualização:
@@ -210,7 +210,8 @@ Professores visualizam apenas suas turmas. Administradores visualizam todas.
       "id": 2,
       "nome": "Professor EngNet"
     },
-    "quantidadeAlunos": 5
+    "quantidadeAlunos": 7,
+    "percentualPresenca": 89.29
   }
 ]
 ```
@@ -344,8 +345,8 @@ Lista os professores disponíveis para o administrador atribuir a uma turma. Pro
 [
   {
     "id": 2,
-    "nome": "Professor EngNet",
-    "email": "professor@engnet.com",
+    "nome": "Prof. Carlos Henrique",
+    "email": "professor01@engnet.com",
     "fotoUrl": null
   }
 ]
@@ -476,6 +477,7 @@ Resposta das duas consultas:
 
 ```json
 {
+  "limiteBaixaFrequencia": 75,
   "aluno": {
     "id": 3,
     "nome": "Ana Souza",
@@ -529,6 +531,12 @@ gerais do sistema.
   "totalAulas": 4,
   "taxaMediaPresenca": 82.5,
   "limiteBaixaFrequencia": 75,
+  "evolucaoSemanal": [
+    {
+      "semana": "10/06",
+      "valor": 82.5
+    }
+  ],
   "alunosComBaixaFrequencia": [
     {
       "id": 4,
@@ -656,13 +664,15 @@ e registros de cada aula finalizada.
 
 ### Exportação de relatórios
 
-Os três relatórios podem ser baixados em PDF ou planilha Excel pelo parâmetro `formato`:
+Os relatórios podem ser baixados em PDF ou planilha Excel pelo parâmetro `formato`:
 
 | Relatório | Rota de download |
 |---|---|
 | Individual | `GET /api/relatorios/alunos/:alunoId/exportar?formato=pdf` |
 | Baixa frequência | `GET /api/relatorios/alunos-baixa-frequencia/exportar?formato=xlsx&turmaId=:id` |
 | Turma | `GET /api/relatorios/turmas/:turmaId/exportar?formato=pdf` |
+| Geral de alunos | `GET /api/relatorios/alunos/exportar?formato=xlsx` |
+| Geral de turmas | `GET /api/relatorios/turmas/exportar?formato=pdf` |
 
 Os formatos aceitos são `pdf` e `xlsx`. A resposta possui `Content-Disposition: attachment` para iniciar o download no navegador.
 
@@ -688,3 +698,4 @@ Os formatos aceitos são `pdf` e `xlsx`. A resposta possui `Content-Disposition:
 |---|---|---|---|
 | 1.0 | 14/06/2026 | Documentação das rotas iniciais de autenticação, turmas, frequência e relatórios. | Enzo Menali |
 | 1.1 | 14/06/2026 | Inclusão do fluxo administrativo, perfil, remoções e exportações em PDF e XLSX. | Enzo Menali |
+| 1.2 | 15/06/2026 | Inclusão da evolução semanal, edição completa de perfil e exportações gerais. | Enzo Menali |

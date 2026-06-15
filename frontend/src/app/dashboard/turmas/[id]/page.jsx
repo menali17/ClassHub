@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { BookOpen, Users, Search, UserPlus } from "lucide-react";
-import { getTurmaAlunos, getAlunos, vincularAluno } from "@/lib/api";
+import { BookOpen, Users, Search, UserPlus, Trash2 } from "lucide-react";
+import { getTurmaAlunos, getAlunos, vincularAluno, desvincularAluno } from "@/lib/api";
 import Avatar from "@/components/ui/Avatar";
 import Modal from "@/components/ui/Modal";
 import { useAuth } from "@/contexts/AuthContext";
-import { isAdmin } from "@/utils/roles";
+import { isProfessorOrAdmin } from "@/utils/roles";
 
 export default function TurmaDetalhePage() {
   const { id }   = useParams();
@@ -23,7 +23,7 @@ export default function TurmaDetalhePage() {
   const [vinculando,    setVinculando]    = useState(false);
   const [vinculoError,  setVinculoError]  = useState("");
 
-  const admin = isAdmin(user);
+  const canManage = isProfessorOrAdmin(user);
 
   function load() {
     setLoading(true);
@@ -68,6 +68,17 @@ export default function TurmaDetalhePage() {
       setVinculoError(err.message || "Erro ao vincular aluno.");
     } finally {
       setVinculando(false);
+    }
+  }
+
+  async function handleDesvincular(aluno) {
+    if (!confirm(`Desvincular ${aluno.nome} desta turma?`)) return;
+
+    try {
+      await desvincularAluno(id, aluno.id);
+      load();
+    } catch (err) {
+      setError(err.message || "Erro ao desvincular aluno.");
     }
   }
 
@@ -152,7 +163,7 @@ export default function TurmaDetalhePage() {
                 className="pl-8 pr-4 py-1.5 rounded-lg border border-bg-border text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-bg-light"
               />
             </div>
-            {admin && (
+            {canManage && (
               <button
                 onClick={openVinculo}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-400 text-black font-bold rounded-lg text-xs transition-all"
@@ -173,6 +184,17 @@ export default function TurmaDetalhePage() {
                 <p className="font-medium text-sm">{a.nome}</p>
                 <p className="text-caption text-neutral-500">{a.matricula} · {a.email}</p>
               </div>
+              {canManage && (
+                <button
+                  type="button"
+                  onClick={() => handleDesvincular(a)}
+                  aria-label={`Desvincular ${a.nome} da turma`}
+                  className="p-2 rounded-lg text-neutral-500 hover:text-error hover:bg-red-50"
+                  title="Desvincular aluno"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
             </div>
           ))}
         </div>

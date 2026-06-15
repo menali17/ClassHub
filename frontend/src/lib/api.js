@@ -41,11 +41,11 @@ export const logout = () =>
 export const getApiHealth = () => request("");
 
 // ── Dashboard ─────────────────────────────────────────────────────────
-// GET /api/dashboard → { totalAlunos, totalAulas, taxaMediaPresenca, limiteBaixaFrequencia, alunosComBaixaFrequencia }
+// GET /api/dashboard → totais, taxa média, evolução semanal e alertas de baixa frequência
 export const getDashboard = () => request("/dashboard");
 
 // ── Turmas ────────────────────────────────────────────────────────────
-// GET /api/turmas → [{ id, nome, codigo, horario, quantidadeAlunos }]
+// GET /api/turmas → [{ id, nome, codigo, horario, quantidadeAlunos, percentualPresenca }]
 export const getTurmas = () => request("/turmas");
 
 // POST /api/turmas → { nome, codigo, horario }
@@ -70,6 +70,9 @@ export const getTurmaAlunos = (id) => request(`/turmas/${id}/alunos`);
 export const vincularAluno = (turmaId, alunoId) =>
   request(`/turmas/${turmaId}/alunos`, { method: "POST", body: JSON.stringify({ alunoId }) });
 
+export const desvincularAluno = (turmaId, alunoId) =>
+  request(`/turmas/${turmaId}/alunos/${alunoId}`, { method: "DELETE" });
+
 // ── Aulas e Frequência ────────────────────────────────────────────────
 // GET /api/turmas/:turmaId/aulas → { turma, aulas: [{ id, turmaId, data, horario, status, frequenciasRegistradas? }] }
 export const getTurmaAulas = (turmaId) => request(`/turmas/${turmaId}/aulas`);
@@ -87,9 +90,22 @@ export const saveFrequencias = (aulaId, frequencias) =>
 // GET /api/alunos → lista de alunos
 export const getAlunos = () => request("/alunos");
 
-// POST /api/alunos → { nome, email, matricula, senha } (planejado — admin)
+// POST /api/alunos → { nome, email, matricula, senha } (admin)
 export const createAluno = (data) =>
   request("/alunos", { method: "POST", body: JSON.stringify(data) });
+
+export const getAluno = (id) => request(`/alunos/${id}`);
+
+export const updateAluno = (id, data) =>
+  request(`/alunos/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+
+export const deleteAluno = (id) => request(`/alunos/${id}`, { method: "DELETE" });
+
+export const resetSenhaAluno = (id, novaSenha) =>
+  request(`/alunos/${id}/redefinir-senha`, {
+    method: "POST",
+    body: JSON.stringify({ novaSenha }),
+  });
 
 // GET /api/alunos/me/frequencia
 // GET /api/alunos/:id/frequencia
@@ -103,16 +119,32 @@ export const getFrequenciaAluno = (alunoId) =>
 // GET /api/professores → lista de professores (apenas admin)
 export const getProfessores = () => request("/professores");
 
-// POST /api/professores → { nome, email, senha } (planejado — admin)
+// POST /api/professores → { nome, email, senha, departamento? } (admin)
 export const createProfessor = (data) =>
   request("/professores", { method: "POST", body: JSON.stringify(data) });
 
+export const getProfessor = (id) => request(`/professores/${id}`);
+
+export const updateProfessor = (id, data) =>
+  request(`/professores/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+
+export const deleteProfessor = (id) =>
+  request(`/professores/${id}`, { method: "DELETE" });
+
+export const resetSenhaProfessor = (id, novaSenha) =>
+  request(`/professores/${id}/redefinir-senha`, {
+    method: "POST",
+    body: JSON.stringify({ novaSenha }),
+  });
+
 // ── Perfil ────────────────────────────────────────────────────────────
+export const getPerfil = () => request("/perfil");
+
 export const updatePerfil = (data) =>
-  request("/auth/me", { method: "PATCH", body: JSON.stringify(data) });
+  request("/perfil", { method: "PATCH", body: JSON.stringify(data) });
 
 export const updateSenha = (data) =>
-  request("/auth/senha", { method: "PATCH", body: JSON.stringify(data) });
+  request("/perfil/senha", { method: "PATCH", body: JSON.stringify(data) });
 
 export const getAuthToken = () => getToken();
 

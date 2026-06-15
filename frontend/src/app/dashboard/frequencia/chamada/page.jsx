@@ -1,19 +1,41 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
 import { getTurmas, getTurmaAlunos, createAula, saveFrequencias } from "@/lib/api";
 import Avatar from "@/components/ui/Avatar";
 
+function getLocalDate() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60_000;
+  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
+}
+
 export default function ChamadaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center py-16">
+          <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <ChamadaContent />
+    </Suspense>
+  );
+}
+
+function ChamadaContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedClassId = searchParams.get("turmaId");
   const [turmas, setTurmas] = useState([]);
   const [turmaSel, setTurmaSel] = useState("");
   const [alunos, setAlunos] = useState([]);
   const [frequencias, setFrequencias] = useState([]);
-  const [data, setData] = useState(new Date().toISOString().slice(0, 10));
+  const [data, setData] = useState(getLocalDate);
   const [horario, setHorario] = useState("19:00");
   const [loading, setLoading] = useState(false);
   const [loadingTurmas, setLoadingTurmas] = useState(true);
@@ -26,11 +48,12 @@ export default function ChamadaPage() {
       .then((t) => {
         const lista = Array.isArray(t) ? t : [];
         setTurmas(lista);
-        if (lista.length > 0) setTurmaSel(String(lista[0].id));
+        const selectedClass = lista.find((item) => String(item.id) === requestedClassId);
+        if (lista.length > 0) setTurmaSel(String(selectedClass?.id ?? lista[0].id));
       })
       .catch((err) => setError(err.message || "Erro ao carregar turmas."))
       .finally(() => setLoadingTurmas(false));
-  }, []);
+  }, [requestedClassId]);
 
   useEffect(() => {
     if (!turmaSel) return;
@@ -79,7 +102,7 @@ export default function ChamadaPage() {
 
   if (success) {
     return (
-      <RoleGuard allowed={["admin", "professor"]}>
+      <RoleGuard allowed={["professor"]}>
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
             <CheckCircle2 size={32} className="text-success" />
@@ -92,7 +115,7 @@ export default function ChamadaPage() {
   }
 
   return (
-    <RoleGuard allowed={["admin", "professor"]}>
+    <RoleGuard allowed={["professor"]}>
       <div className="space-y-6 max-w-2xl w-full mx-auto">
         <Link
           href="/dashboard/frequencia"

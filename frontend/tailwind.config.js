@@ -1,4 +1,5 @@
 const config = {
+  darkMode: "class",
   content: ["./src/**/*.{js,jsx}"],
   theme: {
     extend: {

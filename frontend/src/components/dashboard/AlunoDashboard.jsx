@@ -1,16 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, AlertTriangle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Info } from "lucide-react";
 import { getFrequenciaAluno } from "@/lib/api";
 import { getFrequencyStatus } from "@/utils/formatters";
 import ProgressBar from "@/components/ui/ProgressBar";
 
-function FrequencyCircle({ percent }) {
+function FrequencyCircle({ percent, hasRecords }) {
   const r = 52;
   const c = 2 * Math.PI * r;
   const offset = c - (Math.min(100, percent) / 100) * c;
-  const color = percent >= 85 ? "#16a34a" : percent >= 75 ? "#d97706" : "#dc2626";
+  const color = !hasRecords
+    ? "#71717a"
+    : percent >= 85
+      ? "#16a34a"
+      : percent >= 75
+        ? "#d97706"
+        : "#dc2626";
   return (
     <div className="relative w-36 h-36 flex items-center justify-center">
       <svg className="absolute inset-0 -rotate-90" width="144" height="144" viewBox="0 0 144 144">
@@ -39,6 +45,7 @@ function FrequencyCircle({ percent }) {
 export default function AlunoDashboard() {
   const [resumo, setResumo] = useState(null);
   const [turmas, setTurmas] = useState([]);
+  const [meta, setMeta] = useState(75);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -47,14 +54,15 @@ export default function AlunoDashboard() {
       .then((data) => {
         setResumo(data.resumoGeral ?? null);
         setTurmas(data.turmas ?? []);
+        setMeta(data.limiteBaixaFrequencia ?? 75);
       })
       .catch((err) => setError(err.message || "Erro ao carregar sua frequência."))
       .finally(() => setLoading(false));
   }, []);
 
   const pct = resumo?.percentualPresenca ?? 0;
-  const isRisco = resumo?.baixaFrequencia ?? pct < 75;
-  const meta = 75;
+  const hasRecords = (resumo?.totalAulas ?? 0) > 0;
+  const isRisco = hasRecords && (resumo?.baixaFrequencia ?? pct < 75);
 
   if (loading) {
     return (
@@ -82,29 +90,45 @@ export default function AlunoDashboard() {
 
       <div
         className={`rounded-xl p-4 flex items-center gap-3 ${
-          isRisco ? "bg-red-50 border border-red-200" : "bg-green-50 border border-green-200"
+          !hasRecords
+            ? "bg-neutral-50 border border-neutral-200"
+            : isRisco
+              ? "bg-red-50 border border-red-200"
+              : "bg-green-50 border border-green-200"
         }`}
       >
-        {isRisco ? (
+        {!hasRecords ? (
+          <Info size={20} className="text-neutral-500 flex-shrink-0" />
+        ) : isRisco ? (
           <AlertTriangle size={20} className="text-error flex-shrink-0" />
         ) : (
           <CheckCircle2 size={20} className="text-success flex-shrink-0" />
         )}
         <div>
-          <p className={`font-semibold text-sm ${isRisco ? "text-error" : "text-success"}`}>
-            {isRisco ? "Atenção: frequência abaixo do mínimo!" : "Situação Regular — continue assim!"}
+          <p
+            className={`font-semibold text-sm ${
+              !hasRecords ? "text-neutral-700" : isRisco ? "text-error" : "text-success"
+            }`}
+          >
+            {!hasRecords
+              ? "Frequência ainda não calculada"
+              : isRisco
+                ? "Atenção: frequência abaixo do mínimo!"
+                : "Situação regular — continue assim!"}
           </p>
           <p className="text-caption text-neutral-500">
-            {isRisco
-              ? `Sua frequência está em ${Math.round(pct)}%, abaixo do mínimo de ${meta}%.`
-              : `Sua frequência está em ${Math.round(pct)}%, acima do mínimo de ${meta}%.`}
+            {!hasRecords
+              ? "A porcentagem será exibida depois que a primeira chamada for registrada."
+              : isRisco
+                ? `Sua frequência está em ${Math.round(pct)}%, abaixo do mínimo de ${meta}%.`
+                : `Sua frequência está em ${Math.round(pct)}%, dentro do mínimo de ${meta}%.`}
           </p>
         </div>
       </div>
 
       <div className="bg-bg-card rounded-xl border border-bg-border shadow-card p-6">
         <div className="flex flex-col sm:flex-row items-center gap-8">
-          <FrequencyCircle percent={pct} />
+          <FrequencyCircle percent={pct} hasRecords={hasRecords} />
           <div className="grid grid-cols-2 gap-4 flex-1 w-full">
             <div className="text-center p-4 bg-bg-light rounded-xl">
               <p className="text-2xl font-bold text-success">{resumo?.presencas ?? 0}</p>
@@ -135,6 +159,7 @@ export default function AlunoDashboard() {
         </div>
         <div className="divide-y divide-bg-border">
           {turmas.map((t) => {
+            const hasClassRecords = (t.totalAulas ?? t.historico?.length ?? 0) > 0;
             const tst = getFrequencyStatus(t.percentualPresenca ?? 0);
             return (
               <div key={t.turmaId} className="px-5 py-4">
@@ -147,11 +172,19 @@ export default function AlunoDashboard() {
                       </p>
                     )}
                   </div>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${tst.bg} ${tst.text}`}>
-                    {Math.round(t.percentualPresenca ?? 0)}%
-                  </span>
+                  {hasClassRecords ? (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${tst.bg} ${tst.text}`}>
+                      {Math.round(t.percentualPresenca ?? 0)}%
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-600">
+                      Sem registros
+                    </span>
+                  )}
                 </div>
-                <ProgressBar value={t.percentualPresenca ?? 0} showMin={false} />
+                {hasClassRecords && (
+                  <ProgressBar value={t.percentualPresenca ?? 0} showMin={false} />
+                )}
               </div>
             );
           })}

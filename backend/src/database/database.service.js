@@ -396,7 +396,26 @@ class DatabaseService {
           t.horario,
           t.professor_id,
           u.nome AS professor_nome,
-          COUNT(aluno.id) AS quantidade_alunos
+          COUNT(aluno.id) AS quantidade_alunos,
+          (
+            SELECT CASE
+              WHEN COUNT(f.id) = 0 THEN NULL
+              ELSE ROUND(
+                100.0 * SUM(CASE WHEN f.situacao = 'presente' THEN 1 ELSE 0 END) / COUNT(f.id),
+                2
+              )
+            END
+            FROM aulas a
+            INNER JOIN frequencias f ON f.aula_id = a.id
+            INNER JOIN turma_alunos ta_frequencia
+              ON ta_frequencia.turma_id = t.id
+              AND ta_frequencia.aluno_id = f.aluno_id
+              AND ta_frequencia.ativo = 1
+            INNER JOIN usuarios aluno_frequencia
+              ON aluno_frequencia.id = f.aluno_id
+              AND aluno_frequencia.ativo = 1
+            WHERE a.turma_id = t.id AND a.status = 'finalizada'
+          ) AS percentual_presenca
         FROM turmas t
         INNER JOIN usuarios u ON u.id = t.professor_id
         LEFT JOIN turma_alunos ta ON ta.turma_id = t.id AND ta.ativo = 1
@@ -418,7 +437,26 @@ class DatabaseService {
           t.horario,
           t.professor_id,
           u.nome AS professor_nome,
-          COUNT(aluno.id) AS quantidade_alunos
+          COUNT(aluno.id) AS quantidade_alunos,
+          (
+            SELECT CASE
+              WHEN COUNT(f.id) = 0 THEN NULL
+              ELSE ROUND(
+                100.0 * SUM(CASE WHEN f.situacao = 'presente' THEN 1 ELSE 0 END) / COUNT(f.id),
+                2
+              )
+            END
+            FROM aulas a
+            INNER JOIN frequencias f ON f.aula_id = a.id
+            INNER JOIN turma_alunos ta_frequencia
+              ON ta_frequencia.turma_id = t.id
+              AND ta_frequencia.aluno_id = f.aluno_id
+              AND ta_frequencia.ativo = 1
+            INNER JOIN usuarios aluno_frequencia
+              ON aluno_frequencia.id = f.aluno_id
+              AND aluno_frequencia.ativo = 1
+            WHERE a.turma_id = t.id AND a.status = 'finalizada'
+          ) AS percentual_presenca
         FROM turmas t
         INNER JOIN usuarios u ON u.id = t.professor_id
         LEFT JOIN turma_alunos ta ON ta.turma_id = t.id AND ta.ativo = 1
@@ -831,6 +869,33 @@ class DatabaseService {
           (SELECT COUNT(*) FROM turmas) AS total_turmas
       `)
       .get();
+  }
+
+  listWeeklyAttendance(profile, userId) {
+    const professorFilter = profile === "professor" ? "AND t.professor_id = ?" : "";
+    const parameters = profile === "professor" ? [userId] : [];
+
+    return this.database
+      .prepare(`
+        SELECT periodo, inicio, total_registros, presencas
+        FROM (
+          SELECT
+            strftime('%Y-%W', a.data) AS periodo,
+            MIN(a.data) AS inicio,
+            COUNT(f.id) AS total_registros,
+            COALESCE(SUM(CASE WHEN f.situacao = 'presente' THEN 1 ELSE 0 END), 0) AS presencas
+          FROM aulas a
+          INNER JOIN turmas t ON t.id = a.turma_id
+          INNER JOIN frequencias f ON f.aula_id = a.id
+          INNER JOIN usuarios u ON u.id = f.aluno_id AND u.ativo = 1
+          WHERE a.status = 'finalizada' ${professorFilter}
+          GROUP BY periodo
+          ORDER BY periodo DESC
+          LIMIT 8
+        )
+        ORDER BY periodo
+      `)
+      .all(...parameters);
   }
 
   listAttendanceSummaries(profile, userId, classId = null) {

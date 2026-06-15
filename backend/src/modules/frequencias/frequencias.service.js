@@ -162,6 +162,7 @@ class FrequenciasService {
     const generalPercentage = this.calculatePercentage(general.presencas, general.totalAulas);
 
     return {
+      limiteBaixaFrequencia: this.databaseService.lowAttendanceThreshold,
       aluno: {
         id: Number(student.id),
         nome: student.nome,

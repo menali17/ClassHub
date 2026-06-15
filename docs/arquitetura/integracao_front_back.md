@@ -21,9 +21,10 @@ O back-end já disponibiliza recursos para:
 * consulta do dashboard;
 * geração e exportação de relatórios.
 
-O front-end possui a estrutura inicial em Next.js, mas ainda precisa integrar suas páginas e componentes às rotas disponíveis na API.
-
-Este documento descreve o padrão recomendado para essa integração. As pastas e arquivos sugeridos para o front-end ainda deverão ser criados durante a implementação.
+O front-end já consome essas rotas por meio do cliente HTTP compartilhado em
+`frontend/src/lib/api.js`. A autenticação é mantida pelo `AuthContext`, enquanto
+os hooks e páginas transformam as respostas da API nos dados exibidos em cada
+perfil.
 
 ---
 
@@ -46,7 +47,7 @@ No front-end, o endereço-base da API deverá ser definido em uma variável púb
 NEXT_PUBLIC_API_URL=http://localhost:3333/api
 ```
 
-Essa variável deverá ser adicionada ao arquivo `.env.local` do front-end quando a integração for iniciada.
+Essa variável pode ser definida no arquivo `.env` ou `.env.local` do front-end.
 
 ---
 
@@ -218,7 +219,7 @@ A chamada deve enviar a situação de todos os alunos atualmente vinculados à t
 
 | Método | Rota         | Finalidade                                                              |
 | ------ | ------------ | ----------------------------------------------------------------------- |
-| `GET`  | `/dashboard` | Consultar totais, taxa média de presença e alertas de baixa frequência. |
+| `GET`  | `/dashboard` | Consultar totais, taxa média, evolução semanal e alertas de baixa frequência. |
 
 Para professores, os indicadores devem considerar somente as turmas sob sua responsabilidade.
 
@@ -238,41 +239,40 @@ Para professores, os indicadores devem considerar somente as turmas sob sua resp
 | `GET`  | `/relatorios/alunos-baixa-frequencia/exportar?formato=xlsx` | Exportar a lista de baixa frequência em XLSX.       |
 | `GET`  | `/relatorios/turmas/:turmaId/exportar?formato=pdf`          | Exportar o relatório da turma em PDF.               |
 | `GET`  | `/relatorios/turmas/:turmaId/exportar?formato=xlsx`         | Exportar o relatório da turma em XLSX.              |
+| `GET`  | `/relatorios/alunos/exportar?formato=pdf`                    | Exportar o relatório geral de alunos em PDF.        |
+| `GET`  | `/relatorios/alunos/exportar?formato=xlsx`                   | Exportar o relatório geral de alunos em XLSX.       |
+| `GET`  | `/relatorios/turmas/exportar?formato=pdf`                    | Exportar o relatório geral de turmas em PDF.        |
+| `GET`  | `/relatorios/turmas/exportar?formato=xlsx`                   | Exportar o relatório geral de turmas em XLSX.       |
 
 Os exemplos completos dos corpos, parâmetros e respostas estão disponíveis em `backend/CONTRATO_API.md`.
 
 ---
 
-## 6. Organização recomendada no front-end
+## 6. Organização da integração no front-end
 
-Para evitar requisições HTTP espalhadas entre páginas e componentes, recomenda-se centralizar a integração em uma camada de serviços.
+As requisições HTTP estão centralizadas para evitar duplicação de URL-base,
+cabeçalhos, token e tratamento de sessão expirada.
 
 ```text
 frontend/src/
 ├── app/
 ├── components/
 ├── contexts/
-│   └── auth-context.jsx
-└── services/
-    ├── api.js
-    ├── auth.js
-    ├── usuarios.js
-    ├── turmas.js
-    ├── frequencias.js
-    └── relatorios.js
+│   ├── AuthContext.jsx
+│   └── ThemeContext.jsx
+├── hooks/
+│   └── useDashboard.js
+└── lib/
+    └── api.js
 ```
 
-Responsabilidades sugeridas:
+Responsabilidades:
 
-* `api.js`: URL-base, cabeçalhos, token e tratamento comum de respostas;
-* `auth.js`: login, consulta da sessão e logout;
-* `usuarios.js`: perfil, alunos e professores;
-* `turmas.js`: turmas e vínculos de alunos;
-* `frequencias.js`: aulas, chamadas e históricos;
-* `relatorios.js`: dashboard, relatórios e exportações;
-* `auth-context.jsx`: estado do usuário autenticado e controle da sessão.
-
-Essa estrutura representa uma recomendação para a implementação e ainda deverá ser criada no front-end.
+* `lib/api.js`: cliente HTTP, autenticação, perfil, usuários, turmas, aulas e frequências;
+* `contexts/AuthContext.jsx`: sessão, usuário autenticado, logout e atualização do perfil;
+* `contexts/ThemeContext.jsx`: preferência persistida entre tema claro e escuro;
+* `hooks/useDashboard.js`: indicadores e dados auxiliares dos dashboards;
+* `app/dashboard/relatorios/page.jsx`: consultas e downloads dos relatórios.
 
 ---
 
@@ -323,24 +323,20 @@ O limite padrão de baixa frequência é `75%`, mas esse valor pode ser alterado
 
 ---
 
-## 9. Sequência recomendada de implementação
+## 9. Fluxos integrados
 
-A integração pode ser realizada na seguinte ordem:
+Atualmente estão integrados:
 
-1. Configurar `NEXT_PUBLIC_API_URL`.
-2. Criar o cliente HTTP compartilhado.
-3. Implementar login, consulta da sessão e logout.
-4. Criar o contexto de autenticação.
-5. Integrar a listagem e o gerenciamento de turmas.
-6. Integrar a listagem e o vínculo de alunos.
-7. Integrar as telas administrativas de alunos e professores.
-8. Integrar a criação de aulas.
-9. Integrar o registro e a correção da chamada.
-10. Integrar o dashboard.
-11. Integrar os relatórios e os downloads.
-12. Integrar a consulta de frequência do aluno.
-13. Validar os fluxos dos perfis de administrador, professor e aluno.
-14. Validar estados de carregamento, ausência de dados e respostas de erro.
+1. login, restauração da sessão e logout;
+2. consulta e edição do próprio perfil;
+3. administração de alunos e professores;
+4. criação, edição e remoção de turmas conforme o perfil;
+5. vínculo e desvínculo de alunos;
+6. criação de aulas e registro de chamadas pelo professor;
+7. dashboards de administrador, professor e aluno;
+8. relatórios e downloads em PDF e XLSX;
+9. tema claro e escuro persistido no navegador;
+10. bloqueio de telas e ações incompatíveis com o perfil autenticado.
 
 ---
 
@@ -348,7 +344,7 @@ A integração pode ser realizada na seguinte ordem:
 
 * [Arquitetura do Sistema](arquitetura_sistema.md)
 * [Banco de Dados](banco_de_dados.md)
-* [Contrato da API no GitHub](CONTRATO_API.md)
+* [Contrato da API no GitHub](https://github.com/menali17/ClassHub/blob/main/backend/CONTRATO_API.md)
 
 ---
 
@@ -359,3 +355,4 @@ A integração pode ser realizada na seguinte ordem:
 | 1.0    | 14/06/2026 | Definição inicial do padrão de integração entre Next.js e a API NestJS.                            | Enzo Menali |
 | 1.1    | 14/06/2026 | Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios.                  | Enzo Menali |
 | 1.2    | 14/06/2026 | Reorganização das rotas, esclarecimento da situação atual e detalhamento das regras de integração. | Enzo Menali |
+| 1.3    | 15/06/2026 | Atualização do estado integrado, estrutura real do front-end, dashboard e relatórios gerais.       | Enzo Menali |

@@ -29,6 +29,13 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
+  async function refreshUser() {
+    const data = await getMe();
+    const normalized = normalizeUser(data);
+    setUser(normalized);
+    return normalized;
+  }
+
   async function login(email, senha) {
     const data = await apiLogin(email, senha);
     localStorage.setItem("frequenta_token", data.token);
@@ -44,7 +51,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

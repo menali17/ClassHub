@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, BookOpen, TrendingUp, ClipboardList, AlertTriangle, Target } from "lucide-react";
+import { Users, BookOpen, TrendingUp, ClipboardList, AlertTriangle, Target, UserCog } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import StatCard from "./StatCard";
 import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
@@ -52,20 +52,18 @@ export default function AdminDashboard() {
       setDash(dashData);
       setTurmas(turmasData);
       setHealth(healthData);
-
-      if (dashData?.alunosComBaixaFrequencia?.length) {
-        setFaltosos(dashData.alunosComBaixaFrequencia);
-        setLoading(false);
-        return;
-      }
+      const dashboardFaltosos = Array.isArray(dashData?.alunosComBaixaFrequencia)
+        ? dashData.alunosComBaixaFrequencia
+        : null;
+      if (dashboardFaltosos) setFaltosos(dashboardFaltosos);
 
       try {
         const alunos = await getAlunos();
         const freqData = await fetchFrequenciasAlunos(Array.isArray(alunos) ? alunos : []);
-        setFaltosos(extractAlunosFaltosos(freqData));
+        if (!dashboardFaltosos) setFaltosos(extractAlunosFaltosos(freqData));
         setTaxaCalculada(calcTaxaMediaPresenca(freqData));
         const agregado = aggregateFrequenciaPorTurma(freqData);
-        if (agregado.length > 0) setChartTurmas(agregado);
+        setChartTurmas(agregado);
       } catch (err) {
         setFreqError(err.message || "Erro ao calcular frequências.");
       } finally {
@@ -79,11 +77,13 @@ export default function AdminDashboard() {
   const registros = health?.database?.registros ?? {};
   const totalAlunos = dash?.totalAlunos ?? registros.alunos ?? 0;
   const totalAulas = dash?.totalAulas ?? registros.aulas ?? 0;
+  const totalProfessores = dash?.totalProfessores ?? registros.professores ?? 0;
+  const turmasDisplay = turmas;
+  const totalTurmas = dash?.totalTurmas ?? turmasDisplay.length;
   const frequenciaGeral =
     dash?.taxaMediaPresenca ?? taxaCalculada ?? (totalAulas > 0 ? null : 0);
   const metaFrequencia = dash?.limiteBaixaFrequencia ?? registros.limiteBaixaFrequencia ?? 75;
   const alunosRisco = faltosos;
-  const turmasDisplay = turmas;
   const temEvolucaoSemanal = Array.isArray(dash?.evolucaoSemanal) && dash.evolucaoSemanal.length > 0;
 
   if (loading) {
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
         <p className="text-caption text-bg-muted mt-1">Visão geral do sistema de frequência</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard title="Total de alunos" value={totalAlunos} icon={Users} />
         <StatCard
           title="Total de aulas"
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
         />
         <StatCard
           title="Turmas cadastradas"
-          value={turmasDisplay.length}
+          value={totalTurmas}
           icon={BookOpen}
           iconBg="bg-blue-100"
           iconColor="text-info"
@@ -126,7 +126,14 @@ export default function AdminDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <StatCard
+          title="Professores ativos"
+          value={totalProfessores}
+          icon={UserCog}
+          iconBg="bg-blue-100"
+          iconColor="text-info"
+        />
         <StatCard
           title="Alunos em risco (&lt;75%)"
           value={alunosRisco.length}
@@ -148,7 +155,7 @@ export default function AdminDashboard() {
         <div className="bg-bg-card rounded-xl border border-bg-border shadow-card p-5">
           <h3 className="text-h4 font-semibold mb-1">Evolução Semanal</h3>
           <p className="text-caption text-neutral-400 mb-4">
-            {temEvolucaoSemanal ? "Dados do dashboard" : "Aguardando endpoint /dashboard no back-end"}
+            {temEvolucaoSemanal ? "Percentual médio por semana" : "Sem chamadas finalizadas"}
           </p>
           {temEvolucaoSemanal ? (
             <ResponsiveContainer width="100%" height={200}>
@@ -166,7 +173,7 @@ export default function AdminDashboard() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <ChartEmptyState message="Gráfico disponível quando GET /api/dashboard estiver implementado." />
+            <ChartEmptyState message="Registre chamadas para visualizar a evolução semanal." />
           )}
         </div>
 

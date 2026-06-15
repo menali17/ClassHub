@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Pencil, Trash2, ChevronRight, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { isAdmin } from "@/utils/roles";
+import { isAdmin, isProfessorOrAdmin } from "@/utils/roles";
 import { getTurmas, deleteTurma } from "@/lib/api";
 import { getFrequencyStatus } from "@/utils/formatters";
 import TurmaFormModal from "@/components/turmas/TurmaFormModal";
@@ -19,7 +19,8 @@ function normalizeTurma(t) {
     professor: typeof t.professor === "object"
       ? (t.professor?.nome || t.professor?.name || "")
       : (t.professor || ""),
-    frequencia: t.frequencia ?? t.frequenciaMedia ?? null,
+    professorId: t.professor?.id ?? t.professorId ?? null,
+    frequencia: t.percentualPresenca ?? t.frequencia ?? t.frequenciaMedia ?? null,
   };
 }
 
@@ -33,6 +34,7 @@ export default function TurmasPage() {
   const [editando, setEditando]   = useState(null);
 
   const admin = isAdmin(user);
+  const canManage = isProfessorOrAdmin(user);
 
   function load() {
     setLoading(true);
@@ -78,7 +80,7 @@ export default function TurmasPage() {
           </h1>
           <p className="text-caption text-bg-muted mt-1">{filtradas.length} turma(s) encontrada(s)</p>
         </div>
-        {admin && (
+        {canManage && (
           <button onClick={openNew} className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-black font-bold px-4 py-2.5 rounded-lg text-sm transition-all">
             <Plus size={16} /> Nova turma
           </button>
@@ -138,25 +140,44 @@ export default function TurmasPage() {
                       <td className="px-5 py-3 text-neutral-500 hidden sm:table-cell">{t.horario}</td>
                       <td className="px-5 py-3 text-neutral-500">{t.quantidadeAlunos}</td>
                       <td className="px-5 py-3 hidden lg:table-cell">
-                        {st && (
+                        {st ? (
                           <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text}`}>
                             {t.frequencia}%
                           </span>
+                        ) : (
+                          <span className="text-xs text-neutral-400">Sem registros</span>
                         )}
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-1">
-                          <Link href={`/dashboard/turmas/${t.id}`} className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors">
+                          <Link
+                            href={`/dashboard/turmas/${t.id}`}
+                            aria-label={`Visualizar turma ${t.nome}`}
+                            title="Visualizar turma"
+                            className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
+                          >
                             <ChevronRight size={16} />
                           </Link>
-                          {admin && (
+                          {canManage && (
                             <>
-                              <button onClick={() => openEdit(t)} className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors">
+                              <button
+                                onClick={() => openEdit(t)}
+                                aria-label={`Editar turma ${t.nome}`}
+                                title="Editar turma"
+                                className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
+                              >
                                 <Pencil size={16} />
                               </button>
-                              <button onClick={() => handleDelete(t.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-neutral-500 hover:text-error transition-colors">
-                                <Trash2 size={16} />
-                              </button>
+                              {admin && (
+                                <button
+                                  onClick={() => handleDelete(t.id)}
+                                  aria-label={`Excluir turma ${t.nome}`}
+                                  title="Excluir turma"
+                                  className="p-1.5 rounded-lg hover:bg-red-50 text-neutral-500 hover:text-error transition-colors"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              )}
                             </>
                           )}
                         </div>
@@ -174,6 +195,7 @@ export default function TurmasPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         turma={editando}
+        canAssignProfessor={admin}
         onSaved={load}
       />
     </div>

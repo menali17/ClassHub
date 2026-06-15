@@ -174,9 +174,9 @@ Na primeira execução, o sistema cria dados para desenvolvimento:
 | Perfil | Quantidade | Identificação |
 |---|---:|---|
 | Administrador | 1 | `admin@engnet.com` |
-| Professor | 1 | `professor@engnet.com` |
-| Alunos | 10 | `aluno01@engnet.com` até `aluno10@engnet.com` |
-| Turmas | 2 | Cinco alunos vinculados a cada turma. |
+| Professores | 3 | `professor01@engnet.com` até `professor03@engnet.com` |
+| Alunos | 15 | `aluno01@engnet.com` até `aluno15@engnet.com` |
+| Turmas | 4 | Alunos distribuídos entre as turmas cadastradas. |
 
 Todos os usuários iniciais utilizam a senha `123456`. Esses dados servem apenas
 para desenvolvimento e demonstração do desafio.

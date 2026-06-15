@@ -5,6 +5,8 @@ import { Plus, ClipboardList } from "lucide-react";
 import RoleGuard from "@/components/auth/RoleGuard";
 import { getTurmas, getTurmaAulas } from "@/lib/api";
 import { formatDate } from "@/utils/formatters";
+import { useAuth } from "@/contexts/AuthContext";
+import { isProfessor } from "@/utils/roles";
 
 function statusLabel(status) {
   if (status === "finalizada") return { text: "Finalizada", className: "bg-green-100 text-green-700" };
@@ -13,6 +15,8 @@ function statusLabel(status) {
 }
 
 export default function FrequenciaPage() {
+  const { user } = useAuth();
+  const canRegister = isProfessor(user);
   const [turmas, setTurmas] = useState([]);
   const [turmaSel, setTurmaSel] = useState("");
   const [aulas, setAulas] = useState([]);
@@ -56,12 +60,14 @@ export default function FrequenciaPage() {
             <h1 className="text-h2 font-bold text-neutral-900">Controle de Frequência</h1>
             <p className="text-caption text-bg-muted mt-1">Gerencie as chamadas das suas turmas</p>
           </div>
-          <Link
-            href="/dashboard/frequencia/chamada"
-            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-black font-bold px-4 py-2.5 rounded-lg text-sm transition-all"
-          >
-            <Plus size={16} /> Nova chamada
-          </Link>
+          {canRegister && (
+            <Link
+              href={`/dashboard/frequencia/chamada${turmaSel ? `?turmaId=${turmaSel}` : ""}`}
+              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-400 text-black font-bold px-4 py-2.5 rounded-lg text-sm transition-all"
+            >
+              <Plus size={16} /> Nova chamada
+            </Link>
+          )}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -91,12 +97,14 @@ export default function FrequenciaPage() {
             <div className="flex flex-col items-center py-14 gap-3">
               <ClipboardList size={40} className="text-neutral-200" />
               <p className="text-neutral-500 text-sm">Nenhuma aula registrada para esta turma.</p>
-              <Link
-                href="/dashboard/frequencia/chamada"
-                className="text-sm text-orange-500 hover:text-orange-400 font-medium"
-              >
-                Registrar primeira chamada →
-              </Link>
+              {canRegister && (
+                <Link
+                  href={`/dashboard/frequencia/chamada?turmaId=${turmaSel}`}
+                  className="text-sm text-orange-500 hover:text-orange-400 font-medium"
+                >
+                  Registrar primeira chamada →
+                </Link>
+              )}
             </div>
           ) : (
             <div className="overflow-x-auto">

@@ -31,10 +31,10 @@ Os usuários abaixo são criados com a senha `123456`:
 | Perfil | E-mail |
 |---|---|
 | Administrador | `admin@engnet.com` |
-| Professor | `professor@engnet.com` |
-| Alunos | `aluno01@engnet.com` até `aluno10@engnet.com` |
+| Professores | `professor01@engnet.com` até `professor03@engnet.com` |
+| Alunos | `aluno01@engnet.com` até `aluno15@engnet.com` |
 
-Também são criadas duas turmas, com cinco alunos vinculados a cada uma.
+Também são criadas quatro turmas, com alunos distribuídos entre elas.
 
 O limite de baixa frequência é configurado por
 `LOW_ATTENDANCE_THRESHOLD` e possui o valor padrão de `75`.

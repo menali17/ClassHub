@@ -10,6 +10,8 @@ export function getAvatarColor(name = "") {
 
 export function formatDate(iso) {
   if (!iso) return "—";
+  const dateOnly = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (dateOnly) return `${dateOnly[3]}/${dateOnly[2]}/${dateOnly[1]}`;
   return new Date(iso).toLocaleDateString("pt-BR");
 }
 

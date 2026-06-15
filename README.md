@@ -65,7 +65,7 @@ A aplicação permite o gerenciamento de alunos, professores, turmas, aulas e re
 
 É necessário possuir instalado:
 
-* Node.js 18 ou superior
+* Node.js 22.5 ou superior
 * npm
 
 ---
@@ -131,6 +131,26 @@ O comando iniciará simultaneamente:
 
 * Front-end: http://localhost:3000
 * Back-end: http://localhost:3333/api
+
+### 5. Executar as verificações
+
+Na raiz do projeto:
+
+```bash
+npm run check
+```
+
+Esse comando executa os testes de integração do back-end e o build de produção do front-end.
+
+### Credenciais de desenvolvimento
+
+Todos os usuários iniciais utilizam a senha `123456`.
+
+| Perfil | E-mail |
+|---|---|
+| Administrador | `admin@engnet.com` |
+| Professores | `professor01@engnet.com` até `professor03@engnet.com` |
+| Alunos | `aluno01@engnet.com` até `aluno15@engnet.com` |
 
 ---
 

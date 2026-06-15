@@ -237,6 +237,10 @@ class TurmasService {
 
     if (includeQuantity) {
       response.quantidadeAlunos = Number(classData.quantidade_alunos);
+      response.percentualPresenca =
+        classData.percentual_presenca === null || classData.percentual_presenca === undefined
+          ? null
+          : Number(classData.percentual_presenca);
     }
 
     return response;
