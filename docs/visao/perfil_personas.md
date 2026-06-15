@@ -1,67 +1,122 @@
-# Personas do Sistema de Gestão de Presença Acadêmica
+# Perfis e Personas
 
-## Persona 1 - Carlos Silva
+As personas representam os três perfis que utilizam o ClassHub. Elas ajudam a equipe a avaliar se as funcionalidades, a linguagem e os fluxos da aplicação atendem às necessidades reais de professores, administradores e alunos.
 
-**Idade:** 42 anos
-**Profissão:** Professor Universitário
-**Experiência com tecnologia:** Intermediária
+## Persona 1 - Carlos Silva, professor
 
-### Objetivo
+| Característica | Descrição |
+|---|---|
+| Idade | 42 anos |
+| Função | Professor de aulas práticas e laboratoriais |
+| Experiência com tecnologia | Intermediária |
+| Dispositivos utilizados | Notebook e celular |
 
-Registrar e validar a presença dos alunos de forma rápida e segura durante aulas práticas e laboratoriais.
+### Contexto
 
-### Dores (Problemas)
+Carlos ministra aulas para diferentes turmas e precisa registrar a frequência sem comprometer o tempo da atividade prática. Antes do ClassHub, utilizava listas em papel e precisava conferir os registros novamente após a aula.
 
-* Gasta muito tempo realizando chamadas manuais.
-* Pode ocorrer fraude na marcação de presença.
-* Tem dificuldade para organizar registros de presença ao longo do semestre.
-* Necessita comprovar presenças em auditorias ou questionamentos.
+### Objetivos
 
-### Necessidades
+- Consultar rapidamente as turmas sob sua responsabilidade.
+- Registrar presenças e faltas durante a aula.
+- Corrigir uma chamada quando identificar um erro.
+- Acompanhar o histórico e os percentuais de frequência dos alunos.
+- Identificar estudantes com frequência abaixo de 75%.
 
-* Gerar QR Codes rapidamente.
-* Visualizar presenças registradas em tempo real.
-* Consultar históricos de presença.
-* Obter relatórios de frequência.
-* Garantir a integridade dos registros.
+### Dores
 
-### Frase Representativa
+- Perde tempo preparando, conferindo e armazenando listas impressas.
+- Pode cometer erros ao transferir informações para planilhas.
+- Tem dificuldade para localizar registros antigos.
+- Precisa de uma interface objetiva para realizar a chamada durante a aula.
 
-> "Quero registrar a presença dos alunos de forma rápida, sem perder tempo de aula e com segurança."
+### Necessidades no ClassHub
 
----
+- Visualizar apenas suas próprias turmas.
+- Encontrar alunos por nome, matrícula ou e-mail.
+- Registrar a chamada completa com data e horário corretos.
+- Consultar dashboards e relatórios limitados às suas turmas.
+- Receber mensagens claras de sucesso ou erro após cada ação.
 
-## Persona 2 - Marcelo Ferreira
+> "Quero registrar a chamada sem perder tempo de aula e consultar os dados quando precisar."
 
-**Idade:** 55 anos
-**Profissão:** Professor de Engenharia de Redes
-**Experiência com tecnologia:** Básica a intermediária
+## Persona 2 - Helena Costa, administradora acadêmica
 
-### Objetivo
+| Característica | Descrição |
+|---|---|
+| Idade | 36 anos |
+| Função | Responsável pela organização acadêmica |
+| Experiência com tecnologia | Intermediária a avançada |
+| Dispositivos utilizados | Computador institucional e notebook |
 
-Utilizar uma ferramenta simples para registrar a presença dos alunos sem precisar lidar com planilhas ou chamadas manuais demoradas.
+### Contexto
 
-### Dores (Problemas)
+Helena mantém os cadastros acadêmicos atualizados e acompanha o funcionamento geral das turmas. Ela precisa garantir que alunos e professores estejam corretamente vinculados e que os relatórios apresentem dados coerentes.
 
-* Possui pouco tempo para tarefas administrativas durante a aula.
-* Não gosta de sistemas complexos e com muitas etapas.
-* Já perdeu registros de presença por falhas em anotações manuais.
-* Precisa consultar frequências antigas de forma rápida.
+### Objetivos
 
-### Necessidades
+- Cadastrar, editar e desativar alunos e professores.
+- Criar, editar e remover turmas.
+- Definir ou transferir o professor responsável por uma turma.
+- Vincular e desvincular alunos das turmas.
+- Acompanhar indicadores gerais e alunos com baixa frequência.
+- Exportar relatórios para análise e compartilhamento.
 
-* Interface simples e intuitiva.
-* Geração rápida de QR Code.
-* Histórico organizado das presenças.
-* Consulta fácil de registros anteriores.
-* Segurança contra alterações indevidas nos dados.
+### Dores
 
-### Comportamento
+- Informações espalhadas dificultam a conferência dos cadastros.
+- Erros de vínculo afetam chamadas e relatórios.
+- Relatórios manuais exigem tempo e podem apresentar resultados diferentes.
+- Alterações sem controle de acesso podem comprometer os dados acadêmicos.
 
-* Utiliza computador e smartphone diariamente.
-* Prefere ferramentas objetivas e fáceis de aprender.
-* Valoriza confiabilidade mais do que recursos avançados.
+### Necessidades no ClassHub
 
-### Frase Representativa
+- Ter acesso administrativo centralizado.
+- Visualizar indicadores e gráficos consistentes com os relatórios.
+- Pesquisar rapidamente usuários e turmas.
+- Receber confirmação antes de operações de exclusão ou desativação.
+- Exportar relatórios em PDF e XLSX.
 
-> "Quanto menos tempo eu gastar fazendo chamada, mais tempo sobra para ensinar."
+> "Preciso manter os cadastros organizados e confiar que o dashboard e os relatórios usam os mesmos dados."
+
+## Persona 3 - Lucas Almeida, aluno
+
+| Característica | Descrição |
+|---|---|
+| Idade | 21 anos |
+| Função | Estudante de graduação |
+| Experiência com tecnologia | Avançada no uso cotidiano de aplicações web |
+| Dispositivos utilizados | Celular e notebook |
+
+### Contexto
+
+Lucas participa de mais de uma turma e quer acompanhar sua situação acadêmica sem depender de consultas ao professor ou à secretaria. Seu principal interesse é saber se as chamadas foram registradas corretamente e se sua frequência está dentro do limite esperado.
+
+### Objetivos
+
+- Visualizar somente as turmas às quais está vinculado.
+- Consultar presenças, faltas e percentual de frequência por turma.
+- Acompanhar o próprio histórico de chamadas.
+- Identificar rapidamente quando sua frequência estiver abaixo de 75%.
+
+### Dores
+
+- Não possui visibilidade imediata sobre registros feitos pelo professor.
+- Pode descobrir uma inconsistência apenas no fim do período letivo.
+- Tem dificuldade para acompanhar percentuais quando participa de várias turmas.
+
+### Necessidades no ClassHub
+
+- Acesso simples e responsivo pelo celular.
+- Informações de frequência organizadas por turma.
+- Histórico com data, horário e situação de cada aula.
+- Proteção para que nenhum aluno consulte dados acadêmicos de colegas.
+
+> "Quero acompanhar minha frequência e perceber qualquer problema antes que seja tarde."
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 01/06/2026 | Criação inicial das personas de professores. | André Toussaint |
+| 2.0 | 15/06/2026 | Revisão das personas e inclusão dos perfis de administrador e aluno, conforme o escopo atual do ClassHub. | Enzo Menali |

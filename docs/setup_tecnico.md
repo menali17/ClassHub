@@ -1,53 +1,108 @@
-# Setup Tecnico
+# Setup Técnico
 
-Esta pagina descreve a estrutura tecnica inicial do projeto para que a equipe consiga dividir as tarefas com clareza.
+Esta página apresenta os requisitos e comandos necessários para executar o ClassHub localmente.
+
+## Pré-requisitos
+
+- Node.js 22.5 ou superior.
+- npm.
+- Git.
+- Python e MkDocs Material apenas para visualizar a documentação localmente.
 
 ## Estrutura
 
-O projeto foi organizado em duas pastas principais, uma para o front-end e outra para o back-end.
-
 | Caminho | Responsabilidade |
 |---|---|
-| `frontend` | Aplicacao web em Next.js, JavaScript e Tailwind CSS. |
-| `backend` | API REST em NestJS. |
-| `docs` | Documentacao do produto e do projeto. |
+| `frontend` | Aplicação web em Next.js, React, JavaScript e Tailwind CSS. |
+| `backend` | API REST em NestJS e testes de integração. |
+| `backend/data` | Banco SQLite criado durante a execução local. |
+| `docs` | Documentação do produto e do projeto. |
 
-Cada parte deve ser rodada separadamente. Isso facilita para quem ainda esta aprendendo VS Code, terminal e GitHub.
+## Instalação
 
-## Front-end
-
-O front-end foi iniciado com Next.js e Tailwind CSS.
-
-As novas telas podem ser criadas dentro de `frontend/src/app`.
-
-## Back-end
-
-O back-end foi iniciado com NestJS.
-
-Os modulos da API podem ser criados conforme a equipe implementar as funcionalidades.
-
-## Banco de dados
-
-O projeto utiliza SQLite com o módulo nativo `node:sqlite`. O arquivo do banco é
-criado automaticamente em `backend/data/engnet.sqlite` na primeira execução da
-API. A estrutura completa está descrita em [Banco de Dados](arquitetura/banco_de_dados.md).
-
-## Comandos
+Na raiz do repositório, instale as dependências dos três pacotes:
 
 ```bash
-cd backend
 npm install
-npm run start:dev
+npm install --prefix backend
+npm install --prefix frontend
 ```
 
+## Variáveis de ambiente
+
+No Windows PowerShell:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+Copy-Item frontend/.env.example frontend/.env.local
+```
+
+No Linux ou macOS:
+
 ```bash
-cd frontend
-npm install
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+```
+
+As configurações padrão são:
+
+| Variável | Valor padrão | Responsabilidade |
+|---|---|---|
+| `PORT` | `3333` | Porta do back-end. |
+| `FRONTEND_URL` | `http://localhost:3000` | Origem permitida pelo CORS. |
+| `DATABASE_PATH` | `./data/engnet.sqlite` | Caminho do arquivo SQLite. |
+| `LOW_ATTENDANCE_THRESHOLD` | `75` | Limite de baixa frequência. |
+| `AUTH_TOKEN_EXPIRATION_HOURS` | `8` | Duração da sessão. |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:3333/api` | URL utilizada pelo front-end. |
+
+## Execução
+
+Na raiz do projeto:
+
+```bash
 npm run dev
 ```
+
+Esse comando inicia o front-end em `http://localhost:3000` e a API em `http://localhost:3333/api`.
+
+Na primeira execução, o back-end cria o banco em `backend/data/engnet.sqlite` e insere os dados de demonstração.
+
+## Testes e build
+
+```bash
+npm test
+npm run build
+```
+
+Para executar as duas verificações em sequência:
+
+```bash
+npm run check
+```
+
+## Documentação
+
+```bash
+pip install mkdocs-material
+mkdocs serve
+```
+
+Para validar a documentação antes do envio:
+
+```bash
+mkdocs build --strict
+```
+
+## Publicação
+
+O front-end será publicado na Vercel e deverá receber a variável `NEXT_PUBLIC_API_URL` com o endereço público da API. O back-end atual utiliza NestJS e um arquivo SQLite, portanto deve ser executado em um ambiente Node.js com armazenamento persistente. Publicar somente o front-end não disponibiliza os dados nem as funcionalidades da API.
+
+A documentação é publicada separadamente no GitHub Pages pelo workflow `.github/workflows/deploy-docs.yml` quando alterações chegam à branch `main`.
 
 ## Histórico de Versão
 
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
-| 1.0 | 14/06/2026 | Atualização do setup com a configuração atual do banco SQLite. | Enzo Menali |
+| 1.0 | 14/06/2026 | Atualização do setup com a configuração do banco SQLite. | Enzo Menali |
+| 2.0 | 15/06/2026 | Inclusão da instalação completa, variáveis de ambiente, verificações e estratégia de publicação. | Enzo Menali |
+| 2.1 | 15/06/2026 | Detalhamento da publicação do front-end e dos requisitos de execução persistente do back-end. | Enzo Menali |

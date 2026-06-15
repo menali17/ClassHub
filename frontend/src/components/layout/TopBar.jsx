@@ -19,7 +19,7 @@ export default function TopBar({ onMenuOpen }) {
       <div className="w-7 h-7 rounded-lg bg-orange-500 flex items-center justify-center">
         <GraduationCap size={16} color="white" />
       </div>
-      <span className="font-bold text-sm">Frequenta</span>
+      <span className="font-bold text-sm">ClassHub</span>
       <button
         type="button"
         onClick={toggleTheme}

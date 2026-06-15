@@ -1,13 +1,14 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Download, FileText } from "lucide-react";
+import { Download, Eye, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlunosFaltosos } from "@/hooks/useAlunosFaltosos";
 import { getAlunos, getTurmas, getFrequenciaAluno, API_BASE_URL, getAuthToken } from "@/lib/api";
 import { fetchFrequenciasAlunos, normalizeAlunosFaltosos } from "@/lib/frequenciaHelpers";
 import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
 import Avatar from "@/components/ui/Avatar";
+import Modal from "@/components/ui/Modal";
 import ProgressBar from "@/components/ui/ProgressBar";
 import { getFrequencyStatus } from "@/utils/formatters";
 import { normalizePerfil } from "@/utils/roles";
@@ -44,6 +45,10 @@ function RelatoriosContent() {
   const [alunosComFreq, setAlunosComFreq] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingFreqAlunos, setLoadingFreqAlunos] = useState(false);
+  const [historicoAluno, setHistoricoAluno] = useState(null);
+  const [historicoOpen, setHistoricoOpen] = useState(false);
+  const [historicoLoading, setHistoricoLoading] = useState(false);
+  const [historicoError, setHistoricoError] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -114,11 +119,27 @@ function RelatoriosContent() {
       ]
     : [
         { id: "geral", label: "Por Aluno" },
-        { id: "faltosos", label: "Alunos Faltosos" },
+        { id: "faltosos", label: "Baixa Frequência" },
         { id: "turmas", label: "Por Turma" },
       ];
 
   const faltososDisplay = normalizeAlunosFaltosos(faltosos);
+
+  async function abrirHistorico(aluno) {
+    setHistoricoOpen(true);
+    setHistoricoAluno(null);
+    setHistoricoError("");
+    setHistoricoLoading(true);
+
+    try {
+      const data = await getFrequenciaAluno(aluno.id);
+      setHistoricoAluno(data);
+    } catch (err) {
+      setHistoricoError(err.message || "Erro ao carregar o histórico do aluno.");
+    } finally {
+      setHistoricoLoading(false);
+    }
+  }
 
   async function baixarRelatorio(formato) {
     const token = getAuthToken();
@@ -345,6 +366,7 @@ function RelatoriosContent() {
                     <th className="px-5 py-3 font-medium">Frequência</th>
                     <th className="px-5 py-3 font-medium hidden lg:table-cell">Presenças / Faltas</th>
                     <th className="px-5 py-3 font-medium hidden sm:table-cell">Situação</th>
+                    <th className="px-5 py-3 font-medium text-right">Ações</th>
                   </tr>
                 </thead>
 
@@ -386,13 +408,23 @@ function RelatoriosContent() {
                             "—"
                           )}
                         </td>
+                        <td className="px-5 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => abrirHistorico(a)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-bg-border text-xs font-medium hover:bg-bg-light"
+                            title={`Visualizar histórico de ${a.nome}`}
+                          >
+                            <Eye size={14} /> Histórico
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
 
                   {alunos.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="px-5 py-8 text-center text-neutral-500">
+                      <td colSpan={6} className="px-5 py-8 text-center text-neutral-500">
                         Nenhum aluno encontrado.
                       </td>
                     </tr>
@@ -476,6 +508,84 @@ function RelatoriosContent() {
           </div>
         </div>
       )}
+
+      <Modal
+        open={historicoOpen}
+        onClose={() => setHistoricoOpen(false)}
+        title={historicoAluno?.aluno?.nome ? `Histórico de ${historicoAluno.aluno.nome}` : "Histórico do aluno"}
+        size="lg"
+      >
+        {historicoLoading && (
+          <div className="flex justify-center py-10">
+            <div className="w-7 h-7 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {historicoError && (
+          <p className="text-sm text-error bg-red-50 border border-red-200 rounded-lg p-3">
+            {historicoError}
+          </p>
+        )}
+
+        {!historicoLoading && historicoAluno && (
+          <div className="space-y-5 max-h-[70vh] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                ["Aulas", historicoAluno.resumoGeral?.totalAulas ?? 0],
+                ["Presenças", historicoAluno.resumoGeral?.presencas ?? 0],
+                ["Faltas", historicoAluno.resumoGeral?.faltas ?? 0],
+                ["Frequência", `${Math.round(historicoAluno.resumoGeral?.percentualPresenca ?? 0)}%`],
+              ].map(([label, value]) => (
+                <div key={label} className="bg-bg-light rounded-lg p-3 text-center">
+                  <p className="font-bold text-neutral-900">{value}</p>
+                  <p className="text-caption text-neutral-500">{label}</p>
+                </div>
+              ))}
+            </div>
+
+            {(historicoAluno.turmas ?? []).map((turma) => (
+              <section key={turma.turmaId ?? turma.nome} className="border border-bg-border rounded-lg overflow-hidden">
+                <div className="px-4 py-3 bg-bg-light flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-sm">{turma.nome}</h3>
+                    <p className="text-caption text-neutral-500">
+                      {turma.presencas ?? 0} presenças · {turma.faltas ?? 0} faltas
+                    </p>
+                  </div>
+                  <span className="text-sm font-bold">{Math.round(turma.percentualPresenca ?? 0)}%</span>
+                </div>
+
+                {turma.historico?.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-caption text-neutral-500 border-b border-bg-border">
+                          <th className="px-4 py-2 font-medium">Data</th>
+                          <th className="px-4 py-2 font-medium">Horário</th>
+                          <th className="px-4 py-2 font-medium">Situação</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-bg-border">
+                        {turma.historico.map((registro, index) => (
+                          <tr key={registro.aulaId ?? index}>
+                            <td className="px-4 py-2">{registro.data}</td>
+                            <td className="px-4 py-2 text-neutral-500">{registro.horario ?? "—"}</td>
+                            <td className="px-4 py-2">
+                              {registro.situacao === "presente" ? "Presente" : "Falta"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="px-4 py-4 text-sm text-neutral-500">Nenhuma aula registrada.</p>
+                )}
+              </section>
+            ))}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

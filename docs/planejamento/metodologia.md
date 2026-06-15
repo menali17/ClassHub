@@ -22,11 +22,11 @@ O desenvolvimento foi organizado nas seguintes etapas:
 
 4. **Prototipação da interface**
 
-   Antes da implementação, a equipe deve representar visualmente as telas principais do sistema. A prototipação ajuda a alinhar o entendimento entre os integrantes e facilita a validação da navegação, da organização das informações e da identidade visual.
+   Antes da implementação, a equipe representou visualmente as telas principais do sistema. A prototipação ajudou a alinhar o entendimento entre os integrantes e facilitou a validação da navegação, da organização das informações e da identidade visual.
 
 5. **Desenvolvimento incremental**
 
-   A implementação será feita por partes, priorizando primeiro as funcionalidades essenciais, como autenticação, dashboard, gerenciamento de turmas, controle de frequência e relatórios. Depois, podem ser adicionados diferenciais como modo escuro, gráficos de frequência, busca e filtros.
+   A implementação foi feita por partes, priorizando autenticação, dashboard, gerenciamento de turmas, controle de frequência e relatórios. Os diferenciais implementados foram modo escuro, gráficos de frequência e campos de busca.
 
 6. **Validação e ajustes**
 
@@ -39,13 +39,13 @@ A equipe é composta por quatro integrantes, com divisão  entre front-end e bac
 | Integrante | Frente de atuação |
 |---|---|
 | Enzo Menali | Back-end |
-| André | Back-end |
+| André Toussaint | Back-end |
 | Camila Silva | Front-end |
 | Beatriz Fernandes | Front-end |
 
 Mesmo com essa divisão, as decisões principais devem ser alinhadas em grupo para manter consistência na solução. A separação por frente ajuda a organizar as responsabilidades, mas não impede que os integrantes revisem, discutam e apoiem outras partes do projeto quando necessário.
 
-A comunicação da equipe será realizada principalmente por WhatsApp e Google Meet. O WhatsApp será utilizado para alinhamentos rápidos, avisos, dúvidas e acompanhamento das tarefas do dia a dia. O Google Meet será utilizado para reuniões, discussões mais detalhadas, revisão de decisões e alinhamento das próximas etapas do projeto.
+A comunicação da equipe é realizada pelo Discord, utilizado para alinhamentos rápidos, avisos, dúvidas, reuniões e acompanhamento das tarefas do dia a dia.
 
 Sempre que uma funcionalidade ou documento for alterado, é importante que os demais integrantes tenham visibilidade para evitar retrabalho ou conflitos.
 
@@ -89,3 +89,4 @@ Durante o desenvolvimento, a equipe deve acompanhar:
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 01/06/2026 | Criação da metodologia, incluindo etapas de trabalho, organização da equipe, comunicação e validação da documentação. | Enzo Menali |
+| 1.1 | 15/06/2026 | Atualização das etapas realizadas, diferenciais implementados e comunicação pelo Discord. | Enzo Menali |

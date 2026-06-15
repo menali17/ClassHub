@@ -3,7 +3,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 export const metadata = {
-  title: "Frequenta — EngNet",
+  title: "ClassHub — EngNet",
   description: "Sistema de gestão de presença acadêmica.",
 };
 

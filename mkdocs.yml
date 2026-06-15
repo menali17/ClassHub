@@ -1,5 +1,5 @@
-site_name: Desafio 4
-site_description: Documentacao do Sistema de Gestao de Presenca Academica da equipe Moranguetes.
+site_name: ClassHub
+site_description: Documentação do sistema de gestão de presença acadêmica da equipe Moranguetes.
 repo_url: https://github.com/menali17/ClassHub
 repo_name: menali17/ClassHub
 
@@ -36,14 +36,9 @@ markdown_extensions:
   - toc:
       permalink: true
 
-exclude_docs: |
-  casos_de_uso.md
-  planejamento/cronograma.md
-  planejamento/atas.md
-
 nav:
   - Início: index.md
-  - Setup Tecnico: setup_tecnico.md
+  - Setup Técnico: setup_tecnico.md
 
   - Visão do Produto e Projeto:
       - Visão Geral: visao/index.md
@@ -63,6 +58,7 @@ nav:
   - Planejamento:
       - Visão Geral: planejamento/index.md
       - Metodologia: planejamento/metodologia.md
+      - Atas de Reunião: planejamento/atas.md
 
   - Arquitetura e Desenvolvimento:
       - Arquitetura do Sistema: arquitetura/arquitetura_sistema.md

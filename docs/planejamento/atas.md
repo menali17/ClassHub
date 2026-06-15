@@ -1,118 +1,134 @@
-# Ata de Reunião #01 - Alinhamento Inicial e Alinhamento de Ferramentas
+# Atas de Reunião
 
-**Data:** 25 de Maio de 2026  
-**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali.  
+Este documento reúne os principais alinhamentos, decisões e planos de ação registrados pela equipe durante o desenvolvimento do ClassHub.
+
+## Reunião 01 - Alinhamento inicial e ferramentas
+
+**Data:** 25 de maio de 2026
+
+**Participantes:** André Toussaint, Beatriz Fernandes, Camila Silva e Enzo Menali
+
 **Orientador:** Bernardo
 
----
+### Tópicos discutidos
 
-##  1. Tópicos Discutidos
-* **Leitura do Desafio:** O grupo realizou a leitura conjunta do documento do projeto do deafio 4 para entender oque estava sendo proposto.
-* **Treinamento de GitHub:** O integrante Enzo Menali realizou um tutorial prático sobre o funcionamento do GitHub com os demais membros para alinhar o nível de conhecimento da equipe.
-* **Criação do Repositório:** Foi realizada a criação oficial do repositório público do projeto na plataforma do GitHub.
+- Leitura conjunta do Desafio 4 para entendimento do problema apresentado.
+- Nivelamento básico sobre Git e GitHub conduzido por Enzo Menali.
+- Criação do repositório público do projeto.
 
-##  2. Decisões Tomadas
-* Nenhuma decisão técnica de arquitetura de software, banco de dados ou design foi tomada nesta reunião. O foco foi puramente o entendimento inicial do problema do desafio.
+### Decisões tomadas
 
-##  3. Plano de Ação 
-Ficou agendada uma nova reunião para o dia seguinte (Terça-feira, 26 de Maio), onde a equipe começará a debater as primeiras decisões do projeto, como a escolha de tecnologias, divisão inicial de tarefas e início da documentação.
+- O primeiro momento seria dedicado ao entendimento do problema e à organização do trabalho.
+- As decisões técnicas seriam registradas após o levantamento inicial dos requisitos.
 
----
+### Plano de ação
 
+- Iniciar a definição dos requisitos, das tecnologias e da divisão de responsabilidades.
+- Estruturar os primeiros documentos do projeto.
 
-# Ata de Reunião #02 - Alinhamento Inicial e Requisitos
+## Reunião 02 - Requisitos e planejamento inicial
 
-**Data:** 26 de maio de 2026  
-**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali.  
+**Data:** 25 de maio de 2026
+
+**Participantes:** André Toussaint, Beatriz Fernandes, Camila Silva e Enzo Menali
+
 **Orientador:** Bernardo
 
----
+### Tópicos discutidos
 
-##  1. Tópicos Discutidos
-* Alinhamento sobre os Requisitos Funcionais e Não-Funcionais do projeto.
-* Divisão inicial de tarefas e organização do cronograma de entregas.
+- Levantamento dos requisitos funcionais e não funcionais.
+- Divisão inicial das tarefas de documentação.
+- Organização do cronograma de entregas.
 
-##  2. Decisões Tomadas
-* **Início da Documentação:** A equipe deu início na estruturação dos documentos do projeto, definindo a organização entre os membros.
-* **Alinhamento de Processos:** Ficou definido que, antes de avançar para a programação pura, o grupo priorizará o entendimento completo do escopo e a criação dos arquivos base necessários para o gerenciamento do projeto.
-* **Frequência de Reuniões:** Será realizados alinhamentos duas vezes por semana via Discord.
+### Decisões tomadas
 
-##  3. Plano de Ação 
-Atividades distribuídas para a Sprint 1 (Até dia 30/05):
+- A equipe priorizaria a compreensão do escopo e a criação dos artefatos antes da implementação.
+- Os alinhamentos seriam realizados pelo Discord.
+- As tarefas iniciais seriam distribuídas por área de responsabilidade.
 
-| Responsável | Tarefa | Prazo | Status |
-| :--- | :--- | :---: | :---: |
-| **André** | Diagrama de casos de uso e casos de uso | 30/05 | Em andamento |
-| **André** | Perfil/personas | 30/05 | Em andamento |
-| **Beatriz F** | Subir atas  | 30/05 | Em andamento |
-| **Beatriz F** | Criar cronograma  | 30/05 | Em andamento |
-| **Camila S** | Histórias de usuário | 30/05 | Em andamento |
-| **Camila S** | Priorização de requisitos | 30/05 | Em andamento |
-| **Camila S** | Backlog | 30/05 | Em andamento |
-| **Enzo M** | Visão do produto e projeto | 30/05 | Em andamento |
-| **Enzo M** | Tecnologias e ferramentas utilizadas | 30/05 | Em andamento |
-| **Enzo M** | Metodologia | 30/05 | Em andamento |
+### Plano de ação
 
+| Responsável | Tarefa | Prazo inicial |
+|---|---|---|
+| André Toussaint | Personas e casos de uso inicialmente previstos | 30/05/2026 |
+| Beatriz Fernandes | Atas e cronograma inicialmente previsto | 30/05/2026 |
+| Camila Silva | Histórias de usuário, priorização e backlog | 30/05/2026 |
+| Enzo Menali | Visão do produto, tecnologias e metodologia | 30/05/2026 |
 
+Os casos de uso e o cronograma deixaram de fazer parte da documentação final. As decisões e o acompanhamento permaneceram registrados nas atas e na metodologia.
 
----
-# Ata de Reunião #03 - Alinhamento de Andamento
+## Reunião 03 - Acompanhamento da documentação
 
-**Data:** 01 de junho de 2026  
-**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali.  
+**Data:** 1 de junho de 2026
+
+**Participantes:** André Toussaint, Beatriz Fernandes, Camila Silva e Enzo Menali
+
 **Orientador:** Bernardo
 
----
+### Tópicos discutidos
 
-## 1. Tópicos Discutidos
+- Situação das tarefas de cada integrante.
+- Possíveis impedimentos e atrasos.
+- Organização dos documentos iniciais.
 
-* Alinhamento rápido sobre o status de andamento das tarefas de cada integrante.
-* Verificação de possíveis impedimentos ou atrasos no cronograma.
+### Decisões tomadas
 
-## 2. Decisões Tomadas
+- Manter a distribuição de atividades vigente.
+- Priorizar a conclusão e a revisão da documentação antes do desenvolvimento.
 
-* **Manutenção do Cronograma:** Como todos relataram que as atividades estão fluindo bem e dentro do prazo, ficou decidido manter o planejamento atual sem alterações.
-* **Foco na Documentação:** Dar prioridade à finalização e estruturação dos documentos iniciais do projeto.
+### Plano de ação
 
-## 3. Plano de Ação
+- Cada integrante continuaria as tarefas atribuídas e comunicaria impedimentos pelo Discord.
 
-* **Status da Equipe:** Cada membro continuará executando suas tarefas individuais da Sprint atual, conforme o que foi reportado no alinhamento.
+## Reunião 04 - Preparação para o desenvolvimento
 
- ---
-# Ata de Reunião #04 - Alinhamento
+**Data:** 5 de junho de 2026
 
-**Data:** 05 de Junho de 2026
-**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali
+**Participantes:** André Toussaint, Beatriz Fernandes, Camila Silva e Enzo Menali
+
 **Orientador:** Bernardo
 
-## 1. Tópicos Discutidos
+### Tópicos discutidos
 
-*Alinhamento do projeto. 
+- Revisão do andamento geral do projeto.
+- Pendências da documentação.
+- Preparação para o início da implementação.
 
-## 2. Decisões Tomadas
+### Decisões tomadas
 
-*Terminar a documentação.
+- Finalizar os artefatos necessários para orientar o desenvolvimento.
+- Iniciar a implementação após o alinhamento da documentação principal.
 
-## 3. Plano de Ação
-* **Status da Equipe:** A partir da proxima reunião, começar a desenvolver os código.
+### Plano de ação
 
+- Revisar os documentos produzidos e iniciar as atividades de front-end e back-end.
 
-# Ata de Reunião #05 - Planejamento 
+## Reunião 05 - Planejamento da implementação
 
-**Data:** 09 de Junho de 2026
-**Participantes:** André, Beatriz Fernandes, Camila Silva, Enzo Menali
+**Data:** 9 de junho de 2026
+
+**Participantes:** André Toussaint, Beatriz Fernandes, Camila Silva e Enzo Menali
+
 **Orientador:** Bernardo
 
-## 1. Tópicos Discutidos
+### Tópicos discutidos
 
-*Planejamento das sprints até o dia da entrega.
-*Foi distribuído qoue cada participante deve trabalhar durante a semana.
+- Planejamento das atividades até a data de entrega.
+- Distribuição das funcionalidades entre os integrantes.
+- Critérios para considerar uma tarefa concluída.
 
-## 2. Decisões Tomadas
+### Decisões tomadas
 
-*As tarefas só podem ser marcadas como concluídas quando obedecer aos requisitos pré estabelecidos.
+- Uma tarefa somente seria considerada concluída após atender aos requisitos definidos e passar por revisão.
+- As atividades seriam desenvolvidas de forma incremental, com integração contínua entre front-end e back-end.
 
-## 3. Plano de Ação
-* **Status da Equipe:** Em densenvolvimento de acordo com o cronograma.
-  
-  
+### Plano de ação
+
+- Executar as tarefas distribuídas e acompanhar diariamente o progresso pelo Discord.
+
+## Histórico de Versão
+
+| Versão | Data | Descrição | Autor(es) |
+|---|---|---|---|
+| 1.0 | 11/06/2026 | Registro inicial das reuniões de planejamento. | Beatriz Fernandes |
+| 2.0 | 15/06/2026 | Revisão das datas, decisões, canal de comunicação e correção ortográfica das atas. | Enzo Menali |

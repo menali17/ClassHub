@@ -2,7 +2,7 @@ const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3333/api";
 
 function getToken() {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("frequenta_token");
+  return localStorage.getItem("classhub_token");
 }
 
 async function request(path, options = {}) {
@@ -16,7 +16,7 @@ async function request(path, options = {}) {
     const isLoginRequest = path.includes("/auth/login");
 
     if (!isLoginRequest && typeof window !== "undefined") {
-      localStorage.removeItem("frequenta_token");
+      localStorage.removeItem("classhub_token");
       window.location.href = "/login?sessao=expirada";
     }
 

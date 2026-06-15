@@ -23,3 +23,4 @@ A matriz foi dividida em três partes principais:
 | Versão | Data | Descrição | Autor |
 |---|---|---|---|
 | 1.0 | 05/06/2026 | Criação do artefato da Matriz CSD, com espaço reservado para inclusão da imagem. | Enzo Menali, Camila Silva, André |
+| 1.1 | 15/06/2026 | Inclusão da imagem final da Matriz CSD na documentação. | Enzo Menali |

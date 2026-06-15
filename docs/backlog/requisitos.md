@@ -18,20 +18,20 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 
 | Código | Requisito |
 |---|---|
-| RF06 | O sistema deve exibir a quantidade total de alunos cadastrados. |
-| RF07 | O sistema deve exibir a quantidade total de aulas cadastradas. |
-| RF08 | O sistema deve exibir a taxa média geral de presença. |
-| RF09 | O sistema deve exibir alertas de alunos com baixa frequência. |
+| RF06 | O dashboard deve exibir ao administrador a quantidade total de alunos cadastrados e, ao professor, a quantidade de alunos vinculados às suas turmas. |
+| RF07 | O dashboard deve exibir ao administrador a quantidade total de aulas cadastradas e, ao professor, a quantidade de aulas de suas turmas. |
+| RF08 | O dashboard deve exibir ao administrador a taxa média geral de presença e, ao professor, a taxa média de presença de suas turmas. |
+| RF09 | O dashboard deve exibir alertas de alunos com frequência inferior a 75%, respeitando as turmas acessíveis ao usuário autenticado. |
 
 ### Gerenciamento de Turmas
 
 | Código | Requisito |
 |---|---|
-| RF10 | O sistema deve permitir criar turmas com nome, código e horário. |
-| RF11 | O sistema deve permitir editar informações de turmas. |
-| RF12 | O sistema deve permitir remover turmas. |
-| RF13 | O sistema deve permitir visualizar a lista de estudantes vinculados a cada turma. |
-| RF14 | O sistema deve exibir a quantidade de alunos vinculados a cada turma. |
+| RF10 | O sistema deve permitir que o administrador crie turmas com nome, código, horário e professor responsável. |
+| RF11 | O sistema deve permitir que o administrador edite as informações das turmas. |
+| RF12 | O sistema deve permitir que o administrador remova turmas. |
+| RF13 | O sistema deve permitir que professores responsáveis e administradores visualizem a lista de estudantes vinculados a cada turma. |
+| RF14 | O sistema deve exibir a quantidade de alunos vinculados a cada turma para professores responsáveis e administradores. |
 
 ### Controle de Frequência
 
@@ -49,15 +49,15 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 |---|---|
 | RF20 | O sistema deve gerar relatório de frequência individual por aluno. |
 | RF21 | O sistema deve gerar relatório com percentual de presença. |
-| RF22 | O sistema deve gerar relatório com lista de alunos faltosos. |
+| RF22 | O sistema deve gerar relatório com a lista de alunos com frequência inferior a 75%. |
 | RF23 | O sistema deve gerar relatório com histórico de frequência por turma. |
-| RF24 | O sistema deve exibir gráficos de frequência para facilitar a análise visual dos dados. |
+| RF24 | O sistema deve exibir gráficos de frequência no dashboard para facilitar a análise visual dos dados. |
 
 ### Busca e Filtros
 
 | Código | Requisito |
 |---|---|
-| RF25 | O sistema deve permitir filtrar e buscar alunos por nome, turma ou situação de frequência. |
+| RF25 | O sistema deve permitir buscar alunos por nome, matrícula ou e-mail nas listagens disponíveis ao usuário. |
 
 ### Preferências de Interface
 
@@ -98,7 +98,7 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 | RNF01 | O sistema deve se adaptar a telas de 390px, 768px e 1366px de largura, sem sobreposição de elementos, corte de informações essenciais ou rolagem horizontal indevida. |
 | RNF02 | O usuário deve ser capaz de realizar as principais funções do sistema em até 10 minutos, sem necessidade de treinamento prévio. |
 | RNF03 | O sistema deve possuir consistência visual, em que tabelas, formulários, botões e menus sigam a mesma paleta de cores, com espaçamentos, estilos e formatação em todas as telas. |
-| RNF04 | Ações de confirmação, envio de formulários e exclusão devem apresentar indicação visual em até 2 segundos. |
+| RNF04 | Ações de confirmação, envio de formulários e exclusão devem apresentar indicação visual em até 3 segundos. |
 
 ### Manutenibilidade
 
@@ -112,9 +112,9 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 
 | Código | Requisito |
 |---|---|
-| RNF08 | O front-end deve ser desenvolvido com Next.js, Tailwind CSS e JavaScript ou TypeScript. |
+| RNF08 | O front-end deve ser desenvolvido com Next.js, Tailwind CSS e JavaScript. |
 | RNF09 | O back-end deve ser desenvolvido com NestJS e API REST. |
-| RNF10 | O sistema deve possuir persistência de dados com PostgreSQL, MongoDB ou SQLite. |
+| RNF10 | O sistema deve utilizar SQLite para persistência dos dados. |
 
 ### Desempenho
 
@@ -126,7 +126,7 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 
 | Código | Requisito |
 |---|---|
-| RNF12 | O projeto deve estar publicado em uma plataforma como GitHub Pages, Vercel ou Netlify. |
+| RNF12 | O front-end deve ser publicado na Vercel e configurado para consumir uma URL pública da API. O back-end deve ser executado em ambiente compatível com NestJS e persistência do banco SQLite. |
 
 ## Histórico de Versão
 
@@ -136,3 +136,5 @@ A partir do problema apresentado pelo cliente, foram definidos os requisitos que
 | 0.2 | 31/05/2026 | Refinamento dos requisitos iniciais, incluindo ajustes de escopo e organização. | Enzo Menali e Camila Silva |
 | 1.0 | 01/06/2026 | Organização dos requisitos funcionais e não funcionais em tabelas e inclusão dos diferenciais definidos para o projeto. | Enzo Menali e Camila Silva |
 | 1.1 | 14/06/2026 | Inclusão dos requisitos do fluxo administrativo e da exportação de relatórios definidos no protótipo. | Enzo Menali |
+| 1.2 | 15/06/2026 | Alinhamento dos requisitos com as permissões, tecnologias, busca, dashboard e estratégia de deploy definidos. | Enzo Menali |
+| 1.3 | 15/06/2026 | Detalhamento do dashboard por perfil, padronização de baixa frequência e esclarecimento da estratégia de publicação. | Enzo Menali |

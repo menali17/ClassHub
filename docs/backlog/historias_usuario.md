@@ -2,7 +2,7 @@
 
 ## Introdução
 
-Este documento apresenta as Histórias de Usuário elaboradas a partir dos requisitos funcionais elicitados para o **Sistema de Controle de Frequência**. Cada história segue o padrão ágil:
+Este documento apresenta as Histórias de Usuário elaboradas a partir dos requisitos funcionais do **ClassHub**. Cada história segue o padrão ágil:
 
 > *Como [tipo de usuário], eu quero [funcionalidade], para [benefício ou objetivo].*
 
@@ -72,10 +72,10 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como administrador ou professor, eu quero visualizar no dashboard a quantidade total de alunos, aulas cadastradas e a taxa média geral de presença, para ter uma visão consolidada do sistema. |
-| **Critérios de Aceitação** | - O dashboard deve exibir o total de alunos cadastrados. <br> - O dashboard deve exibir o total de aulas cadastradas. <br> - O dashboard deve exibir a taxa média geral de presença calculada automaticamente. <br> - Os dados devem ser atualizados em tempo real conforme registros são inseridos. |
+| **Descrição** | Como administrador ou professor, eu quero visualizar indicadores de frequência no dashboard, para ter uma visão consolidada dos dados aos quais tenho acesso. |
+| **Critérios de Aceitação** | - O administrador deve visualizar os totais gerais de alunos e aulas e a taxa média geral de presença. <br> - O professor deve visualizar os totais de alunos e aulas e a taxa média referentes somente às suas turmas. <br> - O dashboard administrativo deve apresentar gráficos de evolução e frequência por turma quando houver registros. |
 | **Prioridade** | Alta |
-| **Rastreabilidade** | RF06, RF07, RF08 |
+| **Rastreabilidade** | RF06, RF07, RF08, RF24 |
 
 ---
 
@@ -84,7 +84,7 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 | Campo | Informação |
 |---|---|
 | **Descrição** | Como professor ou administrador, eu quero visualizar alertas de alunos com baixa frequência no dashboard, para tomar ações preventivas rapidamente. |
-| **Critérios de Aceitação** | - O dashboard deve listar os alunos que estão abaixo do limite mínimo de frequência. <br> - Cada alerta deve exibir o nome do aluno, turma e percentual de presença atual. <br> - Os alertas devem ser atualizados automaticamente conforme novos registros são adicionados. |
+| **Critérios de Aceitação** | - O dashboard deve listar os alunos com frequência inferior a 75%. <br> - Cada alerta deve exibir o nome do aluno, turma e percentual de presença atual. <br> - O administrador deve visualizar todos os alunos nessa situação e o professor somente os alunos de suas turmas. <br> - Os dados devem ser recarregados ao abrir ou atualizar o dashboard. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF09 |
 
@@ -96,8 +96,8 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como professor ou administrador, eu quero criar turmas informando nome, código e horário, para organizar os grupos de alunos. |
-| **Critérios de Aceitação** | - O sistema deve disponibilizar um formulário com campos obrigatórios: nome, código e horário. <br> - O código da turma deve ser único no sistema. <br> - Após criação bem-sucedida, a turma deve aparecer na listagem de turmas. <br> - O sistema deve exibir confirmação visual em até 3 segundos após o envio. |
+| **Descrição** | Como administrador, eu quero criar turmas informando nome, código, horário e professor responsável, para organizar os grupos de alunos. |
+| **Critérios de Aceitação** | - O sistema deve disponibilizar um formulário com os campos obrigatórios. <br> - O professor responsável deve estar ativo. <br> - O código da turma deve ser único no sistema. <br> - Após a criação, a turma deve aparecer na listagem. <br> - O sistema deve exibir confirmação visual em até 3 segundos após o envio. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF10 |
 
@@ -107,8 +107,8 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como professor ou administrador, eu quero editar as informações de uma turma, para corrigir ou atualizar dados conforme necessário. |
-| **Critérios de Aceitação** | - O sistema deve permitir editar nome, código e horário de turmas existentes. <br> - As alterações devem ser salvas e refletidas imediatamente na listagem. <br> - O sistema deve exibir confirmação visual em até 2 segundos após o envio. |
+| **Descrição** | Como administrador, eu quero editar as informações e o professor responsável de uma turma, para manter seus dados atualizados. |
+| **Critérios de Aceitação** | - O sistema deve permitir editar nome, código, horário e professor responsável. <br> - O código deve continuar único e o professor selecionado deve estar ativo. <br> - As alterações devem ser salvas e refletidas na listagem. <br> - O sistema deve exibir confirmação visual em até 3 segundos após o envio. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF11 |
 
@@ -119,7 +119,7 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 | Campo | Informação |
 |---|---|
 | **Descrição** | Como administrador, eu quero remover uma turma do sistema, para manter a base de dados organizada e sem dados obsoletos. |
-| **Critérios de Aceitação** | - O sistema deve solicitar confirmação antes de excluir uma turma. <br> - Após exclusão confirmada, a turma não deve mais aparecer na listagem. <br> - O sistema deve exibir confirmação visual em até 2 segundos após a exclusão. |
+| **Critérios de Aceitação** | - O sistema deve solicitar confirmação antes de excluir uma turma. <br> - Após exclusão confirmada, a turma não deve mais aparecer na listagem. <br> - O sistema deve exibir confirmação visual em até 3 segundos após a exclusão. |
 | **Prioridade** | Média |
 | **Rastreabilidade** | RF12 |
 
@@ -143,7 +143,7 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 | Campo | Informação |
 |---|---|
 | **Descrição** | Como professor, eu quero registrar a presença dos alunos em uma aula informando data e horário, para manter o controle de frequência da turma. |
-| **Critérios de Aceitação** | - O sistema deve exibir a lista de alunos da turma para marcação de presença. <br> - O professor deve poder marcar presença ou falta individualmente para cada aluno. <br> - A data e o horário da aula devem ser registrados automaticamente ou informados pelo professor. <br> - O registro deve ser salvo e o sistema deve exibir confirmação visual em até 2 segundos. |
+| **Critérios de Aceitação** | - O sistema deve exibir a lista de alunos da turma para marcação de presença. <br> - O professor deve poder marcar presença ou falta individualmente para cada aluno. <br> - A data e o horário da aula devem ser registrados automaticamente ou informados pelo professor. <br> - O registro deve ser salvo e o sistema deve exibir confirmação visual em até 3 segundos. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF15, RF16, RF17 |
 
@@ -154,7 +154,7 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 | Campo | Informação |
 |---|---|
 | **Descrição** | Como professor, eu quero visualizar o histórico de frequência de cada aluno, para acompanhar a assiduidade e identificar problemas. |
-| **Critérios de Aceitação** | - O sistema deve exibir o histórico de presenças e faltas de cada aluno por turma. <br> - O histórico deve mostrar data, horário e status (presente/ausente) de cada aula. <br> - O professor deve conseguir acessar o histórico a partir do perfil do aluno ou da listagem da turma. |
+| **Critérios de Aceitação** | - O sistema deve exibir o histórico de presenças e faltas de cada aluno por turma. <br> - O histórico deve mostrar data, horário e status (presente/ausente) de cada aula. <br> - O professor deve conseguir acessar o histórico pela listagem de relatórios, somente para alunos de suas turmas. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF18 |
 
@@ -184,12 +184,12 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 ---
 
-### HU15 – Gerar Relatório de Alunos Faltosos
+### HU15 – Gerar Relatório de Alunos com Baixa Frequência
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como professor ou administrador, eu quero gerar um relatório com a lista de alunos faltosos, para identificar estudantes que necessitam de atenção. |
-| **Critérios de Aceitação** | - O relatório deve listar os alunos com frequência abaixo do percentual mínimo definido. <br> - Deve exibir nome do aluno, turma e percentual atual de presença. <br> - O relatório deve ser gerado em até 5 segundos. |
+| **Descrição** | Como professor ou administrador, eu quero gerar um relatório com a lista de alunos com frequência inferior a 75%, para identificar estudantes que necessitam de atenção. |
+| **Critérios de Aceitação** | - O relatório deve listar os alunos com frequência inferior a 75%. <br> - Deve exibir nome do aluno, turma e percentual atual de presença. <br> - O relatório deve ser gerado em até 5 segundos. |
 | **Prioridade** | Alta |
 | **Rastreabilidade** | RF22 |
 
@@ -199,21 +199,21 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como professor ou administrador, eu quero gerar relatórios com histórico de frequência por turma e visualizar gráficos, para facilitar a análise visual dos dados. |
-| **Critérios de Aceitação** | - O relatório deve exibir o histórico de frequência de todas as aulas da turma. <br> - O sistema deve exibir gráficos de frequência para facilitar a análise visual. <br> - O relatório deve ser gerado em até 5 segundos para turmas de até 100 alunos e 30 aulas. |
+| **Descrição** | Como professor ou administrador, eu quero gerar relatórios com o histórico de frequência por turma, para acompanhar os registros realizados em cada aula. |
+| **Critérios de Aceitação** | - O relatório deve exibir o histórico de frequência das aulas da turma. <br> - O professor deve acessar apenas relatórios de suas turmas. <br> - O relatório deve ser gerado em até 5 segundos para turmas de até 100 alunos e 30 aulas. |
 | **Prioridade** | Média |
-| **Rastreabilidade** | RF23, RF24 |
+| **Rastreabilidade** | RF23 |
 
 ---
 
 ## Épico 6 – Busca e Filtros
 
-### HU17 – Filtrar e Buscar Alunos
+### HU17 – Buscar Alunos
 
 | Campo | Informação |
 |---|---|
-| **Descrição** | Como professor ou administrador, eu quero filtrar e buscar alunos por nome, turma ou situação de frequência, para localizar rapidamente as informações necessárias. |
-| **Critérios de Aceitação** | - O sistema deve disponibilizar campos de busca por nome, turma e situação de frequência. <br> - Os resultados devem ser exibidos em tempo real ou ao confirmar a busca. <br> - A listagem de alunos deve ser atualizada conforme os filtros aplicados. |
+| **Descrição** | Como professor ou administrador, eu quero buscar alunos por nome, matrícula ou e-mail nas listagens às quais tenho acesso, para localizar rapidamente um estudante. |
+| **Critérios de Aceitação** | - O campo de busca deve considerar nome, matrícula e e-mail. <br> - O professor deve pesquisar somente alunos das turmas às quais possui acesso. <br> - A listagem deve ser atualizada conforme o texto pesquisado. |
 | **Prioridade** | Média |
 | **Rastreabilidade** | RF25 |
 
@@ -308,3 +308,5 @@ As histórias estão organizadas por épicos, conforme a área funcional do sist
 |---|---|---|---|
 | 1.0 | 01/06/2026 | Criação inicial das Histórias de Usuário a partir dos requisitos funcionais elicitados. | [Camila Silva](https://github.com/CamilaSilvaC)|
 | 1.1 | 14/06/2026 | Inclusão das histórias de administração de usuários, vínculos, atribuição de professor e exportação de relatórios. | Enzo Menali |
+| 1.2 | 15/06/2026 | Alinhamento das permissões de turmas, gráficos do dashboard, busca e tempo de feedback. | Enzo Menali |
+| 1.3 | 15/06/2026 | Detalhamento dos indicadores por perfil, atualização dos dados e nomenclatura de baixa frequência. | Enzo Menali |

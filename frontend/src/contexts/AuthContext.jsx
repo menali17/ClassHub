@@ -21,11 +21,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("frequenta_token");
+    const token = localStorage.getItem("classhub_token");
     if (!token) { setLoading(false); return; }
     getMe()
       .then(data => setUser(normalizeUser(data)))
-      .catch(() => localStorage.removeItem("frequenta_token"))
+      .catch(() => localStorage.removeItem("classhub_token"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -38,7 +38,7 @@ export function AuthProvider({ children }) {
 
   async function login(email, senha) {
     const data = await apiLogin(email, senha);
-    localStorage.setItem("frequenta_token", data.token);
+    localStorage.setItem("classhub_token", data.token);
     const u = normalizeUser(data.usuario || data.user || data);
     setUser(u);
     return u;
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     await apiLogout().catch(() => {});
-    localStorage.removeItem("frequenta_token");
+    localStorage.removeItem("classhub_token");
     setUser(null);
   }
 

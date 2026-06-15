@@ -8,7 +8,7 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("frequenta_theme");
+    const savedTheme = localStorage.getItem("classhub_theme");
     const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     document.documentElement.style.colorScheme = theme;
-    localStorage.setItem("frequenta_theme", theme);
+    localStorage.setItem("classhub_theme", theme);
   }, [theme]);
 
   function toggleTheme() {

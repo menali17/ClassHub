@@ -43,7 +43,7 @@ export default function LoginPage() {
         <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shadow-md">
           <GraduationCap size={22} color="white" />
         </div>
-        <span className="text-xl font-bold text-neutral-900">Frequenta</span>
+        <span className="text-xl font-bold text-neutral-900">ClassHub</span>
       </div>
 
       <div className="bg-bg-card rounded-2xl shadow-panel w-full max-w-md p-8">

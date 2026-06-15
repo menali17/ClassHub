@@ -69,7 +69,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
         {!collapsed && (
           <span className="font-bold text-base tracking-tight whitespace-nowrap flex-1 min-w-0 truncate">
-            Frequenta
+            ClassHub
           </span>
         )}
 

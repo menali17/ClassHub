@@ -216,21 +216,17 @@ Professores visualizam apenas suas turmas. Administradores visualizam todas.
 ]
 ```
 
+### `GET /api/turmas/minhas`
+
+**Situação:** implementada.
+
+Rota exclusiva do aluno. Retorna somente as turmas às quais o usuário autenticado está vinculado, incluindo professor responsável, total de aulas, presenças, faltas e percentual de frequência do próprio aluno.
+
 ### `POST /api/turmas`
 
 **Situação:** implementada.
 
-Quando o usuário autenticado é professor, a turma é atribuída automaticamente a ele.
-
-```json
-{
-  "nome": "Laboratório de Software",
-  "codigo": "LAB-SW-01",
-  "horario": "Segunda, 19:00"
-}
-```
-
-Quando o usuário é administrador, também deve informar o professor responsável:
+Rota exclusiva do administrador. O professor responsável deve estar ativo e ser informado no corpo da requisição.
 
 ```json
 {
@@ -251,7 +247,7 @@ Retorna uma turma específica. O professor só pode consultar turmas atribuídas
 
 **Situação:** implementada.
 
-Recebe apenas os campos da turma que serão alterados.
+Rota exclusiva do administrador. Recebe apenas os campos da turma que serão alterados.
 
 ```json
 {
@@ -260,7 +256,7 @@ Recebe apenas os campos da turma que serão alterados.
 }
 ```
 
-Apenas administradores podem alterar `professorId`.
+O campo `professorId` pode ser utilizado para transferir a turma para outro professor ativo.
 
 ### `DELETE /api/turmas/:id`
 

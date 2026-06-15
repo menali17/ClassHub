@@ -179,6 +179,5 @@ Outros documentos técnicos:
 |---|---|---|
 | Enzo Menali | Back-end | [@menali17](https://github.com/menali17) |
 | André Toussaint | Back-end | [@andreeetmt](https://github.com/andreeetmt) |
-| Camila Cavalcante | Front-end | [@CamilaSilvaC](https://github.com/CamilaSilvaC) |
+| Camila Silva | Front-end | [@CamilaSilvaC](https://github.com/CamilaSilvaC) |
 | Beatriz Fernandes | Front-end | [@beatrizfernandes-del](https://github.com/beatrizfernandes-del) |
-

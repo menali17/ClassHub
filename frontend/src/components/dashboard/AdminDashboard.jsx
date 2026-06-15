@@ -249,7 +249,7 @@ export default function AdminDashboard() {
       <div className="bg-bg-card rounded-xl border border-bg-border shadow-card">
         <div className="flex items-center justify-between px-5 py-4 border-b border-bg-border">
           <div>
-            <h3 className="text-h4 font-semibold">Alunos Faltosos</h3>
+            <h3 className="text-h4 font-semibold">Alunos com baixa frequência</h3>
             <p className="text-caption text-neutral-500">Frequência abaixo de {metaFrequencia}%</p>
           </div>
           <div className="flex items-center gap-2">

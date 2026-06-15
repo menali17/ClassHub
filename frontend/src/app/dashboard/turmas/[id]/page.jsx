@@ -84,7 +84,8 @@ export default function TurmaDetalhePage() {
 
   const alunosFiltrados = alunos.filter(a =>
     (a.nome || "").toLowerCase().includes(search.toLowerCase()) ||
-    (a.matricula || "").includes(search)
+    (a.matricula || "").toLowerCase().includes(search.toLowerCase()) ||
+    (a.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
   // Alunos ainda não vinculados
@@ -159,7 +160,7 @@ export default function TurmaDetalhePage() {
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
               <input
                 type="text" value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Buscar aluno..."
+                placeholder="Buscar por nome, matrícula ou e-mail"
                 className="pl-8 pr-4 py-1.5 rounded-lg border border-bg-border text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-bg-light"
               />
             </div>

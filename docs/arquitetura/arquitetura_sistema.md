@@ -1,127 +1,122 @@
 # Arquitetura do Sistema
 
-Este documento apresenta a organização técnica da plataforma de gestão de
-frequência acadêmica e a responsabilidade de cada parte do projeto.
+Este documento apresenta a arquitetura atual do ClassHub, a responsabilidade de cada camada e as principais decisões técnicas utilizadas na implementação.
 
 ## Visão geral
 
-O sistema segue uma arquitetura web dividida em três partes principais:
+O ClassHub segue uma arquitetura web cliente-servidor dividida em três camadas:
 
 | Camada | Tecnologia | Responsabilidade |
 |---|---|---|
-| Interface | Next.js, React e Tailwind CSS | Exibir as telas e receber as ações dos usuários. |
-| API | NestJS e API REST | Validar as requisições, aplicar as regras de negócio e controlar o acesso. |
-| Persistência | SQLite | Armazenar usuários, sessões, turmas, aulas e frequências. |
+| Interface | Next.js 15, React 19, JavaScript e Tailwind CSS | Renderizar as telas, controlar a sessão no navegador e consumir a API. |
+| API | NestJS 10 e API REST | Autenticar usuários, validar permissões e aplicar as regras de negócio. |
+| Persistência | SQLite com `node:sqlite` | Armazenar usuários, sessões, turmas, vínculos, aulas e frequências. |
 
-O front-end não acessa o banco diretamente. Toda leitura ou alteração de dados
-deve passar pela API, que verifica a autenticação e as permissões do usuário
-antes de executar uma operação.
+O front-end nunca acessa o banco diretamente. Toda consulta ou alteração passa pela API, que valida o token e as permissões do perfil autenticado.
 
 ## Estrutura do repositório
 
 | Diretório | Conteúdo |
 |---|---|
-| `frontend` | Aplicação web desenvolvida com Next.js. |
-| `backend` | API REST desenvolvida com NestJS. |
-| `backend/src/database` | Criação do banco SQLite e operações de persistência. |
-| `backend/src/modules` | Módulos das funcionalidades do back-end. |
+| `frontend/src/app` | Páginas e rotas da interface. |
+| `frontend/src/components` | Componentes visuais compartilhados. |
+| `frontend/src/contexts` | Estado global de autenticação e tema. |
+| `frontend/src/lib/api.js` | Cliente centralizado para consumo da API. |
+| `backend/src/modules` | Módulos funcionais do back-end. |
+| `backend/src/database` | Esquema SQLite, carga inicial e operações de persistência. |
+| `backend/test` | Testes de integração da API. |
 | `docs` | Documentação publicada com MkDocs. |
-| `.github/workflows` | Automação de publicação da documentação. |
-
-Essa separação permite que front-end, back-end e documentação sejam
-desenvolvidos de forma independente, desde que os formatos definidos no
-contrato da API sejam respeitados.
+| `.github/workflows` | Automação da publicação da documentação. |
 
 ## Front-end
 
-O front-end utiliza Next.js 15, React 19 e Tailwind CSS. Sua responsabilidade é:
+O front-end está integrado à API e possui fluxos específicos para os três perfis. Suas responsabilidades incluem:
 
-- apresentar as telas adequadas para aluno, professor e administrador;
-- coletar e validar os dados informados pelo usuário;
-- enviar requisições HTTP para o back-end;
-- apresentar carregamento, sucesso e erro das operações;
-- armazenar e enviar o token da sessão enquanto o usuário estiver autenticado.
+- apresentar menus e ações compatíveis com o perfil autenticado;
+- validar os dados dos formulários antes do envio;
+- enviar o token de sessão nas requisições protegidas;
+- apresentar estados de carregamento, sucesso, vazio e erro;
+- exibir dashboards, gráficos, históricos e relatórios;
+- persistir a preferência entre tema claro e escuro no navegador.
 
-No estado atual do projeto, a estrutura do Next.js está configurada, mas a
-integração das telas com a API ainda precisa ser implementada.
+As páginas protegidas ficam abaixo de `frontend/src/app/dashboard`. O `AuthContext` restaura e encerra a sessão, enquanto `frontend/src/lib/api.js` concentra as chamadas HTTP.
 
 ## Back-end
 
-O back-end utiliza NestJS e está dividido por responsabilidade:
+O back-end é organizado por módulos funcionais:
 
 | Módulo | Responsabilidade |
 |---|---|
-| `auth` | Login, logout, identificação do usuário e validação das sessões. |
-| `turmas` | Cadastro e consulta de turmas, professores e vínculos de alunos. |
-| `frequencias` | Cadastro de aulas, registro da chamada e consulta dos históricos. |
-| `database` | Esquema SQLite, dados iniciais e operações SQL. |
+| `auth` | Login, identificação do usuário, logout e validação das sessões. |
+| `usuarios` | Perfil e administração de alunos e professores. |
+| `turmas` | Turmas, professor responsável e vínculos de alunos. |
+| `frequencias` | Aulas, chamadas e históricos de frequência. |
+| `relatorios` | Dashboard, relatórios e exportações em PDF e XLSX. |
+| `database` | Esquema, migrações simples, carga inicial e operações SQL. |
 
-Os controllers recebem as requisições HTTP e encaminham os dados para os
-services. Os services aplicam validações e regras de acesso. O
-`DatabaseService` concentra as operações realizadas no SQLite.
+Os controllers recebem as requisições HTTP. Os services validam dados, perfis e vínculos antes de utilizar o `DatabaseService`.
+
+## Perfis e permissões
+
+| Perfil | Permissões principais |
+|---|---|
+| Aluno | Consultar somente suas turmas, sua frequência e seu histórico. |
+| Professor | Consultar as próprias turmas, gerenciar seus vínculos de alunos, registrar chamadas e acessar relatórios relacionados às suas turmas. |
+| Administrador | Gerenciar alunos, professores e turmas, definir professores responsáveis, acompanhar indicadores gerais e exportar relatórios. |
+
+Somente o administrador pode criar, editar ou remover turmas. Somente o professor responsável pode criar aulas e registrar ou corrigir chamadas. As permissões são verificadas pelo back-end, mesmo quando uma ação também está oculta na interface.
 
 ## Fluxo de uma operação
 
-Uma operação comum percorre as seguintes etapas:
-
-1. O usuário executa uma ação na interface.
-2. O front-end envia uma requisição para uma rota `/api`.
+1. O usuário realiza uma ação na interface.
+2. O front-end envia uma requisição para a API usando a URL configurada.
 3. O `AuthGuard` valida o token nas rotas protegidas.
 4. O controller encaminha os dados ao service responsável.
-5. O service valida os dados e as permissões do perfil autenticado.
-6. O `DatabaseService` consulta ou altera o banco SQLite.
-7. A API devolve uma resposta JSON ao front-end.
-8. A interface atualiza a tela ou informa o erro ao usuário.
+5. O service valida o conteúdo, o perfil e o vínculo do usuário.
+6. O `DatabaseService` consulta ou altera o SQLite.
+7. A API devolve uma resposta JSON ou um arquivo de relatório.
+8. A interface atualiza a tela ou apresenta uma mensagem ao usuário.
 
-## Autenticação e autorização
+## Autenticação
 
-O sistema diferencia três perfis:
+Após o login, a API gera um token aleatório e persiste somente seu hash. O front-end armazena o token no navegador e o envia no cabeçalho:
 
-| Perfil | Responsabilidades principais |
-|---|---|
-| Aluno | Consultar a própria frequência. |
-| Professor | Gerenciar as próprias turmas, registrar aulas e realizar chamadas. |
-| Administrador | Consultar e gerenciar informações gerais permitidas pela API. |
+```text
+Authorization: Bearer <token>
+```
 
-Após o login, a API entrega um token aleatório. Somente o hash desse token é
-armazenado no banco. Nas rotas protegidas, o front-end deve enviar o token no
-cabeçalho `Authorization`.
+As sessões possuem duração configurável. O logout revoga a sessão no banco e remove o token do navegador. Usuários desativados não podem iniciar novas sessões.
 
-As sessões possuem duração configurável e podem ser revogadas no logout. A
-autorização não depende apenas das telas: o próprio back-end verifica o perfil
-e o vínculo do usuário com a informação solicitada.
+## Configuração e execução
 
-## Configuração dos ambientes
+| Serviço | Endereço local padrão | Configuração principal |
+|---|---|---|
+| Front-end | `http://localhost:3000` | `NEXT_PUBLIC_API_URL` |
+| Back-end | `http://localhost:3333/api` | `PORT`, `FRONTEND_URL` e `DATABASE_PATH` |
+| Documentação | `http://127.0.0.1:8000` | `mkdocs.yml` |
 
-Durante o desenvolvimento, cada parte é executada separadamente:
-
-| Serviço | Endereço padrão |
-|---|---|
-| Front-end | `http://localhost:3000` |
-| Back-end | `http://localhost:3333/api` |
-| Documentação | endereço definido ao executar o MkDocs |
-
-O back-end aceita requisições da origem definida em `FRONTEND_URL`. O caminho
-do banco, o limite de baixa frequência e a duração das sessões também são
-configurados por variáveis de ambiente.
+O limite de baixa frequência é definido por `LOW_ATTENDANCE_THRESHOLD` e possui valor padrão de 75%. O front-end será publicado na Vercel e consumirá uma URL pública da API. Como o back-end utiliza um arquivo SQLite, ele deve ser executado em ambiente Node.js com armazenamento persistente. A documentação continua publicada no GitHub Pages.
 
 ## Decisões adotadas
 
-- Uso de API REST para separar a interface das regras de negócio.
-- Uso de SQLite para simplificar a execução e a demonstração do desafio.
-- Organização do back-end por módulos funcionais.
-- Autenticação por token persistido como hash.
-- Controle de acesso aplicado no servidor conforme o perfil autenticado.
-- Contrato da API documentado para orientar a integração entre as equipes.
+- API REST para separar interface, regras de negócio e persistência.
+- JavaScript em todo o projeto para manter uma stack uniforme.
+- SQLite para simplificar a instalação e a demonstração do desafio.
+- Autenticação por token persistido somente como hash.
+- Controle de acesso aplicado no servidor conforme perfil e vínculo.
+- Componentes compartilhados e cliente HTTP centralizado no front-end.
+- Testes de integração para os principais fluxos do back-end.
 
 ## Documentos relacionados
 
 - [Banco de Dados](banco_de_dados.md)
-- [Integração Front-end e Back-end](integracao_front_back.md)
-- [Contrato da API no GitHub](https://github.com/menali17/Desafio_4_Trainee_EngNet/blob/developer/backend/CONTRATO_API.md)
+- [Integração entre Front-end e Back-end](integracao_front_back.md)
+- [Contrato da API no GitHub](https://github.com/menali17/ClassHub/blob/main/backend/CONTRATO_API.md)
 
 ## Histórico de Versão
 
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
-| 1.0 | 14/06/2026 | Criação da documentação da arquitetura atual do sistema. | Enzo Menali |
+| 1.0 | 14/06/2026 | Criação da documentação da arquitetura inicial do sistema. | Enzo Menali |
+| 2.0 | 15/06/2026 | Atualização da arquitetura conforme a integração e as permissões implementadas. | Enzo Menali |
+| 2.1 | 15/06/2026 | Esclarecimento da arquitetura de publicação do front-end, API e banco SQLite. | Enzo Menali |

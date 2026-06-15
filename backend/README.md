@@ -1,6 +1,6 @@
-# Back-end
+# Back-end do ClassHub
 
-Esta pasta contem a API do sistema, feita com NestJS.
+Esta pasta contém a API REST do ClassHub, desenvolvida com NestJS e JavaScript.
 
 ## Como rodar
 
@@ -84,9 +84,10 @@ As rotas abaixo exigem autenticação:
 | Método | Rota | Acesso | Descrição |
 |---|---|---|---|
 | `GET` | `/api/turmas` | Professor e administrador | Lista as turmas disponíveis para o usuário. |
-| `POST` | `/api/turmas` | Professor e administrador | Cria uma turma. |
+| `GET` | `/api/turmas/minhas` | Aluno | Lista as turmas e a frequência do aluno autenticado. |
+| `POST` | `/api/turmas` | Administrador | Cria uma turma e define o professor responsável. |
 | `GET` | `/api/turmas/:id` | Professor responsável e administrador | Consulta uma turma. |
-| `PATCH` | `/api/turmas/:id` | Professor responsável e administrador | Edita uma turma. |
+| `PATCH` | `/api/turmas/:id` | Administrador | Edita uma turma ou transfere o professor responsável. |
 | `DELETE` | `/api/turmas/:id` | Administrador | Remove a turma e seus registros relacionados. |
 | `GET` | `/api/turmas/:id/alunos` | Professor responsável e administrador | Lista os alunos da turma. |
 | `POST` | `/api/turmas/:id/alunos` | Professor responsável e administrador | Vincula um aluno à turma. |
@@ -94,7 +95,7 @@ As rotas abaixo exigem autenticação:
 | `GET` | `/api/alunos` | Professor e administrador | Lista os alunos cadastrados. |
 | `GET` | `/api/professores` | Administrador | Lista professores para atribuição de turma. |
 
-O professor visualiza e altera somente suas próprias turmas. O administrador possui acesso a todas as turmas.
+O professor visualiza somente suas próprias turmas e pode gerenciar os vínculos de alunos nelas. Somente o administrador cria, edita, transfere ou remove turmas.
 
 ## Aulas e frequência
 
@@ -146,11 +147,8 @@ src/modules/frequencias # aulas, chamadas e historicos
 src/modules/relatorios # dashboard e relatorios academicos
 ```
 
-## Próximo passo
-
-Integrar as rotas disponíveis com as telas do front-end.
-
 ## Integração com o front-end
 
-Os formatos das rotas implementadas estão descritos em
-[CONTRATO_API.md](CONTRATO_API.md).
+As telas do front-end consomem as rotas descritas em [CONTRATO_API.md](CONTRATO_API.md). Durante o desenvolvimento local, a interface utiliza `NEXT_PUBLIC_API_URL=http://localhost:3333/api`.
+
+Para publicação, a API precisa de um ambiente Node.js compatível com NestJS e armazenamento persistente para preservar o arquivo SQLite definido por `DATABASE_PATH`.

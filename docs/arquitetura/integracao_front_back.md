@@ -186,18 +186,19 @@ As operações de cadastro, edição, redefinição de senha e desativação sã
 
 ### 5.5 Gerenciamento de turmas
 
-| Método   | Rota                          | Finalidade                                   |
-| -------- | ----------------------------- | -------------------------------------------- |
-| `GET`    | `/turmas`                     | Listar as turmas disponíveis para o usuário. |
-| `POST`   | `/turmas`                     | Criar uma turma.                             |
-| `GET`    | `/turmas/:id`                 | Consultar os dados de uma turma.             |
-| `PATCH`  | `/turmas/:id`                 | Editar os dados de uma turma.                |
-| `DELETE` | `/turmas/:id`                 | Remover uma turma como administrador.        |
-| `GET`    | `/turmas/:id/alunos`          | Listar os alunos vinculados à turma.         |
-| `POST`   | `/turmas/:id/alunos`          | Vincular um aluno à turma.                   |
-| `DELETE` | `/turmas/:id/alunos/:alunoId` | Desvincular um aluno da turma.               |
+| Método   | Rota                          | Acesso | Finalidade |
+|---|---|---|---|
+| `GET` | `/turmas` | Professor e administrador | Listar as turmas disponíveis para o usuário. |
+| `GET` | `/turmas/minhas` | Aluno | Listar somente as turmas do aluno autenticado, com sua frequência. |
+| `POST` | `/turmas` | Administrador | Criar uma turma e definir o professor responsável. |
+| `GET` | `/turmas/:id` | Professor responsável e administrador | Consultar os dados de uma turma. |
+| `PATCH` | `/turmas/:id` | Administrador | Editar os dados e o professor responsável. |
+| `DELETE` | `/turmas/:id` | Administrador | Remover uma turma e seus registros relacionados. |
+| `GET` | `/turmas/:id/alunos` | Professor responsável e administrador | Listar os alunos vinculados à turma. |
+| `POST` | `/turmas/:id/alunos` | Professor responsável e administrador | Vincular um aluno à turma. |
+| `DELETE` | `/turmas/:id/alunos/:alunoId` | Professor responsável e administrador | Desvincular um aluno da turma. |
 
-O professor deve visualizar e alterar apenas as turmas pelas quais é responsável. O administrador pode acessar todas as turmas.
+O professor consulta apenas as turmas pelas quais é responsável e pode administrar seus vínculos de alunos. A criação, edição, transferência de professor e remoção de turmas são exclusivas do administrador. O aluno utiliza `/turmas/minhas` e não acessa os detalhes administrativos da turma.
 
 ---
 
@@ -330,13 +331,14 @@ Atualmente estão integrados:
 1. login, restauração da sessão e logout;
 2. consulta e edição do próprio perfil;
 3. administração de alunos e professores;
-4. criação, edição e remoção de turmas conforme o perfil;
-5. vínculo e desvínculo de alunos;
-6. criação de aulas e registro de chamadas pelo professor;
-7. dashboards de administrador, professor e aluno;
-8. relatórios e downloads em PDF e XLSX;
-9. tema claro e escuro persistido no navegador;
-10. bloqueio de telas e ações incompatíveis com o perfil autenticado.
+4. criação, edição, atribuição de professor e remoção de turmas pelo administrador;
+5. consulta das próprias turmas pelo aluno;
+6. vínculo e desvínculo de alunos pelo professor responsável ou administrador;
+7. criação de aulas e registro de chamadas pelo professor responsável;
+8. dashboards de administrador, professor e aluno;
+9. relatórios e downloads em PDF e XLSX;
+10. tema claro e escuro persistido no navegador;
+11. bloqueio de telas e ações incompatíveis com o perfil autenticado.
 
 ---
 
@@ -356,3 +358,4 @@ Atualmente estão integrados:
 | 1.1    | 14/06/2026 | Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios.                  | Enzo Menali |
 | 1.2    | 14/06/2026 | Reorganização das rotas, esclarecimento da situação atual e detalhamento das regras de integração. | Enzo Menali |
 | 1.3    | 15/06/2026 | Atualização do estado integrado, estrutura real do front-end, dashboard e relatórios gerais.       | Enzo Menali |
+| 1.4    | 15/06/2026 | Correção das permissões de turmas e documentação da consulta de turmas do aluno.                    | Enzo Menali |

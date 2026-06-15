@@ -1,6 +1,6 @@
 # Visão do Produto e Projeto
 
-Esta seção apresenta a visão inicial do projeto **Desafio 4**, reunindo o contexto do problema, os objetivos definidos pela equipe, os perfis de usuários considerados, a solução proposta e as tecnologias/ferramentas previstas para o desenvolvimento.
+Esta seção apresenta a visão do **ClassHub**, reunindo o contexto do problema, os objetivos, os perfis de usuários, a solução e as tecnologias utilizadas.
 
 
 ## Organização da seção
@@ -23,6 +23,4 @@ A visão do produto serve como base para os demais documentos do projeto:
 | Histórias de Usuário | Representam necessidades dos usuários descritos em Perfil e Personas. |
 | Backlog | Organiza o que será desenvolvido a partir dos requisitos definidos. |
 | Priorização | Ajuda a decidir quais funcionalidades são mais importantes dentro do prazo do projeto. |
-| Casos de Uso | Detalham as interações entre os usuários e o sistema proposto. |
-| Cronograma | Distribui as atividades necessárias para construir e documentar a solução. |
 
