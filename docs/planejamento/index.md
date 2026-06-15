@@ -1,6 +1,6 @@
 # Planejamento
 
-Esta seção apresenta os artefatos relacionados ao planejamento e acompanhamento do projeto, incluindo a metodologia adotada e os registros utilizados para organizar o trabalho da equipe.
+Esta seção apresenta os artefatos de planejamento e acompanhamento do ClassHub, incluindo a metodologia adotada e os registros das reuniões da equipe.
 
 
 ## Conteúdo da seção
@@ -8,3 +8,4 @@ Esta seção apresenta os artefatos relacionados ao planejamento e acompanhament
 | Página | Descrição |
 |---|---|
 | [Metodologia](metodologia.md) | Descreve a metodologia utilizada pela equipe para organizar o trabalho. |
+| [Atas de Reunião](atas.md) | Registra os principais alinhamentos, decisões e planos de ação. |

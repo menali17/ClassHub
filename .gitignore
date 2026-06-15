@@ -20,6 +20,8 @@ site/
 *.sqlite
 *.sqlite3
 *.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
 *.db-journal
 
 # Logs

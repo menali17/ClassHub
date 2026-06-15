@@ -45,9 +45,11 @@ Além de melhorar a organização interna, a solução também contribui para um
 
 ## Diagrama de Ishikawa
 
-O Diagrama de Ishikawa será usado para organizar as principais causas do problema encontrado no processo atual.
+O Diagrama de Ishikawa organiza as principais causas identificadas no processo atual, agrupando-as em pessoas, métodos e processos, tecnologia, materiais e documentos, ambiente, gestão e controle.
 
-**Efeito analisado:** controle de presença manual pouco confiável.
+**Efeito analisado:** controle de presença manual pouco confiável, lento e difícil de acompanhar.
+
+![Diagrama de Ishikawa sobre o controle de presença manual](../assets/images/ishikawa_image.png)
 
 Esse diagrama mostra que a baixa confiabilidade do controle de presença não vem de um único ponto. Ela é resultado da combinação entre pessoas, processo manual, falta de centralização tecnológica, uso de papel, características do ambiente das aulas e dificuldade de gestão das informações.
 
@@ -56,3 +58,4 @@ Esse diagrama mostra que a baixa confiabilidade do controle de presença não ve
 | Versão | Data | Descrição | Autor(es) |
 |---|---|---|---|
 | 1.0 | 31/05/2026 | Criação e refinamento do cenário atual, incluindo problemas identificados e Diagrama de Ishikawa. | Enzo Menali|
+| 1.1 | 15/06/2026 | Inclusão da imagem final do Diagrama de Ishikawa e atualização do efeito analisado. | Enzo Menali |

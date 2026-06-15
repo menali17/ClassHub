@@ -25,11 +25,12 @@ A documentação principal do projeto está dentro da pasta `docs/`.
 
 ```txt
 docs/
+├── arquitetura/
 ├── backlog/
 ├── boas_praticas/
 ├── planejamento/
 ├── visao/
-├── casos_de_uso.md
+├── setup_tecnico.md
 └── index.md
 ```
 
@@ -91,7 +92,7 @@ historias_usuario.md
 perfil_personas.md
 cenario_atual.md
 solucao_proposta.md
-casos_de_uso.md
+integracao_front_back.md
 ```
 
 Evite nomes como:
@@ -114,7 +115,7 @@ docs/assets/images/
 Ao inserir imagens em arquivos Markdown, use uma descrição clara:
 
 ```md
-![Descrição da imagem](../assets/images/nome_da_imagem.png)
+![Descrição da imagem](../assets/images/matrizCSD.jpg)
 ```
 
 Ajuste o caminho conforme a localização do arquivo onde a imagem será utilizada.

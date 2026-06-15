@@ -1,0 +1,60 @@
+"use client";
+import { createContext, useContext, useEffect, useState } from "react";
+import { login as apiLogin, logout as apiLogout, getMe } from "@/lib/api";
+import { normalizePerfil } from "@/utils/roles";
+
+const AuthContext = createContext(null);
+
+// Normaliza o usuário independente do formato que o backend retorne
+function normalizeUser(u) {
+  if (!u) return null;
+  return {
+    ...u,
+    perfil: normalizePerfil(u.perfil),
+    nome: u.nome || u.name || "Usuário",
+    email: u.email || "",
+  };
+}
+
+export function AuthProvider({ children }) {
+  const [user, setUser]       = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("classhub_token");
+    if (!token) { setLoading(false); return; }
+    getMe()
+      .then(data => setUser(normalizeUser(data)))
+      .catch(() => localStorage.removeItem("classhub_token"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function refreshUser() {
+    const data = await getMe();
+    const normalized = normalizeUser(data);
+    setUser(normalized);
+    return normalized;
+  }
+
+  async function login(email, senha) {
+    const data = await apiLogin(email, senha);
+    localStorage.setItem("classhub_token", data.token);
+    const u = normalizeUser(data.usuario || data.user || data);
+    setUser(u);
+    return u;
+  }
+
+  async function logout() {
+    await apiLogout().catch(() => {});
+    localStorage.removeItem("classhub_token");
+    setUser(null);
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => useContext(AuthContext);
