@@ -1,12 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getAlunos, getTurmas } from "@/lib/api";
-import {
-  fetchAlunosDasTurmas,
-  fetchFrequenciasAlunos,
-  extractAlunosFaltosos,
-  calcTaxaMediaPresenca,
-} from "@/lib/frequenciaHelpers";
+import { getAlunosBaixaFrequencia } from "@/lib/api";
 import { normalizePerfil } from "@/utils/roles";
 
 /**
@@ -35,23 +29,13 @@ export function useAlunosFaltosos(user) {
       setLoading(true);
       setError("");
       try {
-        let alunos = [];
-
-        if (perfil === "admin") {
-          alunos = await getAlunos();
-        } else {
-          const turmas = await getTurmas();
-          alunos = await fetchAlunosDasTurmas(Array.isArray(turmas) ? turmas : []);
-        }
-
-        if (!Array.isArray(alunos)) alunos = [];
-        const freqData = await fetchFrequenciasAlunos(alunos);
+        const report = await getAlunosBaixaFrequencia();
 
         if (cancelled) return;
 
-        setFrequencias(freqData);
-        setFaltosos(extractAlunosFaltosos(freqData));
-        setTaxaMedia(calcTaxaMediaPresenca(freqData));
+        setFrequencias([]);
+        setFaltosos(Array.isArray(report?.alunos) ? report.alunos : []);
+        setTaxaMedia(null);
       } catch (err) {
         if (!cancelled) setError(err.message || "Erro ao carregar dados de frequência.");
       } finally {

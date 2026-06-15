@@ -6,10 +6,15 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 import StatCard from "./StatCard";
 import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDashboard, getTurmas, getApiHealth, getAlunos } from "@/lib/api";
+import {
+  getDashboard,
+  getTurmas,
+  getApiHealth,
+  getAlunos,
+  getAlunosBaixaFrequencia,
+} from "@/lib/api";
 import {
   fetchFrequenciasAlunos,
-  extractAlunosFaltosos,
   calcTaxaMediaPresenca,
   aggregateFrequenciaPorTurma,
   normalizeAlunosFaltosos,
@@ -39,10 +44,11 @@ export default function AdminDashboard() {
       setLoading(true);
       setFreqError("");
 
-      const [dashRes, turmasRes, healthRes] = await Promise.allSettled([
+      const [dashRes, turmasRes, healthRes, faltososRes] = await Promise.allSettled([
         getDashboard(),
         getTurmas(),
         getApiHealth(),
+        getAlunosBaixaFrequencia(),
       ]);
 
       const dashData = dashRes.status === "fulfilled" ? dashRes.value : null;
@@ -53,15 +59,18 @@ export default function AdminDashboard() {
       setDash(dashData);
       setTurmas(turmasData);
       setHealth(healthData);
+      const reportFaltosos =
+        faltososRes.status === "fulfilled" && Array.isArray(faltososRes.value?.alunos)
+          ? faltososRes.value.alunos
+          : null;
       const dashboardFaltosos = Array.isArray(dashData?.alunosComBaixaFrequencia)
         ? normalizeAlunosFaltosos(dashData.alunosComBaixaFrequencia)
-        : null;
-      if (dashboardFaltosos) setFaltosos(dashboardFaltosos);
+        : [];
+      setFaltosos(normalizeAlunosFaltosos(reportFaltosos ?? dashboardFaltosos));
 
       try {
         const alunos = await getAlunos();
         const freqData = await fetchFrequenciasAlunos(Array.isArray(alunos) ? alunos : []);
-        if (!dashboardFaltosos) setFaltosos(extractAlunosFaltosos(freqData));
         setTaxaCalculada(calcTaxaMediaPresenca(freqData));
         const agregado = aggregateFrequenciaPorTurma(freqData);
         setChartTurmas(agregado);

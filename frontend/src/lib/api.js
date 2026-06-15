@@ -121,6 +121,11 @@ export const getFrequenciaAluno = (alunoId) =>
     ? request("/alunos/me/frequencia")
     : request(`/alunos/${alunoId}/frequencia`);
 
+export const getAlunosBaixaFrequencia = (turmaId = null) =>
+  request(
+    `/relatorios/alunos-baixa-frequencia${turmaId ? `?turmaId=${turmaId}` : ""}`,
+  );
+
 // ── Professores ───────────────────────────────────────────────────────
 // GET /api/professores → lista de professores (apenas admin)
 export const getProfessores = () => request("/professores");

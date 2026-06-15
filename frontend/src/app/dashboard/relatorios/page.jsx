@@ -118,10 +118,7 @@ function RelatoriosContent() {
         { id: "turmas", label: "Por Turma" },
       ];
 
-  const faltososDisplay =
-    faltosos.length > 0
-      ? normalizeAlunosFaltosos(faltosos)
-      : normalizeAlunosFaltosos(alunosComFreq.filter((a) => a.baixaFrequencia));
+  const faltososDisplay = normalizeAlunosFaltosos(faltosos);
 
   async function baixarRelatorio(formato) {
     const token = getAuthToken();

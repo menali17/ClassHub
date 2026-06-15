@@ -19,44 +19,32 @@ class TurmasService {
       .map((classData) => this.toClassResponse(classData));
   }
 
-    listMyClasses(user) {
+  listMyClasses(user) {
     if (!user || user.perfil !== "aluno") {
       throw new ForbiddenException("Apenas alunos podem acessar suas próprias turmas.");
     }
 
-    const summaries = this.databaseService.listAttendanceSummaries(user.perfil, user.id);
-    const turmasMap = new Map();
+    return this.databaseService.listClassesByStudent(user.id).map((classData) => {
+      const totalLessons = Number(classData.total_aulas);
+      const present = Number(classData.presencas);
 
-    summaries.forEach((summary) => {
-      const turmaId = Number(summary.turma_id);
-
-      if (!turmasMap.has(turmaId)) {
-        turmasMap.set(turmaId, {
-          id: turmaId,
-          nome: summary.turma_nome,
-          codigo: summary.turma_codigo,
-          horario: summary.horario ?? null,
-          professor: {
-            id: summary.professor_id ? Number(summary.professor_id) : null,
-            nome: summary.professor_nome ?? "—",
-          },
-          totalAulas: 0,
-          presencas: 0,
-          faltas: 0,
-        });
-      }
-
-      const turma = turmasMap.get(turmaId);
-      turma.totalAulas += Number(summary.total_aulas);
-      turma.presencas += Number(summary.presencas);
-      turma.faltas += Number(summary.faltas);
+      return {
+        id: Number(classData.id),
+        nome: classData.nome,
+        codigo: classData.codigo,
+        horario: classData.horario,
+        professor: {
+          id: Number(classData.professor_id),
+          nome: classData.professor_nome,
+        },
+        quantidadeAlunos: Number(classData.quantidade_alunos),
+        totalAulas: totalLessons,
+        presencas: present,
+        faltas: Number(classData.faltas),
+        percentualPresenca:
+          totalLessons === 0 ? null : this.calculatePercentage(present, totalLessons),
+      };
     });
-
-    return Array.from(turmasMap.values()).map((turma) => ({
-      ...turma,
-      quantidadeAlunos: 1,
-      percentualPresenca: this.calculatePercentage(turma.presencas, turma.totalAulas),
-    }));
   }
 
   getClass(classIdValue, user) {
@@ -65,12 +53,12 @@ class TurmasService {
   }
 
   createClass(payload, user) {
-    this.ensureStaff(user);
+    this.ensureAdmin(user);
 
     const name = this.requiredText(payload?.nome, "Nome");
     const code = this.requiredText(payload?.codigo, "Código").toUpperCase();
     const schedule = this.requiredText(payload?.horario, "Horário");
-    const professorId = this.resolveProfessorId(payload?.professorId, user);
+    const professorId = this.resolveProfessorId(payload?.professorId);
 
     if (this.databaseService.findClassByCode(code)) {
       throw new ConflictException("Já existe uma turma com este código.");
@@ -82,6 +70,7 @@ class TurmasService {
   }
 
   updateClass(classIdValue, payload, user) {
+    this.ensureAdmin(user);
     const classData = this.getAccessibleClass(classIdValue, user);
     const fields = {};
 
@@ -104,10 +93,6 @@ class TurmasService {
     }
 
     if (payload?.professorId !== undefined) {
-      if (user.perfil !== "administrador") {
-        throw new ForbiddenException("Apenas administradores podem alterar o professor da turma.");
-      }
-
       fields.professor_id = this.validateProfessorId(payload.professorId);
     }
 
@@ -221,11 +206,13 @@ class TurmasService {
     }
   }
 
-  resolveProfessorId(professorIdValue, user) {
-    if (user.perfil === "professor") {
-      return Number(user.id);
+  ensureAdmin(user) {
+    if (user?.perfil !== "administrador") {
+      throw new ForbiddenException("Apenas administradores podem criar ou editar turmas.");
     }
+  }
 
+  resolveProfessorId(professorIdValue) {
     if (professorIdValue === undefined || professorIdValue === null) {
       throw new BadRequestException("Professor responsável é obrigatório para administradores.");
     }

@@ -427,6 +427,37 @@ class DatabaseService {
       .all(...parameters);
   }
 
+  listClassesByStudent(studentId) {
+    return this.database
+      .prepare(`
+        SELECT
+          t.id,
+          t.nome,
+          t.codigo,
+          t.horario,
+          t.professor_id,
+          professor.nome AS professor_nome,
+          (
+            SELECT COUNT(*)
+            FROM turma_alunos membros
+            INNER JOIN usuarios aluno ON aluno.id = membros.aluno_id AND aluno.ativo = 1
+            WHERE membros.turma_id = t.id AND membros.ativo = 1
+          ) AS quantidade_alunos,
+          COUNT(f.id) AS total_aulas,
+          COALESCE(SUM(CASE WHEN f.situacao = 'presente' THEN 1 ELSE 0 END), 0) AS presencas,
+          COALESCE(SUM(CASE WHEN f.situacao = 'falta' THEN 1 ELSE 0 END), 0) AS faltas
+        FROM turma_alunos vinculo
+        INNER JOIN turmas t ON t.id = vinculo.turma_id
+        INNER JOIN usuarios professor ON professor.id = t.professor_id
+        LEFT JOIN aulas a ON a.turma_id = t.id AND a.status = 'finalizada'
+        LEFT JOIN frequencias f ON f.aula_id = a.id AND f.aluno_id = vinculo.aluno_id
+        WHERE vinculo.aluno_id = ? AND vinculo.ativo = 1
+        GROUP BY t.id
+        ORDER BY t.nome
+      `)
+      .all(studentId);
+  }
+
   findClassById(classId) {
     return this.database
       .prepare(`

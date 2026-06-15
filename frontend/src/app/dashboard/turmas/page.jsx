@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Pencil, Trash2, ChevronRight, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { isAdmin, isProfessorOrAdmin, normalizePerfil } from "@/utils/roles";
+import { isAdmin, normalizePerfil } from "@/utils/roles";
 import { getTurmas, getMinhasTurmas, deleteTurma } from "@/lib/api";
 import { getFrequencyStatus } from "@/utils/formatters";
 import TurmaFormModal from "@/components/turmas/TurmaFormModal";
@@ -34,7 +34,7 @@ export default function TurmasPage() {
   const [editando, setEditando]   = useState(null);
 
   const admin = isAdmin(user);
-  const canManage = isProfessorOrAdmin(user);
+  const canManage = admin;
 
   const perfil = normalizePerfil(user?.perfil);
   const aluno = perfil === "aluno";
@@ -128,9 +128,13 @@ export default function TurmasPage() {
                   <th className="px-5 py-3 font-medium">Turma</th>
                   <th className="px-5 py-3 font-medium hidden md:table-cell">Código</th>
                   <th className="px-5 py-3 font-medium hidden sm:table-cell">Horário</th>
-                  <th className="px-5 py-3 font-medium">Alunos</th>
-                  <th className="px-5 py-3 font-medium hidden lg:table-cell">Frequência</th>
-                  <th className="px-5 py-3 font-medium">Ações</th>
+                  {!aluno && <th className="px-5 py-3 font-medium">Alunos</th>}
+                  <th
+                    className={`px-5 py-3 font-medium ${aluno ? "" : "hidden lg:table-cell"}`}
+                  >
+                    {aluno ? "Minha frequência" : "Frequência"}
+                  </th>
+                  {!aluno && <th className="px-5 py-3 font-medium">Ações</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-bg-border">
@@ -144,8 +148,10 @@ export default function TurmasPage() {
                       </td>
                       <td className="px-5 py-3 text-neutral-500 hidden md:table-cell">{t.codigo}</td>
                       <td className="px-5 py-3 text-neutral-500 hidden sm:table-cell">{t.horario}</td>
-                      <td className="px-5 py-3 text-neutral-500">{t.quantidadeAlunos}</td>
-                      <td className="px-5 py-3 hidden lg:table-cell">
+                      {!aluno && (
+                        <td className="px-5 py-3 text-neutral-500">{t.quantidadeAlunos}</td>
+                      )}
+                      <td className={`px-5 py-3 ${aluno ? "" : "hidden lg:table-cell"}`}>
                         {st ? (
                           <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${st.bg} ${st.text}`}>
                             {t.frequencia}%
@@ -154,27 +160,27 @@ export default function TurmasPage() {
                           <span className="text-xs text-neutral-400">Sem registros</span>
                         )}
                       </td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-1">
-                          <Link
-                            href={`/dashboard/turmas/${t.id}`}
-                            aria-label={`Visualizar turma ${t.nome}`}
-                            title="Visualizar turma"
-                            className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
-                          >
-                            <ChevronRight size={16} />
-                          </Link>
-                          {canManage && (
-                            <>
-                              <button
-                                onClick={() => openEdit(t)}
-                                aria-label={`Editar turma ${t.nome}`}
-                                title="Editar turma"
-                                className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
-                              >
-                                <Pencil size={16} />
-                              </button>
-                              {admin && (
+                      {!aluno && (
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-1">
+                            <Link
+                              href={`/dashboard/turmas/${t.id}`}
+                              aria-label={`Visualizar turma ${t.nome}`}
+                              title="Visualizar turma"
+                              className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
+                            >
+                              <ChevronRight size={16} />
+                            </Link>
+                            {canManage && (
+                              <>
+                                <button
+                                  onClick={() => openEdit(t)}
+                                  aria-label={`Editar turma ${t.nome}`}
+                                  title="Editar turma"
+                                  className="p-1.5 rounded-lg hover:bg-bg-light text-neutral-500 hover:text-orange-500 transition-colors"
+                                >
+                                  <Pencil size={16} />
+                                </button>
                                 <button
                                   onClick={() => handleDelete(t.id)}
                                   aria-label={`Excluir turma ${t.nome}`}
@@ -183,11 +189,11 @@ export default function TurmasPage() {
                                 >
                                   <Trash2 size={16} />
                                 </button>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </td>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}
@@ -197,13 +203,15 @@ export default function TurmasPage() {
         )}
       </div>
 
-      <TurmaFormModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        turma={editando}
-        canAssignProfessor={admin}
-        onSaved={load}
-      />
+      {admin && (
+        <TurmaFormModal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          turma={editando}
+          canAssignProfessor
+          onSaved={load}
+        />
+      )}
     </div>
   );
 }
