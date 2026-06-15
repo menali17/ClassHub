@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Pencil, Trash2, ChevronRight, BookOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { isAdmin, isProfessorOrAdmin } from "@/utils/roles";
-import { getTurmas, deleteTurma } from "@/lib/api";
+import { isAdmin, isProfessorOrAdmin, normalizePerfil } from "@/utils/roles";
+import { getTurmas, getMinhasTurmas, deleteTurma } from "@/lib/api";
 import { getFrequencyStatus } from "@/utils/formatters";
 import TurmaFormModal from "@/components/turmas/TurmaFormModal";
 
@@ -36,10 +36,16 @@ export default function TurmasPage() {
   const admin = isAdmin(user);
   const canManage = isProfessorOrAdmin(user);
 
+  const perfil = normalizePerfil(user?.perfil);
+  const aluno = perfil === "aluno";
+
   function load() {
     setLoading(true);
     setError("");
-    getTurmas()
+    
+    const carregarTurmas = aluno ? getMinhasTurmas : getTurmas;
+    
+    carregarTurmas()
       .then(data => {
         const lista = Array.isArray(data) ? data : (data.turmas || []);
         setTurmas(lista.map(normalizeTurma));

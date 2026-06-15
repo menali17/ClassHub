@@ -13,11 +13,17 @@ async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, { ...options, headers });
 
   if (res.status === 401) {
-    if (typeof window !== "undefined") {
+    const isLoginRequest = path.includes("/auth/login");
+
+    if (!isLoginRequest && typeof window !== "undefined") {
       localStorage.removeItem("frequenta_token");
       window.location.href = "/login?sessao=expirada";
     }
-    throw { status: 401, message: "Sessão expirada." };
+
+    throw {
+      status: 401,
+      message: isLoginRequest ? "E-mail ou senha inválidos." : "Sessão expirada.",
+    };
   }
 
   const data = await res.json().catch(() => ({}));
@@ -149,3 +155,7 @@ export const updateSenha = (data) =>
 export const getAuthToken = () => getToken();
 
 export const API_BASE_URL = BASE;
+
+export function getMinhasTurmas() {
+  return request("/turmas/minhas");
+}

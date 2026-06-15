@@ -53,7 +53,7 @@ export default function FrequenciaPage() {
   }, [turmaSel]);
 
   return (
-    <RoleGuard allowed={["admin", "professor"]}>
+    <RoleGuard allowed={["professor"]}>
       <div className="space-y-6 max-w-4xl w-full mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

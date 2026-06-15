@@ -21,6 +21,10 @@ class TurmasController {
   listClasses(request) {
     return this.turmasService.listClasses(request.user);
   }
+  
+  listMyClasses(request) {
+  return this.turmasService.listMyClasses(request.user);
+  }
 
   createClass(body, request) {
     return this.turmasService.createClass(body, request.user);
@@ -61,6 +65,18 @@ UseGuards(AuthGuard)(
   Object.getOwnPropertyDescriptor(TurmasController.prototype, "listClasses"),
 );
 Get()(TurmasController.prototype, "listClasses", Object.getOwnPropertyDescriptor(TurmasController.prototype, "listClasses"));
+
+Req()(TurmasController.prototype, "listMyClasses", 0);
+UseGuards(AuthGuard)(
+  TurmasController.prototype,
+  "listMyClasses",
+  Object.getOwnPropertyDescriptor(TurmasController.prototype, "listMyClasses"),
+);
+Get("minhas")(
+  TurmasController.prototype,
+  "listMyClasses",
+  Object.getOwnPropertyDescriptor(TurmasController.prototype, "listMyClasses"),
+);
 
 Body()(TurmasController.prototype, "createClass", 0);
 Req()(TurmasController.prototype, "createClass", 1);
