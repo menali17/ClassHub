@@ -65,12 +65,7 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-neutral-700">Senha</label>
-              <button type="button" className="text-xs text-orange-500 hover:text-orange-400 font-medium">
-                Esqueci a senha
-              </button>
-            </div>
+            <label className="text-sm font-medium text-neutral-700">Senha</label>
             <div className="relative">
               <input
                 type={showPass ? "text" : "password"}
