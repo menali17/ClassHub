@@ -5,7 +5,11 @@ import { Download, Eye, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAlunosFaltosos } from "@/hooks/useAlunosFaltosos";
 import { getAlunos, getTurmas, getFrequenciaAluno, API_BASE_URL, getAuthToken } from "@/lib/api";
-import { fetchFrequenciasAlunos, normalizeAlunosFaltosos } from "@/lib/frequenciaHelpers";
+import {
+  fetchAlunosDasTurmas,
+  fetchFrequenciasAlunos,
+  normalizeAlunosFaltosos,
+} from "@/lib/frequenciaHelpers";
 import AlunosFaltososList from "@/components/frequencia/AlunosFaltososList";
 import Avatar from "@/components/ui/Avatar";
 import Modal from "@/components/ui/Modal";
@@ -68,14 +72,19 @@ function RelatoriosContent() {
       return;
     }
 
-    Promise.all([getAlunos(), getTurmas()])
-      .then(([a, t]) => {
-        setAlunos(Array.isArray(a) ? a : []);
-        setTurmas(Array.isArray(t) ? t : []);
+    getTurmas()
+      .then(async (turmasData) => {
+        const t = Array.isArray(turmasData) ? turmasData : [];
+        const alunosData = perfil === "professor"
+          ? await fetchAlunosDasTurmas(t)
+          : await getAlunos();
+
+        setAlunos(Array.isArray(alunosData) ? alunosData : []);
+        setTurmas(t);
       })
       .catch((err) => setError(err.message || "Erro ao carregar dados."))
       .finally(() => setLoading(false));
-  }, [isAluno]);
+  }, [isAluno, perfil]);
 
   useEffect(() => {
     if (isAluno || aba !== "geral" || alunos.length === 0) return;
