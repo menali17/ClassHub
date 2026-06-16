@@ -48,6 +48,7 @@ nav:
       - Perfil e Personas: visao/perfil_personas.md
       - Solução Proposta: visao/solucao_proposta.md
       - Benchmarking: visao/benchmarking.md
+      - Artefatos UX/UI: visao/artefatos_ux_ui.md
 
   - Requisitos e Backlog:
       - Visão Geral: backlog/index.md
