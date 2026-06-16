@@ -1,0 +1,2285 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação do sistema de gestão de presença acadêmica da equipe Moranguetes.">
+      
+      
+      
+      
+        <link rel="prev" href="../arquitetura_sistema/">
+      
+      
+        <link rel="next" href="../integracao_front_back/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Banco de Dados - ClassHub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#banco-de-dados" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="ClassHub" class="md-header__button md-logo" aria-label="ClassHub" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ClassHub
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Banco de Dados
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="pink"  aria-label="Alternar para modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Alternar para modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-orange"  aria-label="Alternar para modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Alternar para modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/menali17/ClassHub" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    menali17/ClassHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ClassHub" class="md-nav__button md-logo" aria-label="ClassHub" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ClassHub
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/menali17/ClassHub" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    menali17/ClassHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup_tecnico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Técnico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão do Produto e Projeto
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visão do Produto e Projeto
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/cenario_atual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cenário Atual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/matriz_csd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matriz CSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/objetivos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objetivos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/perfil_personas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perfil e Personas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/solucao_proposta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solução Proposta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/benchmarking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/artefatos_ux_ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artefatos UX/UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos e Backlog
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Requisitos e Backlog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/historias_usuario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Histórias de Usuário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/requisitos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/priorizacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Priorização
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/backlog_produto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog do Produto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/first_things_first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First Things First
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planejamento
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Planejamento
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/metodologia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metodologia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/atas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Atas de Reunião
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura e Desenvolvimento
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitetura e Desenvolvimento
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura_sistema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura do Sistema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banco de Dados
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banco de Dados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tecnologia-adotada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tecnologia adotada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inicializacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicialização
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modelo-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelo de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacionamentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relacionamentos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-das-tabelas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estrutura das tabelas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estrutura das tabelas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usuários
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#turmas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turmas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vinculo-entre-turmas-e-alunos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vínculo entre turmas e alunos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aulas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frequências
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sessoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessões
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regras-de-integridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regras de integridade
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dados-iniciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dados iniciais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localizacao-da-implementacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Localização da implementação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-versao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histórico de Versão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integracao_front_back/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Front-end e Back-end
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boas Práticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Boas Práticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/padrao_branch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Padrão de Branches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/padrao_commit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Padrão de Commits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tecnologia-adotada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tecnologia adotada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inicializacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicialização
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modelo-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modelo de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relacionamentos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relacionamentos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#estrutura-das-tabelas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estrutura das tabelas
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Estrutura das tabelas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usuários
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#turmas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Turmas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vinculo-entre-turmas-e-alunos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vínculo entre turmas e alunos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aulas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aulas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frequências
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sessoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sessões
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#regras-de-integridade" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Regras de integridade
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dados-iniciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dados iniciais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuração
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#localizacao-da-implementacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Localização da implementação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-versao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histórico de Versão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="banco-de-dados">Banco de Dados<a class="headerlink" href="#banco-de-dados" title="Permanent link">&para;</a></h1>
+<p>Este documento apresenta como os dados do sistema de gestão de frequência são
+armazenados e relacionados. O objetivo é facilitar a manutenção do back-end, a
+integração com o front-end e o entendimento das regras aplicadas no banco.</p>
+<h2 id="tecnologia-adotada">Tecnologia adotada<a class="headerlink" href="#tecnologia-adotada" title="Permanent link">&para;</a></h2>
+<p>O projeto utiliza <strong>SQLite</strong>, acessado pelo módulo nativo <code>node:sqlite</code>,
+disponível a partir do Node.js 22.5. Essa escolha atende ao escopo do desafio
+porque dispensa a instalação de um servidor de banco de dados e mantém os dados
+persistidos em um único arquivo.</p>
+<p>Por padrão, o arquivo é criado em:</p>
+<pre><code class="language-text">backend/data/engnet.sqlite
+</code></pre>
+<p>O caminho pode ser alterado pela variável <code>DATABASE_PATH</code> do arquivo <code>.env</code>.
+O banco local não deve ser enviado ao repositório, pois é gerado novamente na
+primeira execução da API.</p>
+<h2 id="inicializacao">Inicialização<a class="headerlink" href="#inicializacao" title="Permanent link">&para;</a></h2>
+<p>Quando o back-end é iniciado, o <code>DatabaseService</code> executa quatro tarefas:</p>
+<ol>
+<li>Cria o diretório e o arquivo do banco, caso ainda não existam.</li>
+<li>Cria as tabelas, índices e restrições necessárias.</li>
+<li>Adiciona colunas novas em bancos já existentes, sem apagar os dados locais.</li>
+<li>Insere dados iniciais quando a tabela de usuários está vazia.</li>
+</ol>
+<p>As chaves estrangeiras são habilitadas com <code>PRAGMA foreign_keys = ON</code> e o banco
+utiliza o modo <code>WAL</code> para melhorar a segurança das operações de leitura e
+escrita simultâneas.</p>
+<h2 id="modelo-de-dados">Modelo de dados<a class="headerlink" href="#modelo-de-dados" title="Permanent link">&para;</a></h2>
+<p>O banco é composto por seis tabelas principais.</p>
+<table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>usuarios</code></td>
+<td>Armazena alunos, professores e administradores.</td>
+</tr>
+<tr>
+<td><code>turmas</code></td>
+<td>Armazena as turmas e seus professores responsáveis.</td>
+</tr>
+<tr>
+<td><code>turma_alunos</code></td>
+<td>Registra os alunos vinculados a cada turma.</td>
+</tr>
+<tr>
+<td><code>aulas</code></td>
+<td>Armazena as aulas realizadas por turma.</td>
+</tr>
+<tr>
+<td><code>frequencias</code></td>
+<td>Registra presença ou falta de cada aluno em uma aula.</td>
+</tr>
+<tr>
+<td><code>sessoes</code></td>
+<td>Armazena as sessões usadas na autenticação.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="relacionamentos">Relacionamentos<a class="headerlink" href="#relacionamentos" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Origem</th>
+<th>Relação</th>
+<th>Destino</th>
+<th>Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>usuarios</code> (professor)</td>
+<td>1:N</td>
+<td><code>turmas</code></td>
+<td>Um professor pode ser responsável por várias turmas.</td>
+</tr>
+<tr>
+<td><code>usuarios</code> (aluno)</td>
+<td>N:N</td>
+<td><code>turmas</code></td>
+<td>Um aluno pode participar de várias turmas, por meio de <code>turma_alunos</code>.</td>
+</tr>
+<tr>
+<td><code>turmas</code></td>
+<td>1:N</td>
+<td><code>aulas</code></td>
+<td>Uma turma pode possuir várias aulas.</td>
+</tr>
+<tr>
+<td><code>aulas</code></td>
+<td>1:N</td>
+<td><code>frequencias</code></td>
+<td>Uma aula possui um registro de frequência para cada aluno.</td>
+</tr>
+<tr>
+<td><code>usuarios</code> (aluno)</td>
+<td>1:N</td>
+<td><code>frequencias</code></td>
+<td>Um aluno acumula registros de presença e falta.</td>
+</tr>
+<tr>
+<td><code>usuarios</code></td>
+<td>1:N</td>
+<td><code>sessoes</code></td>
+<td>Um usuário pode possuir sessões de autenticação.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="estrutura-das-tabelas">Estrutura das tabelas<a class="headerlink" href="#estrutura-das-tabelas" title="Permanent link">&para;</a></h2>
+<h3 id="usuarios">Usuários<a class="headerlink" href="#usuarios" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>INTEGER</td>
+<td>Chave primária gerada automaticamente.</td>
+</tr>
+<tr>
+<td><code>nome</code></td>
+<td>TEXT</td>
+<td>Obrigatório.</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>TEXT</td>
+<td>Obrigatório e único.</td>
+</tr>
+<tr>
+<td><code>matricula</code></td>
+<td>TEXT</td>
+<td>Única quando informada.</td>
+</tr>
+<tr>
+<td><code>senha_hash</code></td>
+<td>TEXT</td>
+<td>Senha armazenada como hash, nunca em texto puro.</td>
+</tr>
+<tr>
+<td><code>perfil</code></td>
+<td>TEXT</td>
+<td>Aceita <code>aluno</code>, <code>professor</code> ou <code>administrador</code>.</td>
+</tr>
+<tr>
+<td><code>foto_url</code></td>
+<td>TEXT</td>
+<td>Opcional.</td>
+</tr>
+<tr>
+<td><code>telefone</code></td>
+<td>TEXT</td>
+<td>Opcional.</td>
+</tr>
+<tr>
+<td><code>departamento</code></td>
+<td>TEXT</td>
+<td>Opcional e utilizado no cadastro de professores.</td>
+</tr>
+<tr>
+<td><code>ativo</code></td>
+<td>INTEGER</td>
+<td>Indica se o usuário pode acessar o sistema (<code>1</code>) ou está desativado (<code>0</code>).</td>
+</tr>
+<tr>
+<td><code>criado_em</code></td>
+<td>TEXT</td>
+<td>Data de criação preenchida automaticamente.</td>
+</tr>
+<tr>
+<td><code>atualizado_em</code></td>
+<td>TEXT</td>
+<td>Data da última atualização.</td>
+</tr>
+</tbody>
+</table>
+<p>Todos os perfis ficam na mesma tabela. A coluna <code>perfil</code> determina quais ações
+o usuário pode realizar na API.</p>
+<h3 id="turmas">Turmas<a class="headerlink" href="#turmas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>INTEGER</td>
+<td>Chave primária gerada automaticamente.</td>
+</tr>
+<tr>
+<td><code>nome</code></td>
+<td>TEXT</td>
+<td>Obrigatório.</td>
+</tr>
+<tr>
+<td><code>codigo</code></td>
+<td>TEXT</td>
+<td>Obrigatório e único.</td>
+</tr>
+<tr>
+<td><code>horario</code></td>
+<td>TEXT</td>
+<td>Obrigatório.</td>
+</tr>
+<tr>
+<td><code>professor_id</code></td>
+<td>INTEGER</td>
+<td>Referência ao professor responsável.</td>
+</tr>
+<tr>
+<td><code>criado_em</code></td>
+<td>TEXT</td>
+<td>Data de criação preenchida automaticamente.</td>
+</tr>
+<tr>
+<td><code>atualizado_em</code></td>
+<td>TEXT</td>
+<td>Data da última atualização.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="vinculo-entre-turmas-e-alunos">Vínculo entre turmas e alunos<a class="headerlink" href="#vinculo-entre-turmas-e-alunos" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>turma_id</code></td>
+<td>INTEGER</td>
+<td>Referência à turma.</td>
+</tr>
+<tr>
+<td><code>aluno_id</code></td>
+<td>INTEGER</td>
+<td>Referência ao aluno.</td>
+</tr>
+<tr>
+<td><code>ativo</code></td>
+<td>INTEGER</td>
+<td>Indica se o vínculo atual está ativo.</td>
+</tr>
+<tr>
+<td><code>vinculado_em</code></td>
+<td>TEXT</td>
+<td>Data do vínculo preenchida automaticamente.</td>
+</tr>
+<tr>
+<td><code>desvinculado_em</code></td>
+<td>TEXT</td>
+<td>Data do último desvínculo, quando houver.</td>
+</tr>
+</tbody>
+</table>
+<p>A chave primária é formada por <code>turma_id</code> e <code>aluno_id</code>. Ao remover um aluno da
+turma, o vínculo é desativado em vez de ser apagado. Um novo vínculo reativa o
+mesmo registro e atualiza sua data.</p>
+<h3 id="aulas">Aulas<a class="headerlink" href="#aulas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>INTEGER</td>
+<td>Chave primária gerada automaticamente.</td>
+</tr>
+<tr>
+<td><code>turma_id</code></td>
+<td>INTEGER</td>
+<td>Referência à turma da aula.</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>TEXT</td>
+<td>Data no formato <code>AAAA-MM-DD</code>.</td>
+</tr>
+<tr>
+<td><code>horario</code></td>
+<td>TEXT</td>
+<td>Horário no formato <code>HH:mm</code>.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>TEXT</td>
+<td>Aceita <code>aberta</code> ou <code>finalizada</code>.</td>
+</tr>
+<tr>
+<td><code>criada_em</code></td>
+<td>TEXT</td>
+<td>Data de criação preenchida automaticamente.</td>
+</tr>
+</tbody>
+</table>
+<p>O conjunto <code>turma_id</code>, <code>data</code> e <code>horario</code> é único. Essa restrição impede que a
+mesma aula seja cadastrada mais de uma vez para uma turma.</p>
+<h3 id="frequencias">Frequências<a class="headerlink" href="#frequencias" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>INTEGER</td>
+<td>Chave primária gerada automaticamente.</td>
+</tr>
+<tr>
+<td><code>aula_id</code></td>
+<td>INTEGER</td>
+<td>Referência à aula.</td>
+</tr>
+<tr>
+<td><code>aluno_id</code></td>
+<td>INTEGER</td>
+<td>Referência ao aluno.</td>
+</tr>
+<tr>
+<td><code>situacao</code></td>
+<td>TEXT</td>
+<td>Aceita <code>presente</code> ou <code>falta</code>.</td>
+</tr>
+<tr>
+<td><code>registrada_em</code></td>
+<td>TEXT</td>
+<td>Data do registro preenchida automaticamente.</td>
+</tr>
+</tbody>
+</table>
+<p>O conjunto <code>aula_id</code> e <code>aluno_id</code> é único. Caso uma chamada seja corrigida, o
+registro existente é atualizado em vez de criar uma frequência duplicada.</p>
+<h3 id="sessoes">Sessões<a class="headerlink" href="#sessoes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>INTEGER</td>
+<td>Chave primária gerada automaticamente.</td>
+</tr>
+<tr>
+<td><code>usuario_id</code></td>
+<td>INTEGER</td>
+<td>Referência ao usuário autenticado.</td>
+</tr>
+<tr>
+<td><code>token_hash</code></td>
+<td>TEXT</td>
+<td>Hash único do token de acesso.</td>
+</tr>
+<tr>
+<td><code>expira_em</code></td>
+<td>TEXT</td>
+<td>Data e horário de expiração.</td>
+</tr>
+<tr>
+<td><code>revogada_em</code></td>
+<td>TEXT</td>
+<td>Preenchido quando o logout é realizado.</td>
+</tr>
+<tr>
+<td><code>criada_em</code></td>
+<td>TEXT</td>
+<td>Data de criação preenchida automaticamente.</td>
+</tr>
+</tbody>
+</table>
+<p>O token original é entregue ao usuário no login, mas somente seu hash é
+persistido no banco. Isso reduz a exposição das sessões caso o arquivo seja
+acessado indevidamente.</p>
+<h2 id="regras-de-integridade">Regras de integridade<a class="headerlink" href="#regras-de-integridade" title="Permanent link">&para;</a></h2>
+<ul>
+<li>E-mail, matrícula e código de turma não podem se repetir.</li>
+<li>Um aluno não pode ser vinculado duas vezes à mesma turma.</li>
+<li>Usuários desativados não podem realizar login e suas sessões são revogadas.</li>
+<li>A desativação de um aluno também encerra seus vínculos ativos com turmas.</li>
+<li>Professores com turmas atribuídas devem ter essas turmas transferidas antes da desativação.</li>
+<li>Uma turma não pode possuir aulas repetidas na mesma data e horário.</li>
+<li>Um aluno possui apenas uma situação de frequência por aula.</li>
+<li>A exclusão de uma turma remove seus vínculos e suas aulas relacionadas.</li>
+<li>A exclusão de uma aula remove seus registros de frequência.</li>
+<li>Apenas aulas finalizadas entram no histórico e no cálculo da frequência.</li>
+<li>Percentuais menores que <code>75%</code> são classificados como baixa frequência.</li>
+<li>Exatamente <code>75%</code> é considerado frequência regular.</li>
+</ul>
+<p>O registro da chamada é feito dentro de uma transação. Se ocorrer um erro ao
+salvar qualquer aluno, toda a operação é desfeita para evitar uma chamada
+parcial.</p>
+<h2 id="dados-iniciais">Dados iniciais<a class="headerlink" href="#dados-iniciais" title="Permanent link">&para;</a></h2>
+<p>Na primeira execução, o sistema cria dados para desenvolvimento:</p>
+<table>
+<thead>
+<tr>
+<th>Perfil</th>
+<th style="text-align: right;">Quantidade</th>
+<th>Identificação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Administrador</td>
+<td style="text-align: right;">1</td>
+<td><code>admin@engnet.com</code></td>
+</tr>
+<tr>
+<td>Professores</td>
+<td style="text-align: right;">3</td>
+<td><code>professor01@engnet.com</code> até <code>professor03@engnet.com</code></td>
+</tr>
+<tr>
+<td>Alunos</td>
+<td style="text-align: right;">15</td>
+<td><code>aluno01@engnet.com</code> até <code>aluno15@engnet.com</code></td>
+</tr>
+<tr>
+<td>Turmas</td>
+<td style="text-align: right;">4</td>
+<td>Alunos distribuídos entre as turmas cadastradas.</td>
+</tr>
+</tbody>
+</table>
+<p>Todos os usuários iniciais utilizam a senha <code>123456</code>. Esses dados servem apenas
+para desenvolvimento e demonstração do desafio.</p>
+<h2 id="configuracao">Configuração<a class="headerlink" href="#configuracao" title="Permanent link">&para;</a></h2>
+<p>As configurações relacionadas ao banco ficam no arquivo <code>backend/.env</code>:</p>
+<pre><code class="language-env">DATABASE_PATH=./data/engnet.sqlite
+LOW_ATTENDANCE_THRESHOLD=75
+AUTH_TOKEN_EXPIRATION_HOURS=8
+</code></pre>
+<p>Para recriar o banco durante o desenvolvimento, basta encerrar a API, remover o
+arquivo <code>backend/data/engnet.sqlite</code> e iniciar o back-end novamente. Essa ação
+apaga todos os registros locais e executa novamente a carga inicial.</p>
+<h2 id="localizacao-da-implementacao">Localização da implementação<a class="headerlink" href="#localizacao-da-implementacao" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/src/database/database.module.js</code></td>
+<td>Disponibiliza o serviço de banco aos módulos.</td>
+</tr>
+<tr>
+<td><code>backend/src/database/database.service.js</code></td>
+<td>Cria o esquema e concentra as operações SQL.</td>
+</tr>
+<tr>
+<td><code>backend/.env.example</code></td>
+<td>Documenta as variáveis de configuração.</td>
+</tr>
+<tr>
+<td><code>backend/CONTRATO_API.md</code></td>
+<td>Documenta as rotas que utilizam os dados.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="historico-de-versao">Histórico de Versão<a class="headerlink" href="#historico-de-versao" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Versão</th>
+<th>Data</th>
+<th>Descrição</th>
+<th>Autor(es)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>14/06/2026</td>
+<td>Criação da documentação do banco SQLite e do modelo de dados atual.</td>
+<td>Enzo Menali</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>14/06/2026</td>
+<td>Inclusão dos dados de perfil, desativação de usuários e vínculos inativos de alunos.</td>
+<td>Enzo Menali</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

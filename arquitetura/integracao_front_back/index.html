@@ -1,0 +1,2525 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentação do sistema de gestão de presença acadêmica da equipe Moranguetes.">
+      
+      
+      
+      
+        <link rel="prev" href="../banco_de_dados/">
+      
+      
+        <link rel="next" href="../../boas_praticas/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Integração Front-end e Back-end - ClassHub</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#integracao-entre-front-end-e-back-end" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="ClassHub" class="md-header__button md-logo" aria-label="ClassHub" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ClassHub
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Integração Front-end e Back-end
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="pink"  aria-label="Alternar para modo escuro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Alternar para modo escuro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-orange"  aria-label="Alternar para modo claro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Alternar para modo claro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/menali17/ClassHub" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    menali17/ClassHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ClassHub" class="md-nav__button md-logo" aria-label="ClassHub" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ClassHub
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/menali17/ClassHub" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    menali17/ClassHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../setup_tecnico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup Técnico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão do Produto e Projeto
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Visão do Produto e Projeto
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/cenario_atual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cenário Atual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/matriz_csd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matriz CSD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/objetivos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Objetivos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/perfil_personas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Perfil e Personas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/solucao_proposta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Solução Proposta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/benchmarking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Benchmarking
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visao/artefatos_ux_ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Artefatos UX/UI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos e Backlog
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Requisitos e Backlog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/historias_usuario/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Histórias de Usuário
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/requisitos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/priorizacao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Priorização
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/backlog_produto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backlog do Produto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backlog/first_things_first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First Things First
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Planejamento
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Planejamento
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/metodologia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metodologia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../planejamento/atas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Atas de Reunião
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura e Desenvolvimento
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitetura e Desenvolvimento
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura_sistema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura do Sistema
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../banco_de_dados/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Banco de Dados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Front-end e Back-end
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integração Front-end e Back-end
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-situacao-atual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Situação atual
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-enderecos-locais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Endereços locais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-formato-da-comunicacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Formato da comunicação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-fluxo-de-autenticacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Fluxo de autenticação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Fluxo de autenticação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo de login
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-requisicao-protegida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo de requisição protegida
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rotas-disponiveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Rotas disponíveis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Rotas disponíveis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-autenticacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Autenticação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-perfil-do-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Perfil do usuário
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-administracao-de-alunos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Administração de alunos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-administracao-de-professores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Administração de professores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-gerenciamento-de-turmas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Gerenciamento de turmas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-aulas-e-frequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Aulas e frequências
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-relatorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Relatórios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-organizacao-da-integracao-no-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Organização da integração no front-end
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tratamento-de-respostas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tratamento de respostas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-regras-de-integracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Regras de integração
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-fluxos-integrados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Fluxos integrados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-documentos-relacionados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Documentos relacionados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-versao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histórico de versão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Boas Práticas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Boas Práticas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/padrao_branch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Padrão de Branches
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../boas_praticas/padrao_commit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Padrão de Commits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-situacao-atual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Situação atual
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-enderecos-locais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Endereços locais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-formato-da-comunicacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Formato da comunicação
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-fluxo-de-autenticacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Fluxo de autenticação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Fluxo de autenticação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo de login
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exemplo-de-requisicao-protegida" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exemplo de requisição protegida
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rotas-disponiveis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Rotas disponíveis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Rotas disponíveis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-autenticacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Autenticação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-perfil-do-usuario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Perfil do usuário
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-administracao-de-alunos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Administração de alunos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-administracao-de-professores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Administração de professores
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-gerenciamento-de-turmas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Gerenciamento de turmas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-aulas-e-frequencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Aulas e frequências
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-dashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-relatorios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Relatórios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-organizacao-da-integracao-no-front-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Organização da integração no front-end
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-tratamento-de-respostas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Tratamento de respostas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-regras-de-integracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Regras de integração
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-fluxos-integrados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Fluxos integrados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-documentos-relacionados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Documentos relacionados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-versao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Histórico de versão
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="integracao-entre-front-end-e-back-end">Integração entre Front-end e Back-end<a class="headerlink" href="#integracao-entre-front-end-e-back-end" title="Permanent link">&para;</a></h1>
+<p>Este documento define o padrão de comunicação entre o front-end desenvolvido em Next.js e a API REST desenvolvida em NestJS.</p>
+<p>O objetivo é manter as requisições e respostas previsíveis, reduzir divergências entre as duas aplicações e facilitar a implementação das telas do sistema.</p>
+<p>Os formatos completos dos corpos das requisições e respostas estão documentados em <code>backend/CONTRATO_API.md</code>. Sempre que uma rota, campo ou regra da API for alterada, o contrato também deverá ser atualizado.</p>
+<hr />
+<h2 id="1-situacao-atual">1. Situação atual<a class="headerlink" href="#1-situacao-atual" title="Permanent link">&para;</a></h2>
+<p>O back-end já disponibiliza recursos para:</p>
+<ul>
+<li>autenticação e encerramento de sessão;</li>
+<li>consulta e atualização de perfil;</li>
+<li>administração de alunos e professores;</li>
+<li>gerenciamento de turmas;</li>
+<li>criação de aulas;</li>
+<li>registro e consulta de frequências;</li>
+<li>consulta do dashboard;</li>
+<li>geração e exportação de relatórios.</li>
+</ul>
+<p>O front-end já consome essas rotas por meio do cliente HTTP compartilhado em
+<code>frontend/src/lib/api.js</code>. A autenticação é mantida pelo <code>AuthContext</code>, enquanto
+os hooks e páginas transformam as respostas da API nos dados exibidos em cada
+perfil.</p>
+<hr />
+<h2 id="2-enderecos-locais">2. Endereços locais<a class="headerlink" href="#2-enderecos-locais" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Aplicação</th>
+<th>Endereço padrão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Front-end</td>
+<td><code>http://localhost:3000</code></td>
+</tr>
+<tr>
+<td>API</td>
+<td><code>http://localhost:3333/api</code></td>
+</tr>
+</tbody>
+</table>
+<p>No back-end, a variável <code>FRONTEND_URL</code> define qual origem pode acessar a API por meio do CORS:</p>
+<pre><code class="language-env">FRONTEND_URL=http://localhost:3000
+</code></pre>
+<p>No front-end, o endereço-base da API deverá ser definido em uma variável pública de ambiente:</p>
+<pre><code class="language-env">NEXT_PUBLIC_API_URL=http://localhost:3333/api
+</code></pre>
+<p>Essa variável pode ser definida no arquivo <code>.env</code> ou <code>.env.local</code> do front-end.</p>
+<hr />
+<h2 id="3-formato-da-comunicacao">3. Formato da comunicação<a class="headerlink" href="#3-formato-da-comunicacao" title="Permanent link">&para;</a></h2>
+<p>O front-end e o back-end se comunicam por HTTP e utilizam JSON para troca de dados.</p>
+<p>As requisições que enviam conteúdo devem incluir o cabeçalho:</p>
+<pre><code class="language-text">Content-Type: application/json
+</code></pre>
+<p>As rotas protegidas também exigem o token da sessão:</p>
+<pre><code class="language-text">Authorization: Bearer &lt;token&gt;
+</code></pre>
+<p>O front-end não deve acessar diretamente o arquivo SQLite. Toda leitura ou alteração de dados deve ocorrer por meio da API.</p>
+<hr />
+<h2 id="4-fluxo-de-autenticacao">4. Fluxo de autenticação<a class="headerlink" href="#4-fluxo-de-autenticacao" title="Permanent link">&para;</a></h2>
+<p>O fluxo de autenticação deve seguir estas etapas:</p>
+<ol>
+<li>O usuário informa e-mail e senha no front-end.</li>
+<li>O front-end envia uma requisição para <code>POST /auth/login</code>.</li>
+<li>A API valida as credenciais.</li>
+<li>A API retorna o token da sessão e os dados do usuário autenticado.</li>
+<li>O front-end armazena o token durante a sessão.</li>
+<li>As requisições protegidas enviam o token no cabeçalho <code>Authorization</code>.</li>
+<li>Ao carregar novamente a aplicação, o front-end pode consultar <code>GET /auth/me</code> para validar a sessão.</li>
+<li>No logout, o front-end envia <code>POST /auth/logout</code>.</li>
+<li>A API revoga a sessão e o front-end remove o token armazenado.</li>
+</ol>
+<h3 id="exemplo-de-login">Exemplo de login<a class="headerlink" href="#exemplo-de-login" title="Permanent link">&para;</a></h3>
+<pre><code class="language-javascript">const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+  {
+    method: &quot;POST&quot;,
+    headers: {
+      &quot;Content-Type&quot;: &quot;application/json&quot;,
+    },
+    body: JSON.stringify({
+      email,
+      senha,
+    }),
+  },
+);
+
+const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.message || &quot;Não foi possível realizar o login.&quot;);
+}
+</code></pre>
+<h3 id="exemplo-de-requisicao-protegida">Exemplo de requisição protegida<a class="headerlink" href="#exemplo-de-requisicao-protegida" title="Permanent link">&para;</a></h3>
+<pre><code class="language-javascript">const response = await fetch(
+  `${process.env.NEXT_PUBLIC_API_URL}/turmas`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  },
+);
+</code></pre>
+<p>O back-end continua responsável pela validação definitiva das permissões. Ocultar uma funcionalidade na interface não substitui a autorização realizada pela API.</p>
+<hr />
+<h2 id="5-rotas-disponiveis">5. Rotas disponíveis<a class="headerlink" href="#5-rotas-disponiveis" title="Permanent link">&para;</a></h2>
+<p>As rotas apresentadas nesta seção consideram a URL-base:</p>
+<pre><code class="language-text">http://localhost:3333/api
+</code></pre>
+<p>Por isso, os caminhos são apresentados sem repetir o prefixo <code>/api</code>.</p>
+<h3 id="51-autenticacao">5.1 Autenticação<a class="headerlink" href="#51-autenticacao" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/auth/login</code></td>
+<td>Iniciar uma sessão.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/auth/me</code></td>
+<td>Consultar o usuário autenticado.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/auth/logout</code></td>
+<td>Encerrar e revogar a sessão atual.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="52-perfil-do-usuario">5.2 Perfil do usuário<a class="headerlink" href="#52-perfil-do-usuario" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/perfil</code></td>
+<td>Consultar os próprios dados.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/perfil</code></td>
+<td>Atualizar os próprios dados.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/perfil/senha</code></td>
+<td>Alterar a própria senha.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="53-administracao-de-alunos">5.3 Administração de alunos<a class="headerlink" href="#53-administracao-de-alunos" title="Permanent link">&para;</a></h3>
+<p>As operações de cadastro, edição, redefinição de senha e desativação são destinadas ao administrador.</p>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/alunos</code></td>
+<td>Listar os alunos cadastrados.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/alunos</code></td>
+<td>Cadastrar um aluno.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/alunos/:id</code></td>
+<td>Consultar um aluno e suas turmas.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/alunos/:id</code></td>
+<td>Editar os dados de um aluno.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/alunos/:id</code></td>
+<td>Desativar um aluno.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/alunos/:id/redefinir-senha</code></td>
+<td>Definir uma nova senha para o aluno.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="54-administracao-de-professores">5.4 Administração de professores<a class="headerlink" href="#54-administracao-de-professores" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/professores</code></td>
+<td>Listar os professores cadastrados.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/professores</code></td>
+<td>Cadastrar um professor.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/professores/:id</code></td>
+<td>Consultar um professor e suas turmas.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/professores/:id</code></td>
+<td>Editar os dados de um professor.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/professores/:id</code></td>
+<td>Desativar um professor.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/professores/:id/redefinir-senha</code></td>
+<td>Definir uma nova senha para o professor.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="55-gerenciamento-de-turmas">5.5 Gerenciamento de turmas<a class="headerlink" href="#55-gerenciamento-de-turmas" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Acesso</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/turmas</code></td>
+<td>Professor e administrador</td>
+<td>Listar as turmas disponíveis para o usuário.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/turmas/minhas</code></td>
+<td>Aluno</td>
+<td>Listar somente as turmas do aluno autenticado, com sua frequência.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/turmas</code></td>
+<td>Administrador</td>
+<td>Criar uma turma e definir o professor responsável.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/turmas/:id</code></td>
+<td>Professor responsável e administrador</td>
+<td>Consultar os dados de uma turma.</td>
+</tr>
+<tr>
+<td><code>PATCH</code></td>
+<td><code>/turmas/:id</code></td>
+<td>Administrador</td>
+<td>Editar os dados e o professor responsável.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/turmas/:id</code></td>
+<td>Administrador</td>
+<td>Remover uma turma e seus registros relacionados.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/turmas/:id/alunos</code></td>
+<td>Professor responsável e administrador</td>
+<td>Listar os alunos vinculados à turma.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/turmas/:id/alunos</code></td>
+<td>Professor responsável e administrador</td>
+<td>Vincular um aluno à turma.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/turmas/:id/alunos/:alunoId</code></td>
+<td>Professor responsável e administrador</td>
+<td>Desvincular um aluno da turma.</td>
+</tr>
+</tbody>
+</table>
+<p>O professor consulta apenas as turmas pelas quais é responsável e pode administrar seus vínculos de alunos. A criação, edição, transferência de professor e remoção de turmas são exclusivas do administrador. O aluno utiliza <code>/turmas/minhas</code> e não acessa os detalhes administrativos da turma.</p>
+<hr />
+<h3 id="56-aulas-e-frequencias">5.6 Aulas e frequências<a class="headerlink" href="#56-aulas-e-frequencias" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POST</code></td>
+<td><code>/turmas/:turmaId/aulas</code></td>
+<td>Criar uma aula para a turma.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/turmas/:turmaId/aulas</code></td>
+<td>Listar as aulas da turma.</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/aulas/:aulaId/frequencias</code></td>
+<td>Registrar ou corrigir a chamada completa.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/alunos/:alunoId/frequencia</code></td>
+<td>Consultar o histórico e os percentuais de um aluno autorizado.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/alunos/me/frequencia</code></td>
+<td>Consultar a frequência do aluno autenticado.</td>
+</tr>
+</tbody>
+</table>
+<p>A chamada deve enviar a situação de todos os alunos atualmente vinculados à turma. O reenvio da chamada atualiza os registros existentes sem criar duplicações.</p>
+<hr />
+<h3 id="57-dashboard">5.7 Dashboard<a class="headerlink" href="#57-dashboard" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/dashboard</code></td>
+<td>Consultar totais, taxa média, evolução semanal e alertas de baixa frequência.</td>
+</tr>
+</tbody>
+</table>
+<p>Para professores, os indicadores devem considerar somente as turmas sob sua responsabilidade.</p>
+<hr />
+<h3 id="58-relatorios">5.8 Relatórios<a class="headerlink" href="#58-relatorios" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Rota</th>
+<th>Finalidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos/:alunoId</code></td>
+<td>Consultar o relatório individual de um aluno.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos-baixa-frequencia</code></td>
+<td>Consultar os alunos abaixo do limite de frequência.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos-baixa-frequencia?turmaId=:id</code></td>
+<td>Filtrar a baixa frequência por turma.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/turmas/:turmaId</code></td>
+<td>Consultar o histórico completo de uma turma.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos/:alunoId/exportar?formato=pdf</code></td>
+<td>Exportar o relatório individual em PDF.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos/:alunoId/exportar?formato=xlsx</code></td>
+<td>Exportar o relatório individual em XLSX.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos-baixa-frequencia/exportar?formato=pdf</code></td>
+<td>Exportar a lista de baixa frequência em PDF.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos-baixa-frequencia/exportar?formato=xlsx</code></td>
+<td>Exportar a lista de baixa frequência em XLSX.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/turmas/:turmaId/exportar?formato=pdf</code></td>
+<td>Exportar o relatório da turma em PDF.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/turmas/:turmaId/exportar?formato=xlsx</code></td>
+<td>Exportar o relatório da turma em XLSX.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos/exportar?formato=pdf</code></td>
+<td>Exportar o relatório geral de alunos em PDF.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/alunos/exportar?formato=xlsx</code></td>
+<td>Exportar o relatório geral de alunos em XLSX.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/turmas/exportar?formato=pdf</code></td>
+<td>Exportar o relatório geral de turmas em PDF.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/relatorios/turmas/exportar?formato=xlsx</code></td>
+<td>Exportar o relatório geral de turmas em XLSX.</td>
+</tr>
+</tbody>
+</table>
+<p>Os exemplos completos dos corpos, parâmetros e respostas estão disponíveis em <code>backend/CONTRATO_API.md</code>.</p>
+<hr />
+<h2 id="6-organizacao-da-integracao-no-front-end">6. Organização da integração no front-end<a class="headerlink" href="#6-organizacao-da-integracao-no-front-end" title="Permanent link">&para;</a></h2>
+<p>As requisições HTTP estão centralizadas para evitar duplicação de URL-base,
+cabeçalhos, token e tratamento de sessão expirada.</p>
+<pre><code class="language-text">frontend/src/
+├── app/
+├── components/
+├── contexts/
+│   ├── AuthContext.jsx
+│   └── ThemeContext.jsx
+├── hooks/
+│   └── useDashboard.js
+└── lib/
+    └── api.js
+</code></pre>
+<p>Responsabilidades:</p>
+<ul>
+<li><code>lib/api.js</code>: cliente HTTP, autenticação, perfil, usuários, turmas, aulas e frequências;</li>
+<li><code>contexts/AuthContext.jsx</code>: sessão, usuário autenticado, logout e atualização do perfil;</li>
+<li><code>contexts/ThemeContext.jsx</code>: preferência persistida entre tema claro e escuro;</li>
+<li><code>hooks/useDashboard.js</code>: indicadores e dados auxiliares dos dashboards;</li>
+<li><code>app/dashboard/relatorios/page.jsx</code>: consultas e downloads dos relatórios.</li>
+</ul>
+<hr />
+<h2 id="7-tratamento-de-respostas">7. Tratamento de respostas<a class="headerlink" href="#7-tratamento-de-respostas" title="Permanent link">&para;</a></h2>
+<p>O front-end deve verificar <code>response.ok</code> antes de considerar uma requisição bem-sucedida.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Código</th>
+<th>Significado</th>
+<th>Comportamento esperado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><code>200</code></td>
+<td>Consulta ou alteração concluída.</td>
+<td>Atualizar a interface e informar sucesso quando necessário.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>201</code></td>
+<td>Registro criado.</td>
+<td>Exibir o novo item ou retornar à listagem.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>400</code></td>
+<td>Dados inválidos ou incompletos.</td>
+<td>Exibir a mensagem próxima ao formulário ou campo correspondente.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>401</code></td>
+<td>Sessão ausente, inválida ou expirada.</td>
+<td>Limpar os dados da sessão e redirecionar para o login.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>403</code></td>
+<td>Usuário sem permissão.</td>
+<td>Informar que a ação não está disponível para aquele perfil.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>404</code></td>
+<td>Registro não encontrado.</td>
+<td>Informar que o conteúdo solicitado não existe.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>409</code></td>
+<td>Conflito ou dado duplicado.</td>
+<td>Apresentar a mensagem devolvida pela API.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>500</code></td>
+<td>Erro interno.</td>
+<td>Informar uma falha temporária sem expor detalhes técnicos.</td>
+</tr>
+</tbody>
+</table>
+<p>Durante o envio de uma requisição, os botões de confirmação devem permanecer desabilitados para evitar ações duplicadas.</p>
+<p>A interface também deve apresentar:</p>
+<ul>
+<li>estados de carregamento;</li>
+<li>mensagens de sucesso;</li>
+<li>mensagens de erro;</li>
+<li>confirmação para ações destrutivas;</li>
+<li>feedback após criação, edição ou remoção de registros.</li>
+</ul>
+<hr />
+<h2 id="8-regras-de-integracao">8. Regras de integração<a class="headerlink" href="#8-regras-de-integracao" title="Permanent link">&para;</a></h2>
+<p>A integração deve respeitar as seguintes regras:</p>
+<ul>
+<li>o front-end nunca deve acessar o banco SQLite diretamente;</li>
+<li>todas as operações devem ocorrer por meio da API REST;</li>
+<li>o token deve ser enviado nas rotas protegidas;</li>
+<li>as funcionalidades apresentadas devem considerar o perfil autenticado;</li>
+<li>o back-end continua responsável pela autorização definitiva;</li>
+<li>datas de aula devem usar o formato <code>AAAA-MM-DD</code>;</li>
+<li>horários devem usar o formato <code>HH:mm</code>;</li>
+<li>a situação da frequência aceita apenas <code>presente</code> ou <code>falta</code>;</li>
+<li>a chamada deve incluir todos os alunos vinculados à turma;</li>
+<li>frequências abaixo do limite definido no back-end devem ser apresentadas como baixa frequência;</li>
+<li>alterações nas rotas, campos ou respostas devem ser registradas no contrato da API antes da atualização do front-end.</li>
+</ul>
+<p>O limite padrão de baixa frequência é <code>75%</code>, mas esse valor pode ser alterado no back-end por meio da variável <code>LOW_ATTENDANCE_THRESHOLD</code>. Por isso, sempre que possível, o front-end deve utilizar o valor retornado pela API, evitando repetir uma regra fixa na interface.</p>
+<hr />
+<h2 id="9-fluxos-integrados">9. Fluxos integrados<a class="headerlink" href="#9-fluxos-integrados" title="Permanent link">&para;</a></h2>
+<p>Atualmente estão integrados:</p>
+<ol>
+<li>login, restauração da sessão e logout;</li>
+<li>consulta e edição do próprio perfil;</li>
+<li>administração de alunos e professores;</li>
+<li>criação, edição, atribuição de professor e remoção de turmas pelo administrador;</li>
+<li>consulta das próprias turmas pelo aluno;</li>
+<li>vínculo e desvínculo de alunos pelo professor responsável ou administrador;</li>
+<li>criação de aulas e registro de chamadas pelo professor responsável;</li>
+<li>dashboards de administrador, professor e aluno;</li>
+<li>relatórios e downloads em PDF e XLSX;</li>
+<li>tema claro e escuro persistido no navegador;</li>
+<li>bloqueio de telas e ações incompatíveis com o perfil autenticado.</li>
+</ol>
+<hr />
+<h2 id="10-documentos-relacionados">10. Documentos relacionados<a class="headerlink" href="#10-documentos-relacionados" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../arquitetura_sistema/">Arquitetura do Sistema</a></li>
+<li><a href="../banco_de_dados/">Banco de Dados</a></li>
+<li><a href="https://github.com/menali17/ClassHub/blob/main/backend/CONTRATO_API.md">Contrato da API no GitHub</a></li>
+</ul>
+<hr />
+<h2 id="historico-de-versao">Histórico de versão<a class="headerlink" href="#historico-de-versao" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Versão</th>
+<th>Data</th>
+<th>Descrição</th>
+<th>Autor(es)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>14/06/2026</td>
+<td>Definição inicial do padrão de integração entre Next.js e a API NestJS.</td>
+<td>Enzo Menali</td>
+</tr>
+<tr>
+<td>1.1</td>
+<td>14/06/2026</td>
+<td>Inclusão das rotas administrativas, perfil, dashboard e exportação de relatórios.</td>
+<td>Enzo Menali</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td>14/06/2026</td>
+<td>Reorganização das rotas, esclarecimento da situação atual e detalhamento das regras de integração.</td>
+<td>Enzo Menali</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td>15/06/2026</td>
+<td>Atualização do estado integrado, estrutura real do front-end, dashboard e relatórios gerais.</td>
+<td>Enzo Menali</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td>15/06/2026</td>
+<td>Correção das permissões de turmas e documentação da consulta de turmas do aluno.</td>
+<td>Enzo Menali</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
